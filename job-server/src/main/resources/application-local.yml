@@ -6,7 +6,7 @@ spring:
       minimum-idle: 10
       idle-timeout: 10000
       driver-class-name: org.apache.derby.jdbc.EmbeddedDriver
-      jdbc-url: 'jdbc:derby:job;create=true'
+      jdbc-url: 'jdbc:derby:derby/job;create=true'
       pool-name: 'hikari'
 
 logging:
