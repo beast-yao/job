@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: JOB-SERVE
+  profiles:
+    active: local
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+      naming:
+        physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+        implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+    database: derby
+
+server:
+  port: 8999

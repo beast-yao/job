@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    derby:
+      validation-timeout: 1000
+      maximum-pool-size: 100
+      minimum-idle: 10
+      idle-timeout: 10000
+      driver-class-name: org.apache.derby.jdbc.EmbeddedDriver
+      jdbc-url: 'jdbc:derby:job;create=true'
+      pool-name: 'hikari'
+
+logging:
+  level:
+    org.springframework.boot: debug
