@@ -1,6 +1,6 @@
-package com.github.devil.core.persist.repository;
+package com.github.devil.core.persist.core.repository;
 
-import com.github.devil.core.persist.entity.JobInfoEntity;
+import com.github.devil.core.persist.core.entity.JobInfoEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -17,8 +17,15 @@ import java.util.Date;
 @Repository
 public interface JobInfoRepository extends JpaRepository<JobInfoEntity,Long> {
 
+    /**
+     * 修改下次执行时间和上次执行时间
+     * @param id
+     * @param next
+     * @param pre
+     * @return
+     */
     @Modifying
-    @Transactional(transactionManager = "transactionManager")
+    @Transactional(transactionManager = "transactionManager",rollbackFor = Exception.class)
     @Query("update JobInfoEntity set lastTriggerTime=?3 , nextTriggerTime=?2 where id=?1")
     int updateNextAndPreTriggerTimeById(Long id, Date next, Date pre);
 }

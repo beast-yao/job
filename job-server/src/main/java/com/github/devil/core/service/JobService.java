@@ -1,10 +1,9 @@
 package com.github.devil.core.service;
 
-import com.github.devil.core.ha.AppService;
-import com.github.devil.core.persist.entity.InstanceEntity;
-import com.github.devil.core.persist.entity.JobInfoEntity;
-import com.github.devil.core.persist.repository.JobInfoRepository;
-import com.github.devil.core.persist.repository.JobInstanceRepository;
+import com.github.devil.core.persist.core.entity.InstanceEntity;
+import com.github.devil.core.persist.core.entity.JobInfoEntity;
+import com.github.devil.core.persist.core.repository.JobInfoRepository;
+import com.github.devil.core.persist.core.repository.JobInstanceRepository;
 import com.github.devil.enums.ExecuteStatue;
 import com.github.devil.enums.TimeType;
 import org.springframework.beans.BeanUtils;
@@ -22,8 +21,6 @@ import java.util.Date;
 public class JobService {
 
     @Resource
-    private AppService appSelect;
-    @Resource
     private JobInstanceRepository jobInstanceRepository;
     @Resource
     private JobInfoRepository jobInfoRepository;
@@ -35,11 +32,11 @@ public class JobService {
         instanceEntity.setExecuteStatue(ExecuteStatue.WAIT);
         instanceEntity.setJobId(jobInfoEntity.getId());
         instanceEntity.setExceptTriggerTime(jobInfoEntity.getNextTriggerTime());
-        instanceEntity.setWorkerHost(appSelect.chooseWorker().getAppHost());
+        instanceEntity.setWorkerHost(null);
         return jobInstanceRepository.saveAndFlush(instanceEntity);
     }
 
-    @Transactional(transactionManager = "transactionManager")
+    @Transactional(transactionManager = "transactionManager",rollbackFor = Exception.class)
     public void refreshNextTriggerTime(JobInfoEntity jobInfoEntity){
         TimeType timeType = jobInfoEntity.getTimeType();
         Date next = timeType.getNext(jobInfoEntity.getLastTriggerTime(),jobInfoEntity.getTimeVal());

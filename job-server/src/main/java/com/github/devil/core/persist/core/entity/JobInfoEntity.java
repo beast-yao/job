@@ -1,4 +1,4 @@
-package com.github.devil.core.persist.entity;
+package com.github.devil.core.persist.core.entity;
 
 import com.github.devil.enums.ExecuteType;
 import com.github.devil.enums.TimeType;

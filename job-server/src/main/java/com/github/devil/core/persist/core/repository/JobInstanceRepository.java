@@ -1,7 +1,6 @@
-package com.github.devil.core.persist.repository;
+package com.github.devil.core.persist.core.repository;
 
-import com.github.devil.core.persist.entity.InstanceEntity;
-import com.github.devil.core.persist.entity.JobInfoEntity;
+import com.github.devil.core.persist.core.entity.InstanceEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

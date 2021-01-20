@@ -1,6 +1,6 @@
 spring:
   datasource:
-    derby:
+    core:
       validation-timeout: 1000
       maximum-pool-size: 100
       minimum-idle: 10

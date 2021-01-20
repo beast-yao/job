@@ -1,9 +1,9 @@
 package com.github.devil;
 
-import com.github.devil.core.persist.entity.InstanceEntity;
-import com.github.devil.core.persist.entity.JobInfoEntity;
-import com.github.devil.core.persist.repository.JobInfoRepository;
-import com.github.devil.core.persist.repository.JobInstanceRepository;
+import com.github.devil.core.persist.core.entity.InstanceEntity;
+import com.github.devil.core.persist.core.entity.JobInfoEntity;
+import com.github.devil.core.persist.core.repository.JobInfoRepository;
+import com.github.devil.core.persist.core.repository.JobInstanceRepository;
 import com.github.devil.enums.ExecuteStatue;
 import com.github.devil.enums.ExecuteType;
 import com.github.devil.enums.TimeType;
