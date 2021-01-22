@@ -22,6 +22,7 @@
         <springboot.version>2.3.4.RELEASE</springboot.version>
         <guava.version>29.0-jre</guava.version>
         <akka.version>2.6.4</akka.version>
+        <figlet.version>0.0.8</figlet.version>
     </properties>
 
     <dependencyManagement>
@@ -57,6 +58,11 @@
                 <groupId>com.typesafe.akka</groupId>
                 <artifactId>akka-slf4j_2.13</artifactId>
                 <version>${akka.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.lalyos</groupId>
+                <artifactId>jfiglet</artifactId>
+                <version>${figlet.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

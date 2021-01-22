@@ -74,6 +74,11 @@
             <groupId>com.typesafe.akka</groupId>
             <artifactId>akka-slf4j_2.13</artifactId>
         </dependency>
+
+<!--        <dependency>-->
+<!--            <groupId>com.github.lalyos</groupId>-->
+<!--            <artifactId>jfiglet</artifactId>-->
+<!--        </dependency>-->
     </dependencies>
 
     <build>
@@ -95,9 +100,6 @@
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                             <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
                         </manifest>
-                        <manifestEntries>
-                            <build-time>${maven.build.timestamp}</build-time>
-                        </manifestEntries>
                     </archive>
                 </configuration>
             </plugin>
