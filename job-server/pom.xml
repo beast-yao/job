@@ -41,6 +41,10 @@
             <groupId>org.apache.derby</groupId>
             <artifactId>derby</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>com.github.devil</groupId>
@@ -78,7 +82,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>com.github.devil.JobServerApplication</mainClass>
+                    <mainClass>com.github.devil.srv.JobServerApplication</mainClass>
                 </configuration>
             </plugin>
             <plugin>

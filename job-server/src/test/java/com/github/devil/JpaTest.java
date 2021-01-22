@@ -1,12 +1,12 @@
 package com.github.devil;
 
-import com.github.devil.core.persist.core.entity.InstanceEntity;
-import com.github.devil.core.persist.core.entity.JobInfoEntity;
-import com.github.devil.core.persist.core.repository.JobInfoRepository;
-import com.github.devil.core.persist.core.repository.JobInstanceRepository;
-import com.github.devil.enums.ExecuteStatue;
-import com.github.devil.enums.ExecuteType;
-import com.github.devil.enums.TimeType;
+import com.github.devil.srv.core.persist.core.entity.InstanceEntity;
+import com.github.devil.srv.core.persist.core.entity.JobInfoEntity;
+import com.github.devil.srv.core.persist.core.repository.JobInfoRepository;
+import com.github.devil.srv.core.persist.core.repository.JobInstanceRepository;
+import com.github.devil.common.enums.ExecuteStatue;
+import com.github.devil.common.enums.ExecuteType;
+import com.github.devil.common.enums.TimeType;
 import org.junit.Test;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.transaction.support.TransactionTemplate;

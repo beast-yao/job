@@ -5,9 +5,28 @@ spring:
       maximum-pool-size: 100
       minimum-idle: 10
       idle-timeout: 10000
-      driver-class-name: org.apache.derby.jdbc.EmbeddedDriver
-      jdbc-url: 'jdbc:derby:derby/job;create=true'
-      pool-name: 'hikari'
+      driver-class-name: org.h2.Driver
+#      jdbc-url: 'jdbc:derby:derby/job;create=true'
+      jdbc-url: 'jdbc:h2:./db/h2/core'
+      pool-name: 'CORE-DB'
+      connection-test-query: 'SELECT 1'
+      transaction-isolation: 'TRANSACTION_REPEATABLE_READ'
+    logging:
+      jdbc-url: 'jdbc:derby:./db/derby/logging;create=true'
+      validation-timeout: 1000
+      maximum-pool-size: 100
+      minimum-idle: 10
+      idle-timeout: 10000
+      driver-class-name: org.apache.derby.jdbc.AutoloadedDriver
+      pool-name: 'LOGGING-DB'
+      connection-test-query: 'SELECT 1 FROM SYSIBM.SYSDUMMY1'
+      transaction-isolation: 'TRANSACTION_REPEATABLE_READ'
+jpa:
+  core:
+    "[hibernate.dialect]": "org.hibernate.dialect.H2Dialect"
+  logging:
+    "[hibernate.dialect]": "org.hibernate.dialect.H2Dialect"
+
 
 logging:
   level:
