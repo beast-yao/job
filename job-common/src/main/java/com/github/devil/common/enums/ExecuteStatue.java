@@ -15,6 +15,12 @@ public enum ExecuteStatue {
      * 等待触发
      */
     WAIT("等待触发"),
+
+    /**
+     * 取消
+     */
+    CANCEL("取消"),
+
     /**
      * 执行成功
      */

@@ -25,12 +25,14 @@ public class InstanceEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false,updatable = false)
     private Long jobId;
 
+    @Column(updatable = false)
     @Enumerated(value = EnumType.STRING)
     private TimeType timeType;
 
+    @Column(updatable = false)
     private String timeVal;
 
     @Enumerated(value = EnumType.STRING)
@@ -39,25 +41,29 @@ public class InstanceEntity {
     @Column(nullable = false,updatable = false)
     private String uniqueName;
 
+    @Column(updatable = false)
     private String params;
 
+    @Column(updatable = false)
     private String appName;
 
+    @Column(updatable = false)
     private String jobMeta;
 
+    @Column(updatable = false)
     private String serveHost;
 
+    @Column(updatable = false)
     private String workerHost;
 
     @Enumerated(value = EnumType.STRING)
     private ExecuteStatue executeStatue;
 
+    @Column(updatable = false)
     private Date exceptTriggerTime;
 
-    @Column(nullable = false)
     private Date executeStartTime;
 
-    @Column(nullable = false)
     private Date executeEndTime;
 
     @CreationTimestamp

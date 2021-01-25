@@ -1,5 +1,6 @@
 package com.github.devil.srv.core.service;
 
+import com.github.devil.srv.akka.MainAkServer;
 import com.github.devil.srv.core.persist.core.entity.InstanceEntity;
 import com.github.devil.srv.core.persist.core.entity.JobInfoEntity;
 import com.github.devil.srv.core.persist.core.repository.JobInfoRepository;
@@ -33,6 +34,7 @@ public class JobService {
         instanceEntity.setJobId(jobInfoEntity.getId());
         instanceEntity.setExceptTriggerTime(jobInfoEntity.getNextTriggerTime());
         instanceEntity.setWorkerHost(null);
+        instanceEntity.setServeHost(MainAkServer.getCurrentHost());
         return jobInstanceRepository.saveAndFlush(instanceEntity);
     }
 

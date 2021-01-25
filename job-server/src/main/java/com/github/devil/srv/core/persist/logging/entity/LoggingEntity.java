@@ -30,4 +30,6 @@ public class LoggingEntity {
     private LogLevel logLevel;
 
     private String workAddress;
+
+    private Date crt;
 }
