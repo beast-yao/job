@@ -8,6 +8,10 @@ public class CommonConstants {
 
     public final static String MAIN_JOB_SRV_NAME = "JOB-SERVER";
 
-    public final static String MAIN_JOB_ACTOR_PATH = "server";
+    public final static String MAIN_JOB_ACTOR_PATH = "srv";
+
+    public final static String MAIN_JOB_WORKER_NAME = "JOB-WORKER";
+
+    public final static String MAIN_JOB_WORKER_ACTOR_PATH = "worker";
 
 }

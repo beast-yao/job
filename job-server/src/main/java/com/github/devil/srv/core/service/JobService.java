@@ -3,16 +3,21 @@ package com.github.devil.srv.core.service;
 import com.github.devil.srv.akka.MainAkServer;
 import com.github.devil.srv.core.persist.core.entity.InstanceEntity;
 import com.github.devil.srv.core.persist.core.entity.JobInfoEntity;
+import com.github.devil.srv.core.persist.core.entity.WorkInstanceEntity;
 import com.github.devil.srv.core.persist.core.repository.JobInfoRepository;
 import com.github.devil.srv.core.persist.core.repository.JobInstanceRepository;
 import com.github.devil.common.enums.ExecuteStatue;
 import com.github.devil.common.enums.TimeType;
+import com.github.devil.srv.core.persist.core.repository.WorkInstanceRepository;
+import com.google.common.collect.Lists;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author eric.yao
@@ -25,6 +30,8 @@ public class JobService {
     private JobInstanceRepository jobInstanceRepository;
     @Resource
     private JobInfoRepository jobInfoRepository;
+    @Resource
+    private WorkInstanceRepository workInstanceRepository;
 
     @Transactional(transactionManager = "transactionManager",rollbackFor = Exception.class)
     public InstanceEntity newInstance(JobInfoEntity jobInfoEntity){
@@ -33,9 +40,21 @@ public class JobService {
         instanceEntity.setExecuteStatue(ExecuteStatue.WAIT);
         instanceEntity.setJobId(jobInfoEntity.getId());
         instanceEntity.setExceptTriggerTime(jobInfoEntity.getNextTriggerTime());
-        instanceEntity.setWorkerHost(null);
         instanceEntity.setServeHost(MainAkServer.getCurrentHost());
-        return jobInstanceRepository.saveAndFlush(instanceEntity);
+        jobInstanceRepository.saveAndFlush(instanceEntity);
+
+        List<WorkInstanceEntity> lists = getAllWorkers(jobInfoEntity).stream().map(s -> {
+            WorkInstanceEntity workInstanceEntity = new WorkInstanceEntity();
+            BeanUtils.copyProperties(instanceEntity,workInstanceEntity);
+            workInstanceEntity.setInstanceId(instanceEntity.getId());
+            workInstanceEntity.setWorkerHost(s);
+            return workInstanceEntity;
+        }).collect(Collectors.toList());
+
+        if (!lists.isEmpty()) {
+            workInstanceRepository.saveAll(lists);
+        }
+        return instanceEntity;
     }
 
     @Transactional(transactionManager = "transactionManager",rollbackFor = Exception.class)
@@ -43,5 +62,9 @@ public class JobService {
         TimeType timeType = jobInfoEntity.getTimeType();
         Date next = timeType.getNext(jobInfoEntity.getLastTriggerTime(),jobInfoEntity.getTimeVal());
         jobInfoRepository.updateNextAndPreTriggerTimeById(jobInfoEntity.getId(),next,jobInfoEntity.getLastTriggerTime());
+    }
+
+    private List<String> getAllWorkers(JobInfoEntity jobInfoEntity){
+        return Lists.newArrayList();
     }
 }

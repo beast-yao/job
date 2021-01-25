@@ -28,13 +28,14 @@ public class InstanceEntity {
     @Column(nullable = false,updatable = false)
     private Long jobId;
 
-    @Column(updatable = false)
+    @Column(updatable = false,nullable = false)
     @Enumerated(value = EnumType.STRING)
     private TimeType timeType;
 
-    @Column(updatable = false)
+    @Column(updatable = false,nullable = false)
     private String timeVal;
 
+    @Column(nullable = false,updatable = false)
     @Enumerated(value = EnumType.STRING)
     private ExecuteType executeType;
 
@@ -44,17 +45,14 @@ public class InstanceEntity {
     @Column(updatable = false)
     private String params;
 
-    @Column(updatable = false)
+    @Column(updatable = false,nullable = false)
     private String appName;
 
     @Column(updatable = false)
     private String jobMeta;
 
-    @Column(updatable = false)
+    @Column(updatable = false,nullable = false)
     private String serveHost;
-
-    @Column(updatable = false)
-    private String workerHost;
 
     @Enumerated(value = EnumType.STRING)
     private ExecuteStatue executeStatue;
@@ -62,7 +60,7 @@ public class InstanceEntity {
     @Column(updatable = false)
     private Date exceptTriggerTime;
 
-    private Date executeStartTime;
+    private Date triggerTime;
 
     private Date executeEndTime;
 

@@ -19,7 +19,7 @@ public enum  ExecuteType {
     /**
      * 广播执行
      */
-    BROADCAST("单机");
+    BROADCAST("广播");
 
     String message;
 }

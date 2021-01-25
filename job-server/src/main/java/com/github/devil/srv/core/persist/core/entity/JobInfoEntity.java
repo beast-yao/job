@@ -25,19 +25,24 @@ public class JobInfoEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private TimeType timeType;
 
+    @Column(nullable = false)
     private String timeVal;
 
+    @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private ExecuteType executeType;
 
     @Column(unique = true,nullable = false,updatable = false)
     private String uniqueName;
 
+    @Column(nullable = false)
     private String appName;
 
+    @Column(nullable = false)
     private String jobMeta;
 
     private String serveHost;

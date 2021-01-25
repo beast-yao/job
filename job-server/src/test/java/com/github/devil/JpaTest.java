@@ -54,7 +54,7 @@ public class JpaTest extends BaseTest {
         entity.setTimeVal("1000");
         entity.setUniqueName("test-app");
         entity.setJobId(1L);
-        entity.setExecuteStartTime(new Date());
+        entity.setTriggerTime(new Date());
         entity.setExecuteEndTime(new Date());
         entity.setExecuteStatue(ExecuteStatue.SUCCESS);
 

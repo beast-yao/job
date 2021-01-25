@@ -22,6 +22,10 @@ public enum ExecuteStatue {
     CANCEL("取消"),
 
     /**
+     * 执行中
+     */
+    EXECUTING("执行中"),
+    /**
      * 执行成功
      */
     SUCCESS("执行成功"),

@@ -67,6 +67,10 @@ public class MainAkServer {
         return system.actorSelection(String.format(AKKA_SRV_PAT,MAIN_JOB_SRV_NAME,host,MAIN_JOB_ACTOR_PATH));
     }
 
+    public static ActorSelection getWorker(String host){
+        return system.actorSelection(String.format(AKKA_SRV_PAT,MAIN_JOB_WORKER_NAME,host,MAIN_JOB_WORKER_ACTOR_PATH));
+    }
+
     private static String getAddress(){
         String address = SpringContextHolder.getProperty("main.job.address");
         if (address == null || address.isEmpty() ){
