@@ -20,7 +20,7 @@ public class MainJobScheduler {
     /**
      * 时间轮
      */
-    private final static TimerWheel TIMER = new TimerWheel();
+    public final static TimerWheel TIMER = new TimerWheel();
 
 
     private static final Map<Long, TimerFuture> FUTURE_MAP = Maps.newConcurrentMap();

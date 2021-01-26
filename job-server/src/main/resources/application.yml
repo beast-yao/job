@@ -26,6 +26,8 @@ main:
     port: 10010
     host:
 management:
-  health:
-    db:
-      enabled: true
+  endpoint:
+    health:
+      showDetails: ALWAYS
+
+

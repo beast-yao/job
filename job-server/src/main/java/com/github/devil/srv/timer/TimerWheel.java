@@ -1,5 +1,7 @@
 package com.github.devil.srv.timer;
 
+import lombok.Getter;
+
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Queue;
@@ -13,6 +15,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  **/
 public class TimerWheel implements Timer{
 
+    @Getter
     private long startTime;
 
     private HashedWheelBucket[] buckets;
