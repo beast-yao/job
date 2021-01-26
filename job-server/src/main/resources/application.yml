@@ -10,6 +10,13 @@ spring:
       naming:
         physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
         implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+#   hibernate batch
+#    properties:
+#      "hibernate.jdbc.batch_size": "500"
+#      "hibernate.jdbc.batch_versioned_data": "true"
+#      "hibernate.order_updates": "true"
+#      "hibernate.order_inserts": "true"
+
 
 server:
   port: 8999
@@ -18,3 +25,7 @@ main:
   job:
     port: 10010
     host:
+management:
+  health:
+    db:
+      enabled: true

@@ -33,6 +33,8 @@ public class JobBanner implements Banner {
             out.println(banner);
             out.println(AnsiOutput.toString(AnsiColor.GREEN, JOB_SRV, AnsiColor.DEFAULT, "                       ",
                     AnsiStyle.FAINT, getVersion()));
+            out.println();
+            out.flush();
         }
     }
 

@@ -12,7 +12,6 @@
     <artifactId>job-server</artifactId>
 
     <properties>
-        <maven.build.timestamp.format>yyyy-MM-dd</maven.build.timestamp.format>
         <maven.test.skip>true</maven.test.skip>
     </properties>
 
@@ -88,7 +87,15 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <mainClass>com.github.devil.srv.JobServerApplication</mainClass>
+                    <executable>true</executable>
                 </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -99,9 +106,20 @@
                             <addClasspath>false</addClasspath>
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                             <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                            <mainClass>com.github.devil.srv.JobServerApplication</mainClass>
                         </manifest>
+                        <manifestEntries>
+                            <Built-By>${author}</Built-By>
+                            <Build-Jdk>${java.version}</Build-Jdk>
+                            <Build-Time>${maven.build.timestamp}</Build-Time>
+                        </manifestEntries>
                     </archive>
                 </configuration>
+                <executions>
+                    <execution>
+                        <phase>prepare-package</phase>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

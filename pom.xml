@@ -14,7 +14,9 @@
     <packaging>pom</packaging>
 
     <properties>
+        <author>Devil</author>
         <java.version>1.8</java.version>
+        <maven.build.timestamp.format>yyyy-MM-dd</maven.build.timestamp.format>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -23,6 +25,7 @@
         <guava.version>29.0-jre</guava.version>
         <akka.version>2.6.4</akka.version>
         <figlet.version>0.0.8</figlet.version>
+        <druid.version>1.2.4</druid.version>
     </properties>
 
     <dependencyManagement>
@@ -63,6 +66,11 @@
                 <groupId>com.github.lalyos</groupId>
                 <artifactId>jfiglet</artifactId>
                 <version>${figlet.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>druid-spring-boot-starter</artifactId>
+                <version>${druid.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

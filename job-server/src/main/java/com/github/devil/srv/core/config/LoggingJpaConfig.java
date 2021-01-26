@@ -2,6 +2,7 @@ package com.github.devil.srv.core.config;
 
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateProperties;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateSettings;
 import org.springframework.boot.autoconfigure.orm.jpa.JpaProperties;
@@ -50,7 +51,7 @@ public class LoggingJpaConfig {
     }
 
     @Bean("loggingEntityManagerFactoryBean")
-    public LocalContainerEntityManagerFactoryBean entityManagerFactoryBean(DataSource loggingDataSource,
+    public LocalContainerEntityManagerFactoryBean entityManagerFactoryBean(@Qualifier("loggingDataSource") DataSource loggingDataSource,
                                                                            EntityManagerFactoryBuilder builder,
                                                                            JpaProperties jpaProperties){
         return builder.dataSource(loggingDataSource)
@@ -61,7 +62,7 @@ public class LoggingJpaConfig {
     }
 
     @Bean("loggingTransactionManager")
-    public PlatformTransactionManager transactionManager(LocalContainerEntityManagerFactoryBean loggingEntityManagerFactoryBean){
+    public PlatformTransactionManager transactionManager(@Qualifier("loggingEntityManagerFactoryBean") LocalContainerEntityManagerFactoryBean loggingEntityManagerFactoryBean){
         return new JpaTransactionManager(Objects.requireNonNull(loggingEntityManagerFactoryBean.getObject()));
 }
 

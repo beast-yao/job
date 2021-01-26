@@ -9,7 +9,6 @@ import com.github.devil.srv.core.persist.core.entity.JobInfoEntity;
 import com.github.devil.srv.core.persist.core.entity.WorkInstanceEntity;
 import com.github.devil.srv.core.persist.core.repository.JobInstanceRepository;
 import com.github.devil.srv.core.persist.core.repository.WorkInstanceRepository;
-import com.github.devil.srv.core.service.JobService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Component;
@@ -53,26 +52,29 @@ public class TaskRunner {
         query.setInstanceId(instanceId);
         List<WorkInstanceEntity> workers = workInstanceRepository.findAll(Example.of(query));
         if (workers.isEmpty()){
-            //todo handle empty work
+
+            log.error("can not find an worker to submit this task,instanceId:{}",instanceId);
+            //todo trigger error listener
+
         }else {
-            workers.forEach(e -> {
+            for (WorkInstanceEntity worker : workers) {
                 WorkerExecuteReq req = new WorkerExecuteReq();
                 req.setInstanceId(instanceId);
                 req.setJobId(jobInfoEntity.getId());
                 req.setJobMeta(jobInfoEntity.getJobMeta());
                 req.setUniqueName(jobInfoEntity.getUniqueName());
-                req.setParams(e.getParams());
-                req.setWorkInstanceId(e.getId());
+                req.setParams(worker.getParams());
+                req.setWorkInstanceId(worker.getId());
 
-                ActorSelection selection = MainAkServer.getWorker(e.getWorkerHost());
+                ActorSelection selection = MainAkServer.getWorker(worker.getWorkerHost());
                 selection.tell(req,null);
 
-                //todo update workinstance
-            });
+                workInstanceRepository.mergerTriggerTimeAndExecuteStatueById(ExecuteStatue.EXECUTING,new Date(),new Date(),worker.getId());
+            }
         }
 
         instanceEntity.setExecuteStatue(ExecuteStatue.EXECUTING);
-        jobInstanceRepository.updateTriggerTimeAndStatus(instanceEntity.getTriggerTime(),instanceEntity.getExecuteStatue(),instanceId);
+        jobInstanceRepository.updateTriggerTimeAndStatus(instanceEntity.getTriggerTime(),instanceEntity.getExecuteStatue(),instanceId,new Date());
     }
 
 }

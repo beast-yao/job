@@ -6,7 +6,6 @@ spring:
       minimum-idle: 10
       idle-timeout: 10000
       driver-class-name: org.h2.Driver
-#      jdbc-url: 'jdbc:derby:derby/job;create=true'
       jdbc-url: 'jdbc:h2:./db/h2/core'
       pool-name: 'CORE-DB'
       connection-test-query: 'SELECT 1'
@@ -25,7 +24,7 @@ jpa:
   core:
     "[hibernate.dialect]": "org.hibernate.dialect.H2Dialect"
   logging:
-    "[hibernate.dialect]": "org.hibernate.dialect.H2Dialect"
+    "[hibernate.dialect]": "org.hibernate.dialect.DerbyTenSevenDialect"
 
 
 logging:
