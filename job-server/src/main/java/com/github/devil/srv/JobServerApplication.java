@@ -1,7 +1,5 @@
 package com.github.devil.srv;
 
-import com.github.devil.srv.akka.MainAkServer;
-import com.github.devil.srv.banner.JobBanner;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -16,7 +14,6 @@ public class JobServerApplication {
 
     public static void main(String[] args) {
         new SpringApplicationBuilder()
-                .banner(new JobBanner())
                 .listeners(new ApplicationPidFileWriter())
                 .sources(JobServerApplication.class).run(args);
     }

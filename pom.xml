@@ -10,6 +10,7 @@
     <modules>
         <module>job-server</module>
         <module>job-common</module>
+        <module>distribution</module>
     </modules>
     <packaging>pom</packaging>
 
