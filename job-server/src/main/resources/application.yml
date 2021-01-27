@@ -28,6 +28,10 @@ main:
 management:
   endpoint:
     health:
-      showDetails: ALWAYS
-
+      group:
+        task:
+          showDetails: ALWAYS
+          include:
+            - 'task'
+            - 'diskSpace'
 

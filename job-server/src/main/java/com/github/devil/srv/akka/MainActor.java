@@ -1,6 +1,7 @@
 package com.github.devil.srv.akka;
 
 import akka.actor.AbstractActor;
+import com.github.devil.common.request.HeartBeat;
 import com.github.devil.srv.akka.request.Echo;
 import com.github.devil.srv.akka.request.ServerInfo;
 
@@ -14,6 +15,7 @@ public class MainActor extends AbstractActor {
         return receiveBuilder()
                 .match(Echo.class,this::echo)
                 .match(ServerInfo.class,this::onReceiveServerInfo)
+                .match(HeartBeat.class,this::onReceiveHeartBeat)
                 .build();
     }
 
@@ -30,4 +32,8 @@ public class MainActor extends AbstractActor {
         System.out.println(serverInfo);
     }
 
+    //todo
+    private void onReceiveHeartBeat(HeartBeat heartBeat){
+        System.out.println(heartBeat);
+    }
 }

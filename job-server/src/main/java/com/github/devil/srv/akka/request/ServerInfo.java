@@ -1,5 +1,6 @@
 package com.github.devil.srv.akka.request;
 
+import com.github.devil.common.serialization.JobSerializable;
 import lombok.Data;
 
 /**
@@ -7,7 +8,7 @@ import lombok.Data;
  * @date 2021/1/20
  **/
 @Data
-public class ServerInfo {
+public class ServerInfo implements JobSerializable {
 
     private long receiverTime;
 

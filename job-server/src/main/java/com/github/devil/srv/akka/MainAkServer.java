@@ -7,14 +7,15 @@ import akka.routing.RoundRobinPool;
 import static com.github.devil.common.CommonConstants.*;
 
 import com.github.devil.common.util.InetUtils;
-import com.github.devil.srv.core.SpringContextHolder;
 import com.github.devil.srv.core.exception.JobException;
 import com.google.common.collect.Maps;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.env.Environment;
 
+import javax.annotation.Nonnull;
 import java.util.Map;
 
 /**
@@ -33,18 +34,18 @@ public class MainAkServer {
     @Getter
     private static String currentHost;
 
-    public static void start(){
+    public static void start(@Nonnull Environment environment){
 
         log.info("===============Job SRV Starting============");
         Map<String,String> configMap = Maps.newHashMap();
-        String address = getAddress();
+        String address = getAddress(environment);
         if (address != null){
             configMap.put("akka.remote.artery.canonical.hostname",address);
         }else {
             throw new JobException("cannot auto find local Ip address,Please set it");
         }
 
-        String port = SpringContextHolder.getProperty("main.job.port","10010");
+        String port = environment.getProperty("main.job.port","10010");
 
         configMap.put("akka.remote.artery.canonical.port",port);
 
@@ -71,8 +72,8 @@ public class MainAkServer {
         return system.actorSelection(String.format(AKKA_SRV_PAT,MAIN_JOB_WORKER_NAME,host,MAIN_JOB_WORKER_ACTOR_PATH));
     }
 
-    private static String getAddress(){
-        String address = SpringContextHolder.getProperty("main.job.address");
+    private static String getAddress(Environment environment){
+        String address = environment.getProperty("main.job.address");
         if (address == null || address.isEmpty() ){
             InetUtils.HostInfo hostInfo = InetUtils.findFirstNonLoopbackHostInfo();
             if (hostInfo != null){

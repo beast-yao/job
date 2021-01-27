@@ -19,8 +19,6 @@ public class JobServerApplication {
                 .banner(new JobBanner())
                 .listeners(new ApplicationPidFileWriter())
                 .sources(JobServerApplication.class).run(args);
-
-        MainAkServer.start();
     }
 
 }

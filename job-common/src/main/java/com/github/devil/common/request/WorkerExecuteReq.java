@@ -1,13 +1,14 @@
-package com.github.devil.srv.akka.request;
+package com.github.devil.common.request;
 
+import com.github.devil.common.serialization.JobSerializable;
 import lombok.Data;
 
 /**
  * @author eric.yao
- * @date 2021/1/25
+ * @date 2021/1/27
  **/
 @Data
-public class WorkerExecuteReq {
+public class WorkerExecuteReq implements JobSerializable {
 
     private Long instanceId;
 
