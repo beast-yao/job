@@ -1,5 +1,6 @@
 package com.github.devil.srv.core.persist.core.repository;
 
+import com.github.devil.common.enums.ExecuteStatue;
 import com.github.devil.srv.core.persist.core.entity.JobInfoEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -22,9 +24,19 @@ public interface JobInfoRepository extends JpaRepository<JobInfoEntity,Long> {
      * @param id
      * @param next
      * @param pre
+     * @param serveHost
      */
     @Modifying
     @Transactional(transactionManager = "transactionManager",rollbackFor = Exception.class)
-    @Query("update JobInfoEntity set lastTriggerTime=?3 , nextTriggerTime=?2 where id=?1")
-    void updateNextAndPreTriggerTimeById(Long id, Date next, Date pre);
+    @Query("update JobInfoEntity set lastTriggerTime=?3 , nextTriggerTime=?2 ,version=version+1,serveHost=?4 where id=?1")
+    void updateNextAndPreTriggerTimeAndServerById(Long id, Date next, Date pre,String serveHost);
+
+    /**
+     * 查询需要执行的任务
+     * @param serveHost
+     * @param executeStatues
+     * @return
+     */
+    @Query(value = "select * from job_info where serve_host=?1 and id not in (select job_id from job_instance where job_instance.version=job_info.version and job_instance.execute_statue in ?2)",nativeQuery = true)
+    List<JobInfoEntity> findUnExecuteJob(String serveHost, List<ExecuteStatue> executeStatues);
 }

@@ -1,9 +1,8 @@
 package com.github.devil.srv;
 
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
-import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.boot.context.ApplicationPidFileWriter;
 
 /**
  * @author eric.yao
@@ -13,9 +12,7 @@ import org.springframework.boot.context.ApplicationPidFileWriter;
 public class JobServerApplication {
 
     public static void main(String[] args) {
-        new SpringApplicationBuilder()
-                .listeners(new ApplicationPidFileWriter())
-                .sources(JobServerApplication.class).run(args);
+        SpringApplication.run(JobServerApplication.class,args);
     }
 
 }

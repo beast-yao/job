@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author eric.yao
@@ -29,4 +30,11 @@ public interface JobInstanceRepository extends JpaRepository<InstanceEntity,Long
     @Transactional(transactionManager = "transactionManager",rollbackFor = Exception.class)
     int updateTriggerTimeAndStatus(Date triggerTime, ExecuteStatue executeStatue,Long id,Date upt);
 
+    /**
+     * 通过serverhost和executeStatue查询
+     * @param serveHost
+     * @param executeStatue
+     * @return
+     */
+    List<InstanceEntity> findByServeHostAndExecuteStatueIn(String serveHost,List<ExecuteStatue> executeStatue);
 }

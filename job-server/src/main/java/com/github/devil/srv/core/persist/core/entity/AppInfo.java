@@ -11,14 +11,13 @@ import java.util.Date;
  **/
 @Data
 @Entity
-@Table(name = "job_app")
+@Table(name = "job_app",indexes = {@Index(name = "idx_ja_name",columnList = "appName",unique = true)})
 public class AppInfo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true)
     private String appName;
 
     private Date registerDate;

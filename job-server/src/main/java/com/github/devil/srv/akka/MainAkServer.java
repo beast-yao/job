@@ -72,6 +72,11 @@ public class MainAkServer {
         return system.actorSelection(String.format(AKKA_SRV_PAT,MAIN_JOB_WORKER_NAME,host,MAIN_JOB_WORKER_ACTOR_PATH));
     }
 
+    //todo
+    public static String nextHealthServer(){
+        return currentHost;
+    }
+
     private static String getAddress(Environment environment){
         String address = environment.getProperty("main.job.address");
         if (address == null || address.isEmpty() ){

@@ -17,7 +17,7 @@ import java.util.List;
  **/
 @Data
 @Entity
-@Table(name = "job_info")
+@Table(name = "job_info",indexes = {@Index(name = "idx_ji_server",columnList = "serveHost")})
 @ToString(exclude = "instanceEntities")
 public class JobInfoEntity {
 
@@ -48,6 +48,8 @@ public class JobInfoEntity {
     private String serveHost;
 
     private String workerHost;
+
+    private Integer version = 0;
 
     @Column(insertable = false)
     private Date lastTriggerTime;

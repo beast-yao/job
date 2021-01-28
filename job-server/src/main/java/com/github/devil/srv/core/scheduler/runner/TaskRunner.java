@@ -9,6 +9,7 @@ import com.github.devil.srv.core.persist.core.entity.JobInfoEntity;
 import com.github.devil.srv.core.persist.core.entity.WorkInstanceEntity;
 import com.github.devil.srv.core.persist.core.repository.JobInstanceRepository;
 import com.github.devil.srv.core.persist.core.repository.WorkInstanceRepository;
+import com.github.devil.srv.core.service.JobService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Component;
@@ -31,6 +32,8 @@ public class TaskRunner {
     private JobInstanceRepository jobInstanceRepository;
     @Resource
     private WorkInstanceRepository workInstanceRepository;
+    @Resource
+    private JobService jobService;
 
     public void runTask(JobInfoEntity jobInfoEntity,Long instanceId){
         Optional<InstanceEntity> optional = jobInstanceRepository.findById(instanceId);
@@ -45,8 +48,10 @@ public class TaskRunner {
             return;
         }
 
+        jobInfoEntity.setLastTriggerTime(new Date());
+        jobService.refreshNextTriggerTime(jobInfoEntity);
         // 设置开始时间
-        instanceEntity.setTriggerTime(new Date());
+        instanceEntity.setTriggerTime(jobInfoEntity.getLastTriggerTime());
 
         WorkInstanceEntity query = new WorkInstanceEntity();
         query.setInstanceId(instanceId);
@@ -69,7 +74,7 @@ public class TaskRunner {
                 ActorSelection selection = MainAkServer.getWorker(worker.getWorkerHost());
                 selection.tell(req,null);
 
-                workInstanceRepository.mergerTriggerTimeAndExecuteStatueById(ExecuteStatue.EXECUTING,new Date(),new Date(),worker.getId());
+                workInstanceRepository.mergeTriggerTimeAndExecuteStatueById(ExecuteStatue.EXECUTING,new Date(),new Date(),worker.getId());
             }
         }
 

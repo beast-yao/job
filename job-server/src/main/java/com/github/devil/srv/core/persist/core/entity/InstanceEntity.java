@@ -17,7 +17,7 @@ import java.util.Date;
  **/
 @Data
 @Entity
-@Table(name = "job_instance")
+@Table(name = "job_instance",indexes = {@Index(name = "idx_ji_job_version",columnList = "jobId,version")})
 @ToString(exclude = "jobInfoEntity")
 public class InstanceEntity {
 
@@ -54,8 +54,13 @@ public class InstanceEntity {
     @Column(updatable = false,nullable = false)
     private String serveHost;
 
+    @Column(updatable = false)
+    private String workerHost;
+
     @Enumerated(value = EnumType.STRING)
     private ExecuteStatue executeStatue;
+
+    private Integer version;
 
     @Column(updatable = false)
     private Date exceptTriggerTime;
