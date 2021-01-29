@@ -1,12 +1,16 @@
 spring:
+  jpa:
+    properties:
+      hibernate:
+        generate_statistics: false
   datasource:
     core:
       validation-timeout: 1000
       maximum-pool-size: 100
-      minimum-idle: 10
+      minimum-idle: 5
       idle-timeout: 10000
       driver-class-name: org.h2.Driver
-      jdbc-url: 'jdbc:h2:./db/h2/core'
+      jdbc-url: 'jdbc:h2:./db/h2/core;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE'
       pool-name: 'CORE-DB'
       connection-test-query: 'SELECT 1'
       transaction-isolation: 'TRANSACTION_REPEATABLE_READ'
@@ -14,7 +18,7 @@ spring:
       jdbc-url: 'jdbc:derby:./db/derby/logging;create=true'
       validation-timeout: 1000
       maximum-pool-size: 100
-      minimum-idle: 10
+      minimum-idle: 5
       idle-timeout: 10000
       driver-class-name: org.apache.derby.jdbc.AutoloadedDriver
       pool-name: 'LOGGING-DB'
@@ -29,4 +33,6 @@ jpa:
 
 logging:
   level:
-    org.springframework.boot: debug
+    org.springframework.boot: info
+    com.zaxxer.hikari: debug
+    akka.actor: debug

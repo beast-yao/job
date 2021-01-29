@@ -22,4 +22,6 @@ public class WorkerExecuteReq implements JobSerializable {
 
     private String uniqueName;
 
+    private String serverHost;
+
 }

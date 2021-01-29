@@ -14,22 +14,17 @@ public class MainActor extends AbstractActor {
     public Receive createReceive() {
         return receiveBuilder()
                 .match(Echo.class,this::echo)
-                .match(ServerInfo.class,this::onReceiveServerInfo)
                 .match(HeartBeat.class,this::onReceiveHeartBeat)
                 .build();
     }
 
     private void echo(Echo echo){
+        ServerHolder.onReceive(echo.getCurrentServer(),echo.getSendTime());
         ServerInfo serverInfo = new ServerInfo();
         serverInfo.setReceiverTime(System.currentTimeMillis());
-        //todo holder srv info
-        serverInfo.setSurviveCount(0);
+        serverInfo.setSurviveCount(MainAkServer.getAllSurvivalWorker().size());
+        serverInfo.setServerHost(MainAkServer.getCurrentHost());
         getSender().tell(serverInfo,getSelf());
-    }
-
-    //todo
-    private void onReceiveServerInfo(ServerInfo serverInfo){
-        System.out.println(serverInfo);
     }
 
     //todo

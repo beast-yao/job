@@ -4,6 +4,9 @@ import akka.actor.ActorSelection;
 import com.github.devil.common.enums.ExecuteStatue;
 import com.github.devil.common.request.WorkerExecuteReq;
 import com.github.devil.srv.akka.MainAkServer;
+import com.github.devil.srv.core.exception.JobException;
+import com.github.devil.srv.core.notify.NotifyCenter;
+import com.github.devil.srv.core.notify.event.JobExecuteFailEvent;
 import com.github.devil.srv.core.persist.core.entity.InstanceEntity;
 import com.github.devil.srv.core.persist.core.entity.JobInfoEntity;
 import com.github.devil.srv.core.persist.core.entity.WorkInstanceEntity;
@@ -58,8 +61,12 @@ public class TaskRunner {
         List<WorkInstanceEntity> workers = workInstanceRepository.findAll(Example.of(query));
         if (workers.isEmpty()){
 
-            log.error("can not find an worker to submit this task,instanceId:{}",instanceId);
-            //todo trigger error listener
+            log.error("can not find any worker to submit this task,instanceId:{}",instanceId);
+
+            NotifyCenter.onEvent(new JobExecuteFailEvent()
+                    .setInstanceId(instanceId)
+                    .setJobId(jobInfoEntity.getId())
+                    .setException(new JobException("can not find any worker to submit this task,Please check if all worker is down")));
 
         }else {
             for (WorkInstanceEntity worker : workers) {

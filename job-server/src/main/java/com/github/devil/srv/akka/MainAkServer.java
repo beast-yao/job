@@ -8,7 +8,10 @@ import static com.github.devil.common.CommonConstants.*;
 
 import com.github.devil.common.util.InetUtils;
 import com.github.devil.srv.core.exception.JobException;
+import com.github.devil.srv.core.notify.NotifyCenter;
+import com.github.devil.srv.core.notify.listener.ServeUnReceiveListener;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import lombok.Getter;
@@ -16,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.env.Environment;
 
 import javax.annotation.Nonnull;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author eric.yao
@@ -62,6 +65,15 @@ public class MainAkServer {
                 .withRouter(new RoundRobinPool(Runtime.getRuntime().availableProcessors())), MAIN_JOB_ACTOR_PATH);
 
         log.info("===============Job SRV Started==============");
+
+        String memberList = Optional.ofNullable(environment.getProperty("main.job.memberList")).orElseGet(() -> currentHost);
+
+        Set<String> servers = Sets.newHashSet(memberList.split(","));
+
+        servers.add(currentHost);
+
+        servers.forEach(ServerHolder::echo);
+        NotifyCenter.addListener(new ServeUnReceiveListener());
     }
 
     public static ActorSelection getSrv(String host){
@@ -75,6 +87,14 @@ public class MainAkServer {
     //todo
     public static String nextHealthServer(){
         return currentHost;
+    }
+
+    public static Set<String> getAllSurvivalServer(){
+        return ServerHolder.getSURVIVAL().keySet();
+    }
+
+    public static Set<String> getAllSurvivalWorker(){
+        return Sets.newHashSet();
     }
 
     private static String getAddress(Environment environment){
