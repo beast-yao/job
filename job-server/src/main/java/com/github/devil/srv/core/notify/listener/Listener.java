@@ -4,7 +4,6 @@ import com.github.devil.srv.core.notify.event.Event;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;

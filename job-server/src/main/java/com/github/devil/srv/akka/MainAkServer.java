@@ -7,9 +7,13 @@ import akka.routing.RoundRobinPool;
 import static com.github.devil.common.CommonConstants.*;
 
 import com.github.devil.common.util.InetUtils;
+import com.github.devil.srv.akka.server.ServerHolder;
+import com.github.devil.srv.akka.ha.ServerManager;
+import com.github.devil.srv.core.SpringContextHolder;
 import com.github.devil.srv.core.exception.JobException;
 import com.github.devil.srv.core.notify.NotifyCenter;
 import com.github.devil.srv.core.notify.listener.ServeUnReceiveListener;
+import com.github.devil.srv.core.notify.listener.WorkerDownListener;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.typesafe.config.Config;
@@ -38,7 +42,17 @@ public class MainAkServer {
     private static String currentHost;
 
     public static void start(@Nonnull Environment environment){
+        //初始化akka server
+        initServer(environment);
 
+        //初始化节点通信
+        initEcho(environment);
+
+        //初始化监听器
+        initListener();
+    }
+
+    private static void initServer(Environment environment){
         log.info("===============Job SRV Starting============");
         Map<String,String> configMap = Maps.newHashMap();
         String address = getAddress(environment);
@@ -65,15 +79,23 @@ public class MainAkServer {
                 .withRouter(new RoundRobinPool(Runtime.getRuntime().availableProcessors())), MAIN_JOB_ACTOR_PATH);
 
         log.info("===============Job SRV Started==============");
+    }
 
+    private static void initEcho(Environment environment){
         String memberList = Optional.ofNullable(environment.getProperty("main.job.memberList")).orElseGet(() -> currentHost);
 
         Set<String> servers = Sets.newHashSet(memberList.split(","));
 
         servers.add(currentHost);
 
+        //每个节点之间进行通信，确保节点存活
         servers.forEach(ServerHolder::echo);
+    }
+
+    private static void initListener(){
+        //注册监听器
         NotifyCenter.addListener(new ServeUnReceiveListener());
+        NotifyCenter.addListener(new WorkerDownListener());
     }
 
     public static ActorSelection getSrv(String host){
@@ -84,17 +106,12 @@ public class MainAkServer {
         return system.actorSelection(String.format(AKKA_SRV_PAT,MAIN_JOB_WORKER_NAME,host,MAIN_JOB_WORKER_ACTOR_PATH));
     }
 
-    //todo
     public static String nextHealthServer(){
-        return currentHost;
+        return SpringContextHolder.getBean(ServerManager.class).getNextServer();
     }
 
     public static Set<String> getAllSurvivalServer(){
         return ServerHolder.getSURVIVAL().keySet();
-    }
-
-    public static Set<String> getAllSurvivalWorker(){
-        return Sets.newHashSet();
     }
 
     private static String getAddress(Environment environment){

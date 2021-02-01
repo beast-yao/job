@@ -1,5 +1,6 @@
 package com.github.devil.common.request;
 
+import com.github.devil.common.enums.TaskType;
 import com.github.devil.common.serialization.JobSerializable;
 import lombok.Data;
 
@@ -23,5 +24,7 @@ public class WorkerExecuteReq implements JobSerializable {
     private String uniqueName;
 
     private String serverHost;
+
+    private TaskType taskType;
 
 }

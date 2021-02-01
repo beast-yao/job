@@ -1,6 +1,7 @@
-package com.github.devil.srv.akka;
+package com.github.devil.srv.akka.server;
 
 import akka.pattern.Patterns;
+import com.github.devil.srv.akka.MainAkServer;
 import com.github.devil.srv.akka.request.Echo;
 import com.github.devil.srv.akka.request.ServerInfo;
 import com.github.devil.srv.core.MainThreadUtil;
@@ -55,7 +56,9 @@ public class ServerHolder {
             return;
         }
         SURVIVAL.put(serve,time);
-        DOWN_SERVE.remove(serve);
+        if (DOWN_SERVE.remove(serve)){
+            log.info("re receive echo msg from {}",serve);
+        }
     }
 
     //todo

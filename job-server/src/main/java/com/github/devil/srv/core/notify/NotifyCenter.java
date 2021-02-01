@@ -1,5 +1,6 @@
 package com.github.devil.srv.core.notify;
 
+import com.github.devil.srv.core.MainThreadUtil;
 import com.github.devil.srv.core.notify.event.Event;
 import com.github.devil.srv.core.notify.listener.Listener;
 import com.google.common.collect.Lists;
@@ -28,7 +29,7 @@ public class NotifyCenter {
     public static void onEvent(Event event){
         for (Listener listener : LISTENERS) {
             if (listener.support(event)){
-                listener.onEvent(event);
+                MainThreadUtil.GLOBAL.execute(() -> listener.onEvent(event));
             }
         }
     }

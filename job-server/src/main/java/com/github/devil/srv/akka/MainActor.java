@@ -4,6 +4,8 @@ import akka.actor.AbstractActor;
 import com.github.devil.common.request.HeartBeat;
 import com.github.devil.srv.akka.request.Echo;
 import com.github.devil.srv.akka.request.ServerInfo;
+import com.github.devil.srv.akka.server.ServerHolder;
+import com.github.devil.srv.akka.worker.WorkerHolder;
 
 /**
  * @author eric.yao
@@ -22,13 +24,12 @@ public class MainActor extends AbstractActor {
         ServerHolder.onReceive(echo.getCurrentServer(),echo.getSendTime());
         ServerInfo serverInfo = new ServerInfo();
         serverInfo.setReceiverTime(System.currentTimeMillis());
-        serverInfo.setSurviveCount(MainAkServer.getAllSurvivalWorker().size());
+        serverInfo.setSurviveCount(MainAkServer.getAllSurvivalServer().size());
         serverInfo.setServerHost(MainAkServer.getCurrentHost());
         getSender().tell(serverInfo,getSelf());
     }
 
-    //todo
     private void onReceiveHeartBeat(HeartBeat heartBeat){
-        System.out.println(heartBeat);
+        WorkerHolder.onHeartBeat(heartBeat);
     }
 }

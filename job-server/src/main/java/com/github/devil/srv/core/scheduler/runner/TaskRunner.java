@@ -77,6 +77,7 @@ public class TaskRunner {
                 req.setUniqueName(jobInfoEntity.getUniqueName());
                 req.setParams(worker.getParams());
                 req.setWorkInstanceId(worker.getId());
+                req.setTaskType(instanceEntity.getTaskType());
 
                 ActorSelection selection = MainAkServer.getWorker(worker.getWorkerHost());
                 selection.tell(req,null);

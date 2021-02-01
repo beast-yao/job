@@ -2,9 +2,7 @@ package com.github.devil.srv.core;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.*;
 
 /**
  * @author eric.yao
@@ -18,6 +16,8 @@ public class MainThreadUtil {
     public final static ScheduledExecutorService SCHEDULE = new ScheduledThreadPoolExecutor(10,  newThreadFactory("SCHEDULE"));
 
     public final static ScheduledExecutorService JOB_PUSH = new ScheduledThreadPoolExecutor(1, newThreadFactory("JOB-PUSH"));
+
+    public final static ThreadPoolExecutor GLOBAL = new ThreadPoolExecutor(Runtime.getRuntime().availableProcessors(),Runtime.getRuntime().availableProcessors()*4,60, TimeUnit.SECONDS,new SynchronousQueue<>(),newThreadFactory("GLOBAL"));
 
     private static ThreadFactory newThreadFactory(String name){
         return r -> {

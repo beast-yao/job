@@ -14,4 +14,7 @@ public class CommonConstants {
 
     public final static String MAIN_JOB_WORKER_ACTOR_PATH = "worker";
 
+    public final static Long WORK_HEART_BEAT = 1000L;
+
+    public final static String COMMON_SPLIT = ",";
 }

@@ -2,6 +2,7 @@ package com.github.devil.srv.core.persist.core.entity;
 
 import com.github.devil.common.enums.ExecuteStatue;
 import com.github.devil.common.enums.ExecuteType;
+import com.github.devil.common.enums.TaskType;
 import com.github.devil.common.enums.TimeType;
 import lombok.Data;
 import lombok.ToString;
@@ -38,6 +39,10 @@ public class InstanceEntity {
     @Column(nullable = false,updatable = false)
     @Enumerated(value = EnumType.STRING)
     private ExecuteType executeType;
+
+    @Column(nullable = false)
+    @Enumerated(value = EnumType.STRING)
+    private TaskType taskType;
 
     @Column(nullable = false,updatable = false)
     private String uniqueName;
