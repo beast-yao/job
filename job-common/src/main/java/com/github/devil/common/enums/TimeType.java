@@ -1,8 +1,8 @@
 package com.github.devil.common.enums;
 
+import com.github.devil.common.corn.CronSequenceGenerator;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.springframework.scheduling.support.CronSequenceGenerator;
 
 import java.util.Date;
 import java.util.Optional;

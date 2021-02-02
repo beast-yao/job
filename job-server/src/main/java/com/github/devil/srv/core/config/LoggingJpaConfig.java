@@ -7,10 +7,13 @@ import org.springframework.boot.autoconfigure.orm.jpa.HibernateProperties;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateSettings;
 import org.springframework.boot.autoconfigure.orm.jpa.JpaProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.bind.Bindable;
+import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -36,18 +39,20 @@ public class LoggingJpaConfig {
     @Resource
     private ObjectProvider<HibernateProperties> hibernateProperties;
 
+    @Resource
+    private Environment environment;
+
     @Bean("loggingDataSource")
     @ConfigurationProperties(value = "spring.datasource.logging")
     public DataSource coreDataSource(){
         return DataSourceBuilder.create().type(HikariDataSource.class).build();
     }
 
-    @Bean("logging-jpa-map")
-    @ConfigurationProperties(value = "jpa.logging")
     public Map<String,Object> initJpaProperties(JpaProperties jpaProperties){
-        return hibernateProperties
+        Map<String,Object> defaultMap = hibernateProperties
                 .getIfAvailable(HibernateProperties::new)
                 .determineHibernateProperties(jpaProperties.getProperties(),new HibernateSettings());
+        return Binder.get(environment).bind("jpa.logging", Bindable.ofInstance(defaultMap)).get();
     }
 
     @Bean("loggingEntityManagerFactoryBean")

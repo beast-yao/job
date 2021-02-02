@@ -17,4 +17,6 @@ public class CommonConstants {
     public final static Long WORK_HEART_BEAT = 1000L;
 
     public final static String COMMON_SPLIT = ",";
+
+    public final static String AKKA_SRV_PATH = "akka://%s@%s/user/%s";
 }

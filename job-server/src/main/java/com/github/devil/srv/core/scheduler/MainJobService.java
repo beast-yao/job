@@ -51,7 +51,7 @@ public class MainJobService implements InitializingBean {
         /**
          * 当前时间----> 下次定时时间触发的时候，需要执行的任务
          */
-        List<JobInfoEntity> jobInfoEntities = jobInfoRepository.findUnExecuteJob(MainAkServer.getCurrentHost(), Lists.newArrayList(ExecuteStatue.WAIT),System.currentTimeMillis()+(int)(SCHEDULER_FIX*1.5));
+        List<JobInfoEntity> jobInfoEntities = jobInfoRepository.findUnExecuteJob(MainAkServer.getCurrentHost(), Lists.newArrayList(ExecuteStatue.WAIT),System.currentTimeMillis()+(int)(SCHEDULER_FIX*1.5),Lists.newArrayList(ExecuteStatue.WAIT,ExecuteStatue.EXECUTING));
 
         Lists.partition(jobInfoEntities,MAX_BATCH).forEach(lists -> {
 

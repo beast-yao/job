@@ -11,6 +11,7 @@
         <module>job-server</module>
         <module>job-common</module>
         <module>distribution</module>
+        <module>job-client</module>
     </modules>
     <packaging>pom</packaging>
 

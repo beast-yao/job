@@ -80,7 +80,7 @@ public class TaskRunner {
                 req.setTaskType(instanceEntity.getTaskType());
 
                 ActorSelection selection = MainAkServer.getWorker(worker.getWorkerHost());
-                selection.tell(req,null);
+                selection.tell(req,MainAkServer.getActorRef());
 
                 workInstanceRepository.mergeTriggerTimeAndExecuteStatueById(ExecuteStatue.EXECUTING,new Date(),new Date(),worker.getId());
             }

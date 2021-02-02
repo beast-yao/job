@@ -1,11 +1,13 @@
 package com.github.devil.srv.akka;
 
+import akka.actor.ActorRef;
 import akka.actor.ActorSelection;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
 import akka.routing.RoundRobinPool;
 import static com.github.devil.common.CommonConstants.*;
 
+import com.github.devil.common.CommonConstants;
 import com.github.devil.common.util.InetUtils;
 import com.github.devil.srv.akka.server.ServerHolder;
 import com.github.devil.srv.akka.ha.ServerManager;
@@ -34,9 +36,10 @@ public class MainAkServer {
 
     private final static String AKKA_CONF = "akka.conf";
 
-    private final static String AKKA_SRV_PAT = "akka://%s@%s/user/%s";
-
     private static  ActorSystem system;
+
+    @Getter
+    private static ActorRef actorRef;
 
     @Getter
     private static String currentHost;
@@ -74,7 +77,7 @@ public class MainAkServer {
 
         system = ActorSystem.apply(MAIN_JOB_SRV_NAME,config);
 
-        system.actorOf(Props.create(MainActor.class)
+        actorRef = system.actorOf(Props.create(MainActor.class)
                 .withDispatcher("akka.job-srv-dispatcher")
                 .withRouter(new RoundRobinPool(Runtime.getRuntime().availableProcessors())), MAIN_JOB_ACTOR_PATH);
 
@@ -84,7 +87,7 @@ public class MainAkServer {
     private static void initEcho(Environment environment){
         String memberList = Optional.ofNullable(environment.getProperty("main.job.memberList")).orElseGet(() -> currentHost);
 
-        Set<String> servers = Sets.newHashSet(memberList.split(","));
+        Set<String> servers = Sets.newHashSet(memberList.split(CommonConstants.COMMON_SPLIT));
 
         servers.add(currentHost);
 
@@ -99,11 +102,11 @@ public class MainAkServer {
     }
 
     public static ActorSelection getSrv(String host){
-        return system.actorSelection(String.format(AKKA_SRV_PAT,MAIN_JOB_SRV_NAME,host,MAIN_JOB_ACTOR_PATH));
+        return system.actorSelection(String.format(AKKA_SRV_PATH,MAIN_JOB_SRV_NAME,host,MAIN_JOB_ACTOR_PATH));
     }
 
     public static ActorSelection getWorker(String host){
-        return system.actorSelection(String.format(AKKA_SRV_PAT,MAIN_JOB_WORKER_NAME,host,MAIN_JOB_WORKER_ACTOR_PATH));
+        return system.actorSelection(String.format(AKKA_SRV_PATH,MAIN_JOB_WORKER_NAME,host,MAIN_JOB_WORKER_ACTOR_PATH));
     }
 
     public static String nextHealthServer(){

@@ -3,6 +3,7 @@ package com.github.devil.srv.core.persist.core.entity;
 import com.github.devil.common.enums.ExecuteType;
 import com.github.devil.common.enums.TaskType;
 import com.github.devil.common.enums.TimeType;
+import com.github.devil.srv.core.enums.JobStatus;
 import lombok.Data;
 import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
@@ -62,6 +63,9 @@ public class JobInfoEntity {
     private Date nextTriggerTime;
 
     private String params;
+
+    @Enumerated(value = EnumType.STRING)
+    private JobStatus jobStatus;
 
     @CreationTimestamp
     @Column(insertable = true,updatable = false)

@@ -11,7 +11,7 @@ spring:
       idle-timeout: 10000
       driver-class-name: org.h2.Driver
       jdbc-url: 'jdbc:h2:./db/h2/core;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE'
-      pool-name: 'CORE-DB'
+      pool-name: 'CORE'
       connection-test-query: 'SELECT 1'
       transaction-isolation: 'TRANSACTION_REPEATABLE_READ'
     logging:
@@ -21,7 +21,7 @@ spring:
       minimum-idle: 5
       idle-timeout: 10000
       driver-class-name: org.apache.derby.jdbc.AutoloadedDriver
-      pool-name: 'LOGGING-DB'
+      pool-name: 'LOGGING'
       connection-test-query: 'SELECT 1 FROM SYSIBM.SYSDUMMY1'
       transaction-isolation: 'TRANSACTION_REPEATABLE_READ'
 jpa:

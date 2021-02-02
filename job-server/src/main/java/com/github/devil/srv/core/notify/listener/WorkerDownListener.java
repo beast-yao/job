@@ -12,7 +12,7 @@ public class WorkerDownListener implements Listener<WorkerDownEvent> {
 
     @Override
     public void onEvent(WorkerDownEvent event) {
-        //todo
+        //todo notify alarm
         log.info("{}",event);
     }
 }

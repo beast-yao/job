@@ -63,6 +63,6 @@ public class ServerHolder {
 
     //todo
     private static void onReceiveServerInfo(ServerInfo serverInfo){
-        log.info("{}",serverInfo);
+        log.debug("{}",serverInfo);
     }
 }

@@ -14,6 +14,6 @@ public class HeartBeat implements JobSerializable {
 
     private String workerAddress;
 
-    private long timeStamp;
+    private Long timeStamp;
 
 }
