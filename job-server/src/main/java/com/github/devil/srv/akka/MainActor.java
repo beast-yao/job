@@ -2,6 +2,7 @@ package com.github.devil.srv.akka;
 
 import akka.actor.AbstractActor;
 import com.github.devil.common.request.HeartBeat;
+import com.github.devil.common.request.LogContent;
 import com.github.devil.common.request.LoggingRequest;
 import com.github.devil.common.request.MsgError;
 import com.github.devil.srv.akka.request.Echo;

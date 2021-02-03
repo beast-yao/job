@@ -1,0 +1,28 @@
+{
+  "properties": [
+    {
+      "name": "job.client.host",
+      "type": "java.lang.String",
+      "description": "job client host address.",
+      "sourceType": "com.github.devil.client.akka.AkkaProperties"
+    },
+    {
+      "name": "job.client.port",
+      "type": "java.lang.Integer",
+      "description": "job client port.",
+      "sourceType": "com.github.devil.client.akka.AkkaProperties"
+    },
+    {
+      "name": "job.client.app-name",
+      "type": "java.lang.String",
+      "description": "job client appName.",
+      "sourceType": "com.github.devil.client.akka.AkkaProperties"
+    },
+    {
+      "name": "job.client.servers",
+      "type": "java.util.List",
+      "description": "job client servers.",
+      "sourceType": "com.github.devil.client.akka.AkkaProperties"
+    }
+  ]
+}

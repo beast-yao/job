@@ -21,7 +21,7 @@ public class WorkerHolder {
         Assert.hasText(heartBeat.getAppName(),"heartbeat appName is required");
         Assert.hasText(heartBeat.getWorkerAddress(),"heartbeat workAddress is required");
         Assert.notNull(heartBeat.getTimeStamp(),"heartbeat timestamp is required");
-        Instance instance = works.getOrDefault(heartBeat.getAppName(),new Instance(heartBeat.getAppName()));
+        Instance instance = works.computeIfAbsent(heartBeat.getAppName(), Instance::new);
         instance.onHeart(heartBeat.getWorkerAddress(),heartBeat.getTimeStamp());
     }
 

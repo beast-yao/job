@@ -1,28 +1,15 @@
 package com.github.devil.client.spring.annotation;
 
+import java.lang.annotation.*;
+
 /**
  * @author eric.yao
  * @date 2021/2/2
  **/
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
 public @interface Scheduled {
-
-    /**
-     * corn
-     * @return
-     */
-    String cron() default "";
-
-    /**
-     * fixedDelay
-     * @return
-     */
-    String fixedDelay() default "";
-
-    /**
-     * fixedRate
-     * @return
-     */
-    String fixedRate() default "";
 
     /**
      * uniqueName
@@ -30,9 +17,4 @@ public @interface Scheduled {
      */
     String uniqueName();
 
-    /**
-     * fixWorker
-     * @return
-     */
-    String fixWorker();
 }

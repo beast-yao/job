@@ -34,5 +34,4 @@ jpa:
 logging:
   level:
     org.springframework.boot: info
-    com.zaxxer.hikari: debug
-    akka.actor: debug
+    akka: debug

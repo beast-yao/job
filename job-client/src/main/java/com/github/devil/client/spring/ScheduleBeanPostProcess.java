@@ -7,41 +7,28 @@ import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.SmartInitializingSingleton;
 import org.springframework.beans.factory.config.BeanPostProcessor;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.EmbeddedValueResolverAware;
 import org.springframework.core.MethodIntrospector;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.scheduling.TaskScheduler;
-import org.springframework.util.StringValueResolver;
 
 import java.lang.reflect.Method;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.stream.Collectors;
 
 /**
  * @author eric.yao
  * @date 2021/2/2
  **/
-public class ScheduleBeanPostProcess implements BeanPostProcessor, ApplicationContextAware, SmartInitializingSingleton, EmbeddedValueResolverAware {
+public class ScheduleBeanPostProcess implements BeanPostProcessor, SmartInitializingSingleton {
 
-    private ApplicationContext context;
-
-    private StringValueResolver embeddedValueResolver;
 
     private final Set<Class<?>> nonAnnotatedClasses = Collections.newSetFromMap(new ConcurrentHashMap<>(64));
 
     @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.context = applicationContext;
-    }
-
-    @Override
     public void afterSingletonsInstantiated() {
-
+        //todo push task to server
     }
 
     @Override
@@ -61,14 +48,24 @@ public class ScheduleBeanPostProcess implements BeanPostProcessor, ApplicationCo
 
             if (annotations.isEmpty()){
                 nonAnnotatedClasses.add(target);
+            }else {
+                annotations.forEach((method, scheduled) -> registerTask(bean,method,scheduled));
             }
-
         }
         return bean;
     }
 
-    @Override
-    public void setEmbeddedValueResolver(StringValueResolver resolver) {
-        this.embeddedValueResolver = resolver;
+
+    private void registerTask(Object bean,Method method,Scheduled scheduled){
+        String uniqueName = scheduled.uniqueName();
+        if (uniqueName.isEmpty()){
+            uniqueName = defaultName(bean,method);
+        }
+        TaskCenter.registerProcess(uniqueName,new MethodInvokeProcess(bean, method));
+    }
+
+    private String defaultName(Object bean,Method method){
+        String params = Arrays.stream(method.getParameterTypes()).map(Class::getName).collect(Collectors.joining(","));
+        return ClientAkkaServer.getAppName()+"#"+bean.getClass().getName()+"#"+method.getName()+"("+params+")";
     }
 }

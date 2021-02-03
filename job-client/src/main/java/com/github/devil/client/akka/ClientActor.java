@@ -2,6 +2,7 @@ package com.github.devil.client.akka;
 
 import akka.actor.AbstractActor;
 import akka.japi.pf.ReceiveBuilder;
+import com.github.devil.client.spring.TaskCenter;
 import com.github.devil.common.request.MsgError;
 import com.github.devil.common.request.WorkerExecuteReq;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +29,6 @@ public class ClientActor extends AbstractActor {
     }
 
     private void onReceiveReq(WorkerExecuteReq executeReq){
-        //todo
-        log.info("{}",executeReq);
+        TaskCenter.runProcess(executeReq);
     }
 }

@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.github.devil.common.CommonConstants.*;
 
@@ -28,6 +29,8 @@ import static com.github.devil.common.CommonConstants.*;
  **/
 @Slf4j
 public class ClientAkkaServer {
+
+    private final static AtomicBoolean isStart = new AtomicBoolean(false);
 
     private final static String AKKA_CONF = "META-INF/akka-client.conf";
 
@@ -42,17 +45,29 @@ public class ClientAkkaServer {
     @Getter
     private static String appName;
 
+    public static boolean hasStart(){
+        return isStart.get();
+    }
+
     public void init(AkkaProperties akkaProperties){
 
-        Objects.requireNonNull(akkaProperties.getAppName(),"client appName is required");
+        if (isStart.get()){
+            return;
+        }
 
-        ClientAkkaServer.appName = akkaProperties.getAppName();
+        if (isStart.compareAndSet(false,true)) {
+            Objects.requireNonNull(akkaProperties.getAppName(), "client appName is required");
 
-        //初始化akka srv
-        initSrv(akkaProperties);
+            ClientAkkaServer.appName = akkaProperties.getAppName();
 
-        //初始化服务心跳
-        initHeartBeat(akkaProperties.getServers(),akkaProperties.getAppName());
+            //初始化akka srv
+            initSrv(akkaProperties);
+
+            //初始化服务心跳
+            initHeartBeat(akkaProperties.getServers(), akkaProperties.getAppName());
+
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> isStart.set(false)));
+        }
     }
 
     /**

@@ -5,13 +5,11 @@ import com.github.devil.client.akka.ClientAkkaServer;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 /**
  * @author eric.yao
  * @date 2021/2/2
  **/
-@Configuration
 public class JobClientAutoConfig {
 
     @Bean
@@ -32,7 +30,7 @@ public class JobClientAutoConfig {
 
 
     @Bean
-    public ScheduleBeanPostProcess scheduleBeanPostProcess(){
+    public static ScheduleBeanPostProcess scheduleBeanPostProcess(){
         return new ScheduleBeanPostProcess();
     }
 }
