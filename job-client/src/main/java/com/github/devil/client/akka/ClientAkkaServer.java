@@ -1,9 +1,7 @@
 package com.github.devil.client.akka;
 
-import akka.actor.ActorRef;
-import akka.actor.ActorSelection;
-import akka.actor.ActorSystem;
-import akka.actor.Props;
+import akka.actor.*;
+import akka.event.Logging;
 import akka.routing.RoundRobinPool;
 import com.github.devil.client.ThreadUtil;
 import com.github.devil.common.request.HeartBeat;
@@ -66,7 +64,10 @@ public class ClientAkkaServer {
             //初始化服务心跳
             initHeartBeat(akkaProperties.getServers(), akkaProperties.getAppName());
 
-            Runtime.getRuntime().addShutdownHook(new Thread(() -> isStart.set(false)));
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+                isStart.set(false);
+                system.terminate();
+            }));
         }
     }
 
@@ -100,6 +101,7 @@ public class ClientAkkaServer {
                 .withDispatcher("akka.job-srv-dispatcher")
                 .withRouter(new RoundRobinPool(Runtime.getRuntime().availableProcessors())), MAIN_JOB_WORKER_ACTOR_PATH);
 
+        system.eventStream().subscribe(actorRef, DeadLetter.class);
         log.info("===============Job Client Started==============");
     }
 

@@ -1,13 +1,10 @@
 package com.github.devil.srv.akka;
 
-import akka.actor.ActorRef;
-import akka.actor.ActorSelection;
-import akka.actor.ActorSystem;
-import akka.actor.Props;
+import akka.actor.*;
+import akka.event.Logging;
 import akka.routing.RoundRobinPool;
 import static com.github.devil.common.CommonConstants.*;
 
-import com.github.devil.common.CommonConstants;
 import com.github.devil.common.util.InetUtils;
 import com.github.devil.srv.akka.server.ServerHolder;
 import com.github.devil.srv.akka.ha.ServerManager;
@@ -22,7 +19,6 @@ import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.env.Environment;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -44,28 +40,28 @@ public class MainAkServer {
     @Getter
     private static String currentHost;
 
-    public static void start(@Nonnull Environment environment){
+    public static void start(@Nonnull ServerProperties serverProperties){
         //初始化akka server
-        initServer(environment);
+        initServer(serverProperties);
 
         //初始化节点通信
-        initEcho(environment);
+        initEcho(serverProperties);
 
         //初始化监听器
         initListener();
     }
 
-    private static void initServer(Environment environment){
+    private static void initServer(ServerProperties serverProperties){
         log.info("===============Job SRV Starting============");
         Map<String,String> configMap = Maps.newHashMap();
-        String address = getAddress(environment);
+        String address = getAddress(serverProperties);
         if (address != null){
             configMap.put("akka.remote.artery.canonical.hostname",address);
         }else {
             throw new JobException("cannot auto find local Ip address,Please set it");
         }
 
-        String port = environment.getProperty("main.job.port","10010");
+        String port = String.valueOf(serverProperties.getPort());
 
         configMap.put("akka.remote.artery.canonical.port",port);
 
@@ -81,13 +77,15 @@ public class MainAkServer {
                 .withDispatcher("akka.job-srv-dispatcher")
                 .withRouter(new RoundRobinPool(Runtime.getRuntime().availableProcessors())), MAIN_JOB_ACTOR_PATH);
 
+        system.eventStream().subscribe(actorRef, DeadLetter.class);
+
         log.info("===============Job SRV Started==============");
     }
 
-    private static void initEcho(Environment environment){
-        String memberList = Optional.ofNullable(environment.getProperty("main.job.memberList")).orElseGet(() -> currentHost);
+    private static void initEcho(ServerProperties serverProperties){
+        List<String> memberList = Optional.ofNullable(serverProperties.getMemberList()).orElseGet(ArrayList::new);
 
-        Set<String> servers = Sets.newHashSet(memberList.split(CommonConstants.COMMON_SPLIT));
+        Set<String> servers = Sets.newHashSet(memberList);
 
         servers.add(currentHost);
 
@@ -117,8 +115,8 @@ public class MainAkServer {
         return ServerHolder.getSURVIVAL().keySet();
     }
 
-    private static String getAddress(Environment environment){
-        String address = environment.getProperty("main.job.address");
+    private static String getAddress(ServerProperties serverProperties){
+        String address = serverProperties.getHost();
         if (address == null || address.isEmpty() ){
             InetUtils.HostInfo hostInfo = InetUtils.findFirstNonLoopbackHostInfo();
             if (hostInfo != null){

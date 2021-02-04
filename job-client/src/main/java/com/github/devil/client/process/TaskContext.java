@@ -21,5 +21,7 @@ public class TaskContext {
 
     private String server;
 
+    private String name;
+
     private Logger logger = new LoggerImpl(this);
 }

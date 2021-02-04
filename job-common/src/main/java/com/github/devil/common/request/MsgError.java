@@ -11,9 +11,9 @@ import lombok.Data;
  **/
 @Data
 @AllArgsConstructor
-public class MsgError implements JobSerializable {
+public class MsgError<T extends JobSerializable> implements JobSerializable {
 
     private String errorMsg;
 
-    private JobSerializable jobSerializable;
+    private T data;
 }

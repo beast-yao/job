@@ -20,7 +20,7 @@
     },
     {
       "name": "job.client.servers",
-      "type": "java.util.List",
+      "type": "java.util.List<java.lang.String>",
       "description": "job client servers.",
       "sourceType": "com.github.devil.client.akka.AkkaProperties"
     }

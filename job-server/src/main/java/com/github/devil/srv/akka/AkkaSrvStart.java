@@ -11,12 +11,17 @@ import org.springframework.stereotype.Component;
  * @date 2021/1/27
  **/
 @Slf4j
-@Component
 public class AkkaSrvStart implements ApplicationListener<ApplicationReadyEvent> {
 
+    private ServerProperties serverProperties;
+
+    public AkkaSrvStart(ServerProperties serverProperties){
+        this.serverProperties = serverProperties;
+    }
+
     @Override
-    public void onApplicationEvent(ApplicationReadyEvent applicationStartedEvent) {
-       Environment environment =  applicationStartedEvent.getApplicationContext().getEnvironment();
-       MainAkServer.start(environment);
+    public void onApplicationEvent(ApplicationReadyEvent applicationReadyEvent) {
+       Environment environment =  applicationReadyEvent.getApplicationContext().getEnvironment();
+       MainAkServer.start(serverProperties);
     }
 }

@@ -1,10 +1,8 @@
 package com.github.devil.srv.akka;
 
 import akka.actor.AbstractActor;
-import com.github.devil.common.request.HeartBeat;
-import com.github.devil.common.request.LogContent;
-import com.github.devil.common.request.LoggingRequest;
-import com.github.devil.common.request.MsgError;
+import akka.actor.DeadLetter;
+import com.github.devil.common.request.*;
 import com.github.devil.srv.akka.request.Echo;
 import com.github.devil.srv.akka.request.ServerInfo;
 import com.github.devil.srv.akka.server.ServerHolder;
@@ -25,6 +23,8 @@ public class MainActor extends AbstractActor {
                 .match(Echo.class,this::echo)
                 .match(HeartBeat.class,this::onReceiveHeartBeat)
                 .match(LoggingRequest.class,this::onReceiveLog)
+                .match(DeadLetter.class,this::onDeadMsg)
+                .match(WorkerExecuteRes.class,this::onExecRes)
                 .build();
     }
 
@@ -44,7 +44,7 @@ public class MainActor extends AbstractActor {
             if (log.isErrorEnabled()){
                 log.error("heartbeat error,",e);
             }
-            getSender().tell(new MsgError(e.getMessage(),heartBeat),getSelf());
+            getSender().tell(new MsgError<>(e.getMessage(),heartBeat),getSelf());
         }
     }
 
@@ -55,7 +55,17 @@ public class MainActor extends AbstractActor {
             if (log.isErrorEnabled()){
                 log.error("heartbeat error,",e);
             }
-            getSender().tell(new MsgError(e.getMessage(),request),getSelf());
+            getSender().tell(new MsgError<>(e.getMessage(),request),getSelf());
         }
     }
+
+    private void onDeadMsg(DeadLetter deadLetter){
+        log.error("receive an deadLetter,send msg fail：{}",deadLetter.message());
+    }
+
+    private void onExecRes(WorkerExecuteRes res){
+        //todo execute res handle
+        log.info("{}",res);
+    }
+
 }
