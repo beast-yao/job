@@ -29,6 +29,7 @@
         <akka.version>2.6.4</akka.version>
         <figlet.version>0.0.8</figlet.version>
         <druid.version>1.2.4</druid.version>
+        <swagger-ui.version>2.9.2</swagger-ui.version>
     </properties>
 
     <dependencyManagement>
@@ -74,6 +75,16 @@
                 <groupId>com.alibaba</groupId>
                 <artifactId>druid-spring-boot-starter</artifactId>
                 <version>${druid.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-swagger-ui</artifactId>
+                <version>${swagger-ui.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-swagger2</artifactId>
+                <version>${swagger-ui.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

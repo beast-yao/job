@@ -12,9 +12,9 @@ import java.lang.annotation.*;
 public @interface Scheduled {
 
     /**
-     * uniqueName
-     * @return
+     * should be an unique task name
+     * @return taskName
      */
-    String uniqueName();
+    String taskName();
 
 }

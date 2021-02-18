@@ -9,29 +9,33 @@ spring:
       maximum-pool-size: 100
       minimum-idle: 5
       idle-timeout: 10000
-      driver-class-name: org.h2.Driver
-      jdbc-url: 'jdbc:h2:./db/h2/core;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE'
-      pool-name: 'CORE'
-      connection-test-query: 'SELECT 1'
+      driver-class-name: org.apache.derby.jdbc.AutoloadedDriver
+      jdbc-url: 'jdbc:derby:./db/derby/core;create=true'
+      pool-name: 'LOGGING'
+      connection-test-query: 'SELECT 1 FROM SYSIBM.SYSDUMMY1'
       transaction-isolation: 'TRANSACTION_REPEATABLE_READ'
     logging:
-      jdbc-url: 'jdbc:derby:./db/derby/logging;create=true'
       validation-timeout: 1000
       maximum-pool-size: 100
       minimum-idle: 5
       idle-timeout: 10000
       driver-class-name: org.apache.derby.jdbc.AutoloadedDriver
+      jdbc-url: 'jdbc:derby:./db/derby/logging;create=true'
       pool-name: 'LOGGING'
       connection-test-query: 'SELECT 1 FROM SYSIBM.SYSDUMMY1'
       transaction-isolation: 'TRANSACTION_REPEATABLE_READ'
+
+
 jpa:
-  core:
-    "[hibernate.dialect]": "org.hibernate.dialect.H2Dialect"
   logging:
+#    "[hibernate.dialect]": "org.hibernate.dialect.H2Dialect"
+    "[hibernate.dialect]": "org.hibernate.dialect.DerbyTenSevenDialect"
+  core:
     "[hibernate.dialect]": "org.hibernate.dialect.DerbyTenSevenDialect"
 
 
 logging:
   level:
+    root: info
     org.springframework.boot: info
     akka: debug

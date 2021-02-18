@@ -4,13 +4,13 @@ import com.github.devil.client.ThreadUtil;
 import com.github.devil.client.akka.ClientAkkaServer;
 import com.github.devil.common.request.LogContent;
 import com.github.devil.common.request.LoggingRequest;
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
+import java.util.Objects;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
@@ -27,10 +27,12 @@ public class LogPushCenter {
      */
     private final static int BATCH_SIZE = 2<<5;
 
-    private final static BlockingQueue<LogContent> loggers = new LinkedBlockingQueue<>();
+    private final static DelayQueue<DelayLog> loggers = new DelayQueue<>();
+
+    private final static BlockingQueue<LogContent> loggers1 = new LinkedBlockingQueue<>();
 
     public static void log(LogContent logContent){
-        loggers.add(logContent);
+        loggers.add(new DelayLog(logContent));
         if (starting.compareAndSet(false,true)){
             ThreadUtil.GLOBAL.execute(new LogPushRunner());
         }
@@ -44,40 +46,28 @@ public class LogPushCenter {
         @Override
         public void run() {
 
-            List<LogContent> lists = new ArrayList<>();
-
             /**
              * akka server is still running
              */
             while (ClientAkkaServer.hasStart()){
-                try {
-                    // poll log
-                    LogContent request = loggers.poll(100, TimeUnit.MILLISECONDS);
-                    if (request != null){
-                        lists.add(request);
-                    }
-
-                    // logs size more than max batch push to server
-                    if (lists.size() > BATCH_SIZE){
-                      pushLog(lists);
-                      lists.clear();
-                    }
-
-                } catch (InterruptedException ignore) {
-
-                }
+                // poll log
+                List<DelayLog> delayLogs = new ArrayList<>();
+                loggers.drainTo(delayLogs);
+                pushLog(delayLogs.stream().map(DelayLog::getLogContent).collect(Collectors.toList()));
             }
+
+            List<LogContent> lists = new ArrayList<>();
 
             // local server is stop,push log to server
             while (!loggers.isEmpty()){
-                LogContent request = null;
+                DelayLog delayLog = null;
                 try {
-                    request = loggers.poll(100, TimeUnit.MILLISECONDS);
+                    delayLog = loggers.poll(100, TimeUnit.MILLISECONDS);
                 } catch (InterruptedException ignore) {
 
                 }
-                if (request != null){
-                    lists.add(request);
+                if (delayLog != null){
+                    lists.add(delayLog.getLogContent());
                 }
             }
 
@@ -96,5 +86,43 @@ public class LogPushCenter {
             });
         }
 
+    }
+
+    public static class DelayLog implements Delayed{
+
+        @Getter
+        private LogContent logContent;
+
+        private long time;
+
+        public DelayLog(LogContent logContent){
+            Objects.requireNonNull(logContent);
+            this.logContent = logContent;
+            this.time = System.nanoTime() + TimeUnit.NANOSECONDS.convert(1,TimeUnit.SECONDS);
+        }
+
+        @Override
+        public long getDelay(TimeUnit unit) {
+            return unit.convert(time - System.nanoTime(),TimeUnit.NANOSECONDS);
+        }
+
+        @Override
+        public int compareTo(Delayed o) {
+            if (this == o){
+                return 0;
+            }
+
+            if (this.logContent == null){
+                return -1;
+            }
+
+            if (o instanceof DelayLog){
+                DelayLog delayLog = (DelayLog)o;
+                if (delayLog.getLogContent() == null){
+                    return 1;
+                }
+            }
+            return Long.compare(o.getDelay(TimeUnit.NANOSECONDS),this.getDelay(TimeUnit.NANOSECONDS));
+        }
     }
 }

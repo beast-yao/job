@@ -18,6 +18,9 @@ public class RoundServerChoose implements ServerChoose {
 
     @Override
     public String choose(Set<String> server) {
+        if (server == null || server.isEmpty()){
+            return null;
+        }
         List<String> servers = new ArrayList<>(server);
 
         int index = round.getAndIncrement();

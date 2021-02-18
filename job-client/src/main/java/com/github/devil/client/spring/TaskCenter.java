@@ -30,7 +30,7 @@ public class TaskCenter {
     public static void registerProcess(String name,InvokeProcess process){
         InvokeProcess res = invokers.putIfAbsent(name,process);
         if (res != null && res != process){
-            throw new IllegalArgumentException("conflict schedule name");
+            throw new IllegalArgumentException("conflict schedule task name");
         }
     }
 

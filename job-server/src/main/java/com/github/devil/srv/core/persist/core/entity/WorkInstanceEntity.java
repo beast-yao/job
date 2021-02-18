@@ -39,7 +39,7 @@ public class WorkInstanceEntity {
     @Column(updatable = false,nullable = false)
     private String serveHost;
 
-    @Column(updatable = false,nullable = false)
+    @Column(updatable = false,nullable = true)
     private String workerHost;
 
     @Enumerated(value = EnumType.STRING)

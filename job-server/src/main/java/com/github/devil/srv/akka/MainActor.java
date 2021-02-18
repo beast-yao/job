@@ -65,7 +65,7 @@ public class MainActor extends AbstractActor {
 
     private void onExecRes(WorkerExecuteRes res){
         //todo execute res handle
-        log.info("{}",res);
+        log.debug("{}",res);
     }
 
 }

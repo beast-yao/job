@@ -42,13 +42,13 @@ public class JobInfoEntity {
     @Enumerated(value = EnumType.STRING)
     private TaskType taskType;
 
-    @Column(unique = true,nullable = false,updatable = false)
+    @Column(nullable = true,updatable = false)
     private String uniqueName;
 
     @Column(nullable = false)
     private String appName;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String jobMeta;
 
     private String serveHost;

@@ -78,21 +78,23 @@ public class JobService {
             instanceEntity.setJobId(jobInfoEntity.getId());
             instanceEntity.setExceptTriggerTime(jobInfoEntity.getNextTriggerTime());
             instanceEntity.setServeHost(MainAkServer.getCurrentHost());
+            instanceEntity.setId(null);
             return instanceEntity;
         }).collect(Collectors.toList());
 
-        List<WorkInstanceEntity> lists = jobInfoEntities.stream().flatMap(e -> this.getAllWorkers(e).stream()).map(s ->
+        jobInstanceRepository.saveAll(instanceEntities);
+
+        List<WorkInstanceEntity> lists = jobInfoEntities.stream().flatMap(e -> this.getAllWorkers(e).stream()).filter(Objects::nonNull).map(s ->
             instanceEntities.stream().map(instanceEntity -> {
                         WorkInstanceEntity workInstanceEntity = new WorkInstanceEntity();
                         BeanUtils.copyProperties(instanceEntity, workInstanceEntity);
                         workInstanceEntity.setInstanceId(instanceEntity.getId());
                         workInstanceEntity.setWorkerHost(s);
+                        workInstanceEntity.setId(null);
                         return workInstanceEntity;
                     }).collect(Collectors.toList())
 
             ).flatMap(List::stream).collect(Collectors.toList());
-
-        jobInstanceRepository.saveAll(instanceEntities);
 
         if (!lists.isEmpty()) {
             workInstanceRepository.saveAll(lists);

@@ -19,4 +19,6 @@ public class CommonConstants {
     public final static String COMMON_SPLIT = ",";
 
     public final static String AKKA_SRV_PATH = "akka://%s@%s/user/%s";
+
+    public final static String BASE_CONTROLLER_PATH = "/svc/v1/";
 }

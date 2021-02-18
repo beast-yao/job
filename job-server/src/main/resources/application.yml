@@ -16,6 +16,7 @@ spring:
       "hibernate.jdbc.batch_versioned_data": "true"
       "hibernate.order_updates": "true"
       "hibernate.order_inserts": "true"
+    open-in-view: false
 
 
 server:
@@ -36,3 +37,4 @@ management:
             - 'task'
             - 'diskSpace'
 
+logging.level.org.hibernate.persister.entity: ERROR

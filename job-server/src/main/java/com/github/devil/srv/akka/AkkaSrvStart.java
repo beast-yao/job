@@ -1,10 +1,13 @@
 package com.github.devil.srv.akka;
 
+import com.github.devil.srv.core.scheduler.MainJobService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.Resource;
 
 /**
  * @author eric.yao
@@ -15,13 +18,16 @@ public class AkkaSrvStart implements ApplicationListener<ApplicationReadyEvent> 
 
     private ServerProperties serverProperties;
 
+    @Resource
+    private MainJobService mainJobService;
+
     public AkkaSrvStart(ServerProperties serverProperties){
         this.serverProperties = serverProperties;
     }
 
     @Override
-    public void onApplicationEvent(ApplicationReadyEvent applicationReadyEvent) {
-       Environment environment =  applicationReadyEvent.getApplicationContext().getEnvironment();
+    public void onApplicationEvent(ApplicationReadyEvent event) {
        MainAkServer.start(serverProperties);
+       mainJobService.init();
     }
 }

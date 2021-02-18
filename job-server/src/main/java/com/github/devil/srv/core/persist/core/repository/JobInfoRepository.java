@@ -38,8 +38,8 @@ public interface JobInfoRepository extends JpaRepository<JobInfoEntity,Long> {
      * @param time
      * @return
      */
-    @Query(value = "select * from job_info where serve_host=?1 and next_trigger_time < ?3 and time_type != 'DELAY' and job_status = 'NORMAL' and id not in (select job_id from job_instance where job_instance.version=job_info.version and job_instance.execute_statue in ?2)" +
-            "union " +
-            "select * from job_info where serve_host=?1 and next_trigger_time < ?3 and time_type = 'DELAY' and job_status = 'NORMAL' and id not in (select job_id from job_instance where job_instance.execute_statue in ?4)",nativeQuery = true)
-    List<JobInfoEntity> findUnExecuteJob(String serveHost, List<ExecuteStatue> executeStatues,long time,List<ExecuteStatue> unCompleteStatus);
+    @Query(value = "select * from job_info where serve_host=?1 and next_trigger_time < ?3 and time_type != 'DELAY' and job_status = 'NORMAL' and id not in (select job_id from job_instance where job_instance.version=job_info.version and job_instance.execute_statue in (?2))" +
+            " union " +
+            "select * from job_info where serve_host=?1 and next_trigger_time < ?3 and time_type = 'DELAY' and job_status = 'NORMAL' and id not in (select job_id from job_instance where job_instance.execute_statue in (?4))",nativeQuery = true)
+    List<JobInfoEntity> findUnExecuteJob(String serveHost, List<ExecuteStatue> executeStatues,Date time,List<ExecuteStatue> unCompleteStatus);
 }

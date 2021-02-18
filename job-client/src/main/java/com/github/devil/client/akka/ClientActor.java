@@ -1,9 +1,8 @@
 package com.github.devil.client.akka;
 
-import akka.actor.AbstractActor;
-import akka.actor.DeadLetter;
-import akka.actor.ReceiveTimeout;
+import akka.actor.*;
 import akka.japi.pf.ReceiveBuilder;
+import akka.pattern.Patterns;
 import com.github.devil.client.spring.TaskCenter;
 import com.github.devil.common.enums.ResultEnums;
 import com.github.devil.common.request.MsgError;
@@ -23,26 +22,12 @@ public class ClientActor extends AbstractActor {
         return ReceiveBuilder.create()
                 .match(WorkerExecuteReq.class,this::onReceiveReq)
                 .match(MsgError.class,this::onError)
-                .match(DeadLetter.class,this::onDead)
-                .match(ReceiveTimeout.class,this::onTimeOut)
                 .build()
                 ;
     }
 
-    private void onError(MsgError msgError){
-        //todo
-        log.info("{}",msgError);
-    }
-
-    /**
-     * 监听死信
-     * @param deadLetter
-     */
-    private void onDead(DeadLetter deadLetter){
-        log.error("receive an deadLetter,send msg fail：{}",deadLetter.message());
-    }
-    private void onTimeOut(ReceiveTimeout timeout){
-        log.error("receive an deadLetter,send msg fail：{}",timeout);
+    private void onError(MsgError<?> msgError){
+        log.error("receive an error msg info{}",msgError);
     }
 
     private void onReceiveReq(WorkerExecuteReq executeReq){

@@ -57,7 +57,7 @@ public class ScheduleBeanPostProcess implements BeanPostProcessor, SmartInitiali
 
 
     private void registerTask(Object bean,Method method,Scheduled scheduled){
-        String uniqueName = scheduled.uniqueName();
+        String uniqueName = scheduled.taskName();
         if (uniqueName.isEmpty()){
             uniqueName = defaultName(bean,method);
         }
