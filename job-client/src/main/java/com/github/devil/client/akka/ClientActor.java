@@ -15,7 +15,7 @@ import lombok.extern.slf4j.Slf4j;
  * @date 2021/2/2
  **/
 @Slf4j
-public class ClientActor extends AbstractActor {
+class ClientActor extends AbstractActor {
 
     @Override
     public Receive createReceive() {

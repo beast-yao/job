@@ -8,6 +8,7 @@ import com.github.devil.srv.akka.request.ServerInfo;
 import com.github.devil.srv.akka.server.ServerHolder;
 import com.github.devil.srv.akka.worker.WorkerHolder;
 import com.github.devil.srv.core.SpringContextHolder;
+import com.github.devil.srv.core.service.JobService;
 import com.github.devil.srv.core.service.LoggingService;
 import lombok.extern.slf4j.Slf4j;
 
@@ -16,14 +17,13 @@ import lombok.extern.slf4j.Slf4j;
  * @date 2021/1/20
  **/
 @Slf4j
-public class MainActor extends AbstractActor {
+class MainActor extends AbstractActor {
     @Override
     public Receive createReceive() {
         return receiveBuilder()
                 .match(Echo.class,this::echo)
                 .match(HeartBeat.class,this::onReceiveHeartBeat)
                 .match(LoggingRequest.class,this::onReceiveLog)
-                .match(DeadLetter.class,this::onDeadMsg)
                 .match(WorkerExecuteRes.class,this::onExecRes)
                 .build();
     }
@@ -53,19 +53,21 @@ public class MainActor extends AbstractActor {
             SpringContextHolder.getBean(LoggingService.class).saveLogRequest(request);
         }catch (IllegalArgumentException e){
             if (log.isErrorEnabled()){
-                log.error("heartbeat error,",e);
+                log.error("logger error,",e);
             }
             getSender().tell(new MsgError<>(e.getMessage(),request),getSelf());
         }
     }
 
-    private void onDeadMsg(DeadLetter deadLetter){
-        log.error("receive an deadLetter,send msg fail：{}",deadLetter.message());
-    }
-
     private void onExecRes(WorkerExecuteRes res){
-        //todo execute res handle
-        log.debug("{}",res);
+        try {
+            SpringContextHolder.getBean(JobService.class).handleWorkRes(res);
+        }catch (IllegalArgumentException e){
+            if (log.isErrorEnabled()){
+                log.error("handle task status error,",e);
+            }
+            getSender().tell(new MsgError<>(e.getMessage(),res),getSelf());
+        }
     }
 
 }

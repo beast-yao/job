@@ -1,4 +1,4 @@
-package com.github.devil.client.akka;
+package com.github.devil.srv.akka;
 
 import akka.actor.*;
 import lombok.extern.slf4j.Slf4j;

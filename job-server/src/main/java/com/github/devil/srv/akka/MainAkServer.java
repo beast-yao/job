@@ -77,7 +77,7 @@ public class MainAkServer {
                 .withDispatcher("akka.job-srv-dispatcher")
                 .withRouter(new RoundRobinPool(Runtime.getRuntime().availableProcessors())), MAIN_JOB_ACTOR_PATH);
 
-        system.eventStream().subscribe(actorRef, DeadLetter.class);
+        system.actorOf(Props.create(MessageDeadActor.class));
 
         log.info("===============Job SRV Started==============");
     }

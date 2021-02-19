@@ -31,8 +31,9 @@ public class MethodInvokeProcess implements InvokeProcess {
         } catch (Exception e) {
             log.error("execute an job error,",e);
             taskContext.getLogger().error("execute method invoke error,uniqueName:{}",taskContext.getName(),e);
+            return ResultEnums.F;
         }
-        return null;
+        return ResultEnums.S;
     }
 
     private Object[] getParams(TaskContext taskContext,Method method){

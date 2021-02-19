@@ -78,6 +78,7 @@ public class TaskRunner {
                 req.setParams(worker.getParams());
                 req.setWorkInstanceId(worker.getId());
                 req.setTaskType(instanceEntity.getTaskType());
+                req.setServerHost(MainAkServer.getCurrentHost());
 
                 ActorSelection selection = MainAkServer.getWorker(worker.getWorkerHost());
                 selection.tell(req,MainAkServer.getActorRef());

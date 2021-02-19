@@ -5,6 +5,7 @@ import com.github.devil.client.akka.ClientAkkaServer;
 import com.github.devil.common.request.LogContent;
 import com.github.devil.common.request.LoggingRequest;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,18 +19,12 @@ import java.util.stream.Collectors;
  * @author eric.yao
  * @date 2021/2/3
  **/
+@Slf4j
 public class LogPushCenter {
 
     private static AtomicBoolean starting = new AtomicBoolean(false);
 
-    /**
-     * log max push size
-     */
-    private final static int BATCH_SIZE = 2<<5;
-
     private final static DelayQueue<DelayLog> loggers = new DelayQueue<>();
-
-    private final static BlockingQueue<LogContent> loggers1 = new LinkedBlockingQueue<>();
 
     public static void log(LogContent logContent){
         loggers.add(new DelayLog(logContent));
@@ -45,7 +40,6 @@ public class LogPushCenter {
 
         @Override
         public void run() {
-
             /**
              * akka server is still running
              */
@@ -78,12 +72,18 @@ public class LogPushCenter {
         }
 
         private void pushLog(List<LogContent> lists){
-            Map<String,List<LogContent>> log =  lists.stream().collect(Collectors.groupingBy(LogContent::getServerHost));
-            log.forEach((s,logs) -> {
-                LoggingRequest loggingRequest = new LoggingRequest();
-                loggingRequest.setContents(logs);
-                ClientAkkaServer.getSrv(s).tell(loggingRequest,ClientAkkaServer.getActorRef());
-            });
+            try {
+                if (lists != null && !lists.isEmpty()) {
+                    Map<String, List<LogContent>> log = lists.stream().collect(Collectors.groupingBy(LogContent::getServerHost));
+                    log.forEach((s, logs) -> {
+                        LoggingRequest loggingRequest = new LoggingRequest();
+                        loggingRequest.setContents(logs);
+                        ClientAkkaServer.getSrv(s).tell(loggingRequest, ClientAkkaServer.getActorRef());
+                    });
+                }
+            }catch (Exception e){
+                log.error("log push error,",e);
+            }
         }
 
     }

@@ -97,7 +97,7 @@ public class ClientAkkaServer {
         system = ActorSystem.apply(MAIN_JOB_WORKER_NAME,config);
 
         actorRef = system.actorOf(Props.create(ClientActor.class)
-                .withDispatcher("akka.job-srv-dispatcher")
+                .withDispatcher("akka.job-client-dispatcher")
                 .withRouter(new RoundRobinPool(Runtime.getRuntime().availableProcessors())), MAIN_JOB_WORKER_ACTOR_PATH);
 
         system.actorOf(Props.create(MessageDeadActor.class));

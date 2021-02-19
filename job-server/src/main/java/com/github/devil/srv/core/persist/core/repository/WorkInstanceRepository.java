@@ -2,6 +2,7 @@ package com.github.devil.srv.core.persist.core.repository;
 
 import com.github.devil.common.enums.ExecuteStatue;
 import com.github.devil.srv.core.persist.core.entity.WorkInstanceEntity;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author eric.yao
@@ -29,4 +31,23 @@ public interface WorkInstanceRepository extends JpaRepository<WorkInstanceEntity
     @Transactional(transactionManager = "transactionManager",rollbackFor = Exception.class)
     int mergeTriggerTimeAndExecuteStatueById(ExecuteStatue statue, Date triggerTime, Date upt, Long id);
 
+    /**
+     * 修改执行状态
+     * @param id
+     * @param statue
+     * @return
+     */
+    @Modifying
+    @CanIgnoreReturnValue
+    @Query("update WorkInstanceEntity set executeStatue=?2,executeEndTime=?3 where id=?1 and executeStatue='EXECUTING'")
+    @Transactional(transactionManager = "transactionManager",rollbackFor = Exception.class)
+    int updateStatus(Long id,ExecuteStatue statue,Date endTime);
+
+    /**
+     * 更具状态和instanceId查询
+     * @param statue
+     * @param instanceId
+     * @return
+     */
+    List<WorkInstanceEntity> findByExecuteStatueInAndInstanceId(List<ExecuteStatue> statue,Long instanceId);
 }

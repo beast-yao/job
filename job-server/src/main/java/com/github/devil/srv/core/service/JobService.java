@@ -1,7 +1,9 @@
 package com.github.devil.srv.core.service;
 
 import com.github.devil.common.CommonConstants;
+import com.github.devil.common.enums.ResultEnums;
 import com.github.devil.common.enums.TaskType;
+import com.github.devil.common.request.WorkerExecuteRes;
 import com.github.devil.srv.akka.MainAkServer;
 import com.github.devil.srv.akka.ha.ServerManager;
 import com.github.devil.srv.akka.worker.WorkerHolder;
@@ -22,10 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -122,6 +121,24 @@ public class JobService {
             }
         }else {
            return Sets.newHashSet(jobInfoEntity.getWorkerHost().split(CommonConstants.COMMON_SPLIT));
+        }
+    }
+
+    @Transactional(transactionManager = "transactionManager",rollbackFor = Exception.class)
+    public void handleWorkRes(WorkerExecuteRes res){
+
+        /**
+         * 修改任务执行状态
+         */
+        workInstanceRepository.updateStatus(res.getWorkInstanceId(),res.getResult().equals(ResultEnums.S)?ExecuteStatue.SUCCESS:ExecuteStatue.FAILURE,new Date());
+
+        List<WorkInstanceEntity> lists = workInstanceRepository.findByExecuteStatueInAndInstanceId(Arrays.asList(ExecuteStatue.EXECUTING,ExecuteStatue.WAIT),res.getInstanceId());
+        /**
+         * 所有子任务执行结束，需要更新task状态
+         */
+        if (lists.isEmpty()){
+            List<WorkInstanceEntity> fails = workInstanceRepository.findByExecuteStatueInAndInstanceId(Collections.singletonList(ExecuteStatue.FAILURE),res.getInstanceId());
+            jobInstanceRepository.updateStatusById(res.getInstanceId(),new Date(),fails.isEmpty()?ExecuteStatue.SUCCESS:ExecuteStatue.FAILURE);
         }
     }
 }

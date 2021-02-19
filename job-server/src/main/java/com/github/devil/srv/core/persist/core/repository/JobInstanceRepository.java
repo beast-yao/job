@@ -37,4 +37,14 @@ public interface JobInstanceRepository extends JpaRepository<InstanceEntity,Long
      * @return
      */
     List<InstanceEntity> findByServeHostAndExecuteStatueIn(String serveHost,List<ExecuteStatue> executeStatue);
+
+    /**
+     * 修改执行状态
+     * @param id
+     * @return
+     */
+    @Modifying
+    @Transactional(transactionManager = "transactionManager",rollbackFor = Exception.class)
+    @Query(value = "update InstanceEntity set  executeStatue = ?3,executeEndTime=?2 where id = ?1 and not exists (select id from WorkInstanceEntity where instanceId = ?1 and executeStatue in ('WAIT','EXECUTING'))")
+    int updateStatusById(Long id,Date executeEndTime,ExecuteStatue statue);
 }
