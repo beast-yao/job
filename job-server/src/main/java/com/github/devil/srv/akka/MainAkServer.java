@@ -1,7 +1,6 @@
 package com.github.devil.srv.akka;
 
 import akka.actor.*;
-import akka.event.Logging;
 import akka.routing.RoundRobinPool;
 import static com.github.devil.common.CommonConstants.*;
 
@@ -30,7 +29,7 @@ import java.util.*;
 @Slf4j
 public class MainAkServer {
 
-    private final static String AKKA_CONF = "akka.conf";
+    private final static String AKKA_CONF = "META-INF/akka.conf";
 
     private static  ActorSystem system;
 

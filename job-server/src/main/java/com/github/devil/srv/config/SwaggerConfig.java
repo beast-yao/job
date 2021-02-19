@@ -5,6 +5,7 @@ import com.google.common.base.Predicates;
 import io.swagger.annotations.Api;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -20,6 +21,7 @@ import java.util.Collections;
  * @author eric.yao
  * @date 2021/2/18
  **/
+@Profile("local")
 @Configuration
 @EnableSwagger2
 public class SwaggerConfig {
@@ -29,7 +31,7 @@ public class SwaggerConfig {
         return new Docket(DocumentationType.SPRING_WEB)
                 .apiInfo(apiInfo())
                 .select()
-                .apis(Predicates.or(RequestHandlerSelectors.withClassAnnotation(RestController.class),RequestHandlerSelectors.withClassAnnotation(Api.class)))
+                .apis(Predicates.or(RequestHandlerSelectors.withClassAnnotation(RestController.class), RequestHandlerSelectors.withClassAnnotation(Api.class)))
                 .paths(PathSelectors.ant(CommonConstants.BASE_CONTROLLER_PATH))
                 .build()
                 .useDefaultResponseMessages(false)

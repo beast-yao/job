@@ -2,7 +2,6 @@ package com.github.devil.srv.core.scheduler;
 
 import com.github.devil.common.enums.ExecuteStatue;
 import com.github.devil.srv.akka.MainAkServer;
-import com.github.devil.srv.core.MainThreadUtil;
 import com.github.devil.srv.core.notify.NotifyCenter;
 import com.github.devil.srv.core.notify.listener.JobExecuteFailListener;
 import com.github.devil.srv.core.persist.core.entity.InstanceEntity;
@@ -12,13 +11,13 @@ import com.github.devil.srv.core.scheduler.runner.TaskRunner;
 import com.github.devil.srv.core.service.JobService;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -31,7 +30,7 @@ public class MainJobService  {
 
     private final static Integer MAX_BATCH = 50;
 
-    private final static Long SCHEDULER_FIX = 400L;
+    public static final long SCHEDULER_FIX = 400;
 
     @Resource
     private JobInfoRepository jobInfoRepository;
@@ -41,16 +40,10 @@ public class MainJobService  {
     private TaskRunner taskRunner;
 
     public void init(){
-        MainThreadUtil.JOB_PUSH.scheduleAtFixedRate(() -> {
-            try {
-                this.pushJobToTimer();
-            }catch (Exception e){
-                log.error("thread error,thread-name:{},error:",Thread.currentThread().getName(),e);
-            }
-        },10,SCHEDULER_FIX, TimeUnit.MILLISECONDS);
         NotifyCenter.addListener(new JobExecuteFailListener());
     }
 
+    @Scheduled(fixedRate = SCHEDULER_FIX,initialDelay = 10)
     public void pushJobToTimer(){
 
         /**
