@@ -1,7 +1,7 @@
 package com.github.devil.srv.core.service;
 
 import com.github.devil.common.request.LogContent;
-import com.github.devil.common.request.LoggingRequest;
+import com.github.devil.common.request.LoggingReq;
 import com.github.devil.srv.core.persist.logging.entity.LoggingEntity;
 import com.github.devil.srv.core.persist.logging.repository.LoggingRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +26,7 @@ public class LoggingService {
     private LoggingRepository loggingRepository;
 
     @Transactional(transactionManager = "loggingTransactionManager",rollbackFor = Exception.class)
-    public void saveLogRequest( LoggingRequest request){
+    public void saveLogRequest( LoggingReq request){
         validRequest(request);
         loggingRepository.saveAll(request.getContents()
                 .stream()
@@ -34,7 +34,7 @@ public class LoggingService {
                 .map(this::convert).collect(Collectors.toList()));
     }
 
-    private void validRequest(LoggingRequest request){
+    private void validRequest(LoggingReq request){
         Validation.buildDefaultValidatorFactory().getValidator().validate(request);
     }
 

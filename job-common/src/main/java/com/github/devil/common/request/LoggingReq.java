@@ -11,7 +11,7 @@ import java.util.List;
  * @date 2021/2/3
  **/
 @Data
-public class LoggingRequest implements JobSerializable {
+public class LoggingReq implements JobSerializable {
 
     @NotEmpty(message = "log contents is required")
     private List<LogContent> contents;

@@ -3,7 +3,7 @@ package com.github.devil.client.logger;
 import com.github.devil.client.ThreadUtil;
 import com.github.devil.client.akka.ClientAkkaServer;
 import com.github.devil.common.request.LogContent;
-import com.github.devil.common.request.LoggingRequest;
+import com.github.devil.common.request.LoggingReq;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -76,9 +76,9 @@ public class LogPushCenter {
                 if (lists != null && !lists.isEmpty()) {
                     Map<String, List<LogContent>> log = lists.stream().collect(Collectors.groupingBy(LogContent::getServerHost));
                     log.forEach((s, logs) -> {
-                        LoggingRequest loggingRequest = new LoggingRequest();
-                        loggingRequest.setContents(logs);
-                        ClientAkkaServer.getSrv(s).tell(loggingRequest, ClientAkkaServer.getActorRef());
+                        LoggingReq loggingReq = new LoggingReq();
+                        loggingReq.setContents(logs);
+                        ClientAkkaServer.getSrv().tell(loggingReq, ClientAkkaServer.getActorRef());
                     });
                 }
             }catch (Exception e){

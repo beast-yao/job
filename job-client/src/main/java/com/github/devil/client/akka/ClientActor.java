@@ -6,6 +6,7 @@ import akka.pattern.Patterns;
 import com.github.devil.client.spring.TaskCenter;
 import com.github.devil.common.enums.ResultEnums;
 import com.github.devil.common.request.MsgError;
+import com.github.devil.common.request.ServicesRes;
 import com.github.devil.common.request.WorkerExecuteReq;
 import com.github.devil.common.request.WorkerExecuteRes;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +22,7 @@ class ClientActor extends AbstractActor {
     public Receive createReceive() {
         return ReceiveBuilder.create()
                 .match(WorkerExecuteReq.class,this::onReceiveReq)
+                .match(ServicesRes.class,ServiceHolder::receiveSrv)
                 .match(MsgError.class,this::onError)
                 .build()
                 ;
@@ -39,6 +41,6 @@ class ClientActor extends AbstractActor {
         res.setResult(result);
         res.setWorkInstanceId(executeReq.getWorkInstanceId());
         //上报执行结果
-        getSender().tell(res,getSelf());
+        ClientAkkaServer.getSrv().tell(res,getSelf());
     }
 }

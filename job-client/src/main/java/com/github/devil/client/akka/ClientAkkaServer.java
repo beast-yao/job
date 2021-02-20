@@ -137,7 +137,11 @@ public class ClientAkkaServer {
         return address;
     }
 
-    public static ActorSelection getSrv(String host){
-        return system.actorSelection(String.format(AKKA_SRV_PATH,MAIN_JOB_SRV_NAME,host,MAIN_JOB_ACTOR_PATH));
+    public static ActorSelection getSrv(){
+        return system.actorSelection(String.format(AKKA_SRV_PATH,MAIN_JOB_SRV_NAME,ServiceHolder.getOneSrv(),MAIN_JOB_ACTOR_PATH));
+    }
+
+    public static ActorSelection getSrv(String server){
+        return system.actorSelection(String.format(AKKA_SRV_PATH,MAIN_JOB_SRV_NAME,server,MAIN_JOB_ACTOR_PATH));
     }
 }

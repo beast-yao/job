@@ -1,7 +1,6 @@
 package com.github.devil.srv.akka;
 
 import akka.actor.AbstractActor;
-import akka.actor.DeadLetter;
 import com.github.devil.common.request.*;
 import com.github.devil.srv.akka.request.Echo;
 import com.github.devil.srv.akka.request.ServerInfo;
@@ -23,7 +22,7 @@ class MainActor extends AbstractActor {
         return receiveBuilder()
                 .match(Echo.class,this::echo)
                 .match(HeartBeat.class,this::onReceiveHeartBeat)
-                .match(LoggingRequest.class,this::onReceiveLog)
+                .match(LoggingReq.class,this::onReceiveLog)
                 .match(WorkerExecuteRes.class,this::onExecRes)
                 .build();
     }
@@ -40,6 +39,10 @@ class MainActor extends AbstractActor {
     private void onReceiveHeartBeat(HeartBeat heartBeat){
         try {
             WorkerHolder.onHeartBeat(heartBeat);
+            ServicesRes res = new ServicesRes();
+            res.setServices(ServerHolder.getSURVIVAL().keySet());
+            res.setTime(System.currentTimeMillis());
+            getSender().tell(res,getSelf());
         }catch (IllegalArgumentException e){
             if (log.isErrorEnabled()){
                 log.error("heartbeat error,",e);
@@ -48,7 +51,7 @@ class MainActor extends AbstractActor {
         }
     }
 
-    private void onReceiveLog(LoggingRequest request){
+    private void onReceiveLog(LoggingReq request){
         try {
             SpringContextHolder.getBean(LoggingService.class).saveLogRequest(request);
         }catch (IllegalArgumentException e){
