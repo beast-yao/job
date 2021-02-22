@@ -2,7 +2,7 @@ spring:
   application:
     name: JOB-SRV
   profiles:
-    active: local
+    active: embedded
   jpa:
     show-sql: false
     hibernate:

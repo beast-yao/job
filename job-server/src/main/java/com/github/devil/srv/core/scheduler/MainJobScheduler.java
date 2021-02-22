@@ -33,6 +33,10 @@ public class MainJobScheduler {
      * @return
      */
     public static TimerFuture schedule(Long id, long delay, TimerTask timerTask){
+        if (delay <= 0){
+            timerTask.run();
+            return null;
+        }
         TimerFuture future = TIMER.delay(()->{
             FUTURE_MAP.remove(id);
             timerTask.run();

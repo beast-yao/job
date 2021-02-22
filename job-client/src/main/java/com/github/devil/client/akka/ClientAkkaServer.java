@@ -88,7 +88,7 @@ public class ClientAkkaServer {
 
         configMap.put("akka.remote.artery.canonical.port",String.valueOf(port));
 
-        log.info("Start Job SRV,Host:{},Port:{}",address,port);
+        log.info("Start Job Client,Host:{},Port:{}",address,port);
 
         currentHost = address+":"+port;
 

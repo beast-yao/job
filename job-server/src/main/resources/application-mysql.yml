@@ -1,0 +1,44 @@
+spring:
+  jpa:
+    properties:
+      hibernate:
+        generate_statistics: false
+    show-sql: false
+  datasource:
+    core:
+      validation-timeout: 1000
+      maximum-pool-size: 100
+      minimum-idle: 5
+      idle-timeout: 10000
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      jdbc-url: 'jdbc:mysql://127.0.0.1:3306/job?useUnicode=true&characterEncoding=utf8&allowMultiQueries=true&useSSL=false&serverTimezone=Asia/Shanghai'
+      pool-name: 'CORE'
+      user-name: root
+      password: 123456
+      connection-test-query: 'select 1 from dual'
+      transaction-isolation: 'TRANSACTION_REPEATABLE_READ'
+    logging:
+      validation-timeout: 1000
+      maximum-pool-size: 100
+      minimum-idle: 5
+      idle-timeout: 10000
+      driver-class-name: org.apache.derby.jdbc.AutoloadedDriver
+      jdbc-url: 'jdbc:derby:./db/derby/logging;create=true'
+      pool-name: 'LOGGING'
+      connection-test-query: 'SELECT 1 FROM SYSIBM.SYSDUMMY1'
+      transaction-isolation: 'TRANSACTION_REPEATABLE_READ'
+
+
+jpa:
+  core:
+    #    "[hibernate.dialect]": "org.hibernate.dialect.H2Dialect"
+    "[hibernate.dialect]": "org.hibernate.dialect.MySQL8Dialect"
+  logging:
+    "[hibernate.dialect]": "org.hibernate.dialect.DerbyTenSevenDialect"
+
+
+logging:
+  level:
+    root: info
+    org.springframework.boot: info
+    akka: debug

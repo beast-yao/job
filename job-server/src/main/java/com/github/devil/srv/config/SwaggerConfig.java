@@ -21,7 +21,6 @@ import java.util.Collections;
  * @author eric.yao
  * @date 2021/2/18
  **/
-@Profile("local")
 @Configuration
 @EnableSwagger2
 public class SwaggerConfig {

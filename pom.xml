@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.github.devil</groupId>
-    <artifactId>job</artifactId>
+    <artifactId>bt-job</artifactId>
     <version>1.0-SNAPSHOT</version>
     <modules>
         <module>job-server</module>

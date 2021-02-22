@@ -14,20 +14,16 @@ class ServiceHolder {
 
     private final static Set<String> SRVS = new HashSet<>();
 
-    private final static Long time = 0L;
+    private static Long TIME = 0L;
 
     public synchronized static void receiveSrv(ServicesRes res){
 
         /**
          * 获取时间小于
          */
-        if (time <= res.getTime()){
-            // 本地不存在服务则
-            if (SRVS.isEmpty()){
-                SRVS.addAll(res.getServices());
-            }else {
-                SRVS.retainAll(res.getServices());
-            }
+        if (TIME <= res.getTime()){
+            SRVS.addAll(res.getServices());
+            TIME = res.getTime();
         }else {
             log.warn("receive an expired srv res:{}",res);
         }
