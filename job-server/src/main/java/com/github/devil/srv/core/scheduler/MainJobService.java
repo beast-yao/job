@@ -50,7 +50,7 @@ public class MainJobService  {
          * 当前时间----> 下次定时时间触发的时候，需要执行的任务
          * todo mysql 查询时间问题
          */
-        List<JobInfoEntity> jobInfoEntities = jobInfoRepository.findUnExecuteJob(MainAkServer.getCurrentHost(), new Date(System.currentTimeMillis()+(int)(SCHEDULER_FIX*1.1)),Lists.newArrayList(ExecuteStatue.WAIT,ExecuteStatue.EXECUTING));
+        List<JobInfoEntity> jobInfoEntities = jobInfoRepository.findUnExecuteJob(MainAkServer.getCurrentHost(), new Date(System.currentTimeMillis()+(int)(SCHEDULER_FIX*1.5)),Lists.newArrayList(ExecuteStatue.WAIT,ExecuteStatue.EXECUTING));
 
         for (List<JobInfoEntity> lists : Lists.partition(jobInfoEntities, MAX_BATCH)) {
 
