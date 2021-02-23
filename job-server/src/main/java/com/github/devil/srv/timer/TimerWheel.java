@@ -24,7 +24,7 @@ public class TimerWheel implements Timer{
 
     private final int mask;
 
-    private final static int DEFAULT_PRE_SIZE = 2 << 8 ;
+    private final static int DEFAULT_PRE_SIZE = 2 << 9 ;
 
     private final AtomicInteger state = new AtomicInteger(0);
 
@@ -328,9 +328,7 @@ public class TimerWheel implements Timer{
                     transferTimeoutsToBuckets();
                     HashedWheelBucket bucket = buckets[idx];
                     bucket.expireJob(dealTime);
-                    tick++;
                 }
-
                 tick ++;
             }while (state.get() == STATE_START);
 

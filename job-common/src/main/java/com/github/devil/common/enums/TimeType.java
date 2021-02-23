@@ -26,7 +26,7 @@ public enum TimeType {
             }else {
                 try {
                     Long value = Long.parseLong(timeValue);
-                    return new Date(System.currentTimeMillis()+value);
+                    return new Date(Optional.ofNullable(preTriggerTime).orElseGet(Date::new).getTime()+value);
                 }catch (Exception e){
 
                     return preTriggerTime;
@@ -79,7 +79,7 @@ public enum TimeType {
     CORN("corn 表达式"){
         @Override
         public Date getNext(Date preTriggerTime, String timeValue){
-            return new CronSequenceGenerator(timeValue).next(new Date());
+            return new CronSequenceGenerator(timeValue).next(Optional.ofNullable(preTriggerTime).orElseGet(Date::new));
         }
     }
 
