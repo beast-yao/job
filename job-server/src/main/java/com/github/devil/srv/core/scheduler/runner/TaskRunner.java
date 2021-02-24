@@ -39,6 +39,7 @@ public class TaskRunner {
     private JobService jobService;
 
     public void runTask(JobInfoEntity jobInfoEntity,Long instanceId){
+        jobInfoEntity.setLastTriggerTime(new Date());
         Optional<InstanceEntity> optional = jobInstanceRepository.findById(instanceId);
         if (!optional.isPresent()){
             log.error("args error cannot find instance info by id :instanceId:{},jobId:{}",instanceId,jobInfoEntity.getId());
@@ -51,7 +52,6 @@ public class TaskRunner {
             return;
         }
 
-        jobInfoEntity.setLastTriggerTime(new Date());
         jobService.refreshNextTriggerTime(jobInfoEntity);
         // 设置开始时间
         instanceEntity.setTriggerTime(jobInfoEntity.getLastTriggerTime());

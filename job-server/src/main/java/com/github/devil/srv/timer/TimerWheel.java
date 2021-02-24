@@ -24,7 +24,7 @@ public class TimerWheel implements Timer{
 
     private final int mask;
 
-    private final static int DEFAULT_PRE_SIZE = 2 << 9 ;
+    private final static int DEFAULT_PRE_SIZE = 2 << 8 ;
 
     private final AtomicInteger state = new AtomicInteger(0);
 
