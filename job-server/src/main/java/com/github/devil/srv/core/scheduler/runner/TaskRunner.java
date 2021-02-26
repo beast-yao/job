@@ -63,6 +63,11 @@ public class TaskRunner {
 
             log.error("can not find any worker to submit this task,instanceId:{}",instanceId);
 
+            /**
+             * 直接失败任务
+             */
+            jobService.failInstance(instanceId);
+
             NotifyCenter.onEvent(new JobExecuteFailEvent()
                     .setInstanceId(instanceId)
                     .setJobId(jobInfoEntity.getId())

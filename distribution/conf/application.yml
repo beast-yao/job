@@ -64,3 +64,12 @@ management:
             - 'diskSpace'
 
 logging.level.org.hibernate.persister.entity: ERROR
+alarm:
+  email:
+    enable: false
+    host:
+    password:
+    port:
+    protocol: smtp
+    username:
+    send-to:

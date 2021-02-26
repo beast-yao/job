@@ -1,0 +1,53 @@
+{
+  "properties": [
+    {
+      "name": "alarm.email.enable",
+      "type": "java.lang.Boolean",
+      "description": "Whether to enable email alarm.",
+      "defaultValue": false
+    },
+    {
+      "name": "alarm.email.host",
+      "type": "java.lang.String",
+      "description": "SMTP server host. For instance, `smtp.example.com`.",
+      "sourceType": "com.github.devil.srv.core.alarm.mail.MailAlarmProperties"
+    },
+    {
+      "name": "alarm.email.password",
+      "type": "java.lang.String",
+      "description": "Login password of the SMTP server.",
+      "sourceType": "com.github.devil.srv.core.alarm.mail.MailAlarmProperties"
+    },
+    {
+      "name": "alarm.email.port",
+      "type": "java.lang.Integer",
+      "description": "SMTP server port.",
+      "sourceType": "com.github.devil.srv.core.alarm.mail.MailAlarmProperties"
+    },
+    {
+      "name": "alarm.email.properties",
+      "type": "java.util.Map<java.lang.String,java.lang.String>",
+      "description": "Additional JavaMail Session properties.",
+      "sourceType": "com.github.devil.srv.core.alarm.mail.MailAlarmProperties"
+    },
+    {
+      "name": "alarm.email.protocol",
+      "type": "java.lang.String",
+      "description": "Protocol used by the SMTP server.",
+      "sourceType": "com.github.devil.srv.core.alarm.mail.MailAlarmProperties",
+      "defaultValue": "smtp"
+    },
+    {
+      "name": "alarm.email.username",
+      "type": "java.lang.String",
+      "description": "Login user of the SMTP server.",
+      "sourceType": "com.github.devil.srv.core.alarm.mail.MailAlarmProperties"
+    },
+    {
+      "name": "alarm.email.send-to",
+      "type": "java.util.List<java.lang.String>",
+      "description": "List receive mail address.",
+      "sourceType": "com.github.devil.srv.core.alarm.mail.MailAlarmProperties"
+    }
+  ]
+}

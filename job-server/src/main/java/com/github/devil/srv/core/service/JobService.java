@@ -141,4 +141,14 @@ public class JobService {
             jobInstanceRepository.updateStatusById(res.getInstanceId(),new Date(),fails.isEmpty()?ExecuteStatue.SUCCESS:ExecuteStatue.FAILURE);
         }
     }
+
+    /**
+     * 直接失败任务
+     * @param instanceId
+     */
+    @Transactional(transactionManager = "transactionManager",rollbackFor = Exception.class)
+    public void failInstance(Long instanceId){
+        jobInstanceRepository.updateStatusById(instanceId,new Date(),ExecuteStatue.FAILURE);
+    }
+
 }
