@@ -29,7 +29,13 @@ public class NotifyCenter {
     public static void onEvent(Event event){
         for (Listener listener : LISTENERS) {
             if (listener.support(event)){
-                MainThreadUtil.GLOBAL.execute(() -> listener.onEvent(event));
+                MainThreadUtil.GLOBAL.execute(() -> {
+                    try {
+                        listener.onEvent(event);
+                    }catch (Exception e){
+                        log.error("handle an event fail,",e);
+                    }
+                });
             }
         }
     }

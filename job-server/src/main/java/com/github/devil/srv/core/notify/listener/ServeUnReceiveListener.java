@@ -4,6 +4,7 @@ import com.github.devil.srv.core.notify.event.ServeUnReceiveEvent;
 import lombok.extern.slf4j.Slf4j;
 
 /**
+ * server down need to process task
  * @author eric.yao
  * @date 2021/1/29
  **/

@@ -2,10 +2,7 @@ package com.github.devil.srv.timer;
 
 import lombok.Getter;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Queue;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -120,6 +117,10 @@ public class TimerWheel implements Timer{
 
             }
         }
+    }
+
+    public boolean isStart(){
+        return Objects.equals(state.get(),STATE_START);
     }
 
     @Override

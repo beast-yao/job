@@ -28,7 +28,7 @@ public class ScheduleBeanPostProcess implements BeanPostProcessor, SmartInitiali
 
     @Override
     public void afterSingletonsInstantiated() {
-        //todo push task to server
+
     }
 
     @Override

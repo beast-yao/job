@@ -16,9 +16,14 @@ public class TaskHealthIndicator extends AbstractHealthIndicator {
 
     @Override
     protected void doHealthCheck(Health.Builder builder) throws Exception {
-        builder.status(Status.UP)
-                .withDetail("startTime", MainJobScheduler.TIMER.getStartTime())
-                .build();
-
+         builder.status(Status.UP);
+         if (MainJobScheduler.TIMER.isStart()){
+             builder
+                 .withDetail("startTime", MainJobScheduler.TIMER.getStartTime())
+                 .withDetail("stat","START");
+         }else {
+             builder.withDetail("stat","UN-START");
+         }
+        builder.build();
     }
 }

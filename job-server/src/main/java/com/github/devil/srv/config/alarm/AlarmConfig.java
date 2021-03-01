@@ -4,10 +4,12 @@ import com.github.devil.srv.core.alarm.AlarmService;
 import com.github.devil.srv.core.alarm.DelegaAlarmService;
 import com.github.devil.srv.core.alarm.mail.MailAlarmProperties;
 import com.github.devil.srv.core.alarm.mail.MailAlarmServiceImpl;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
@@ -15,11 +17,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 /**
  * @author eric.yao
  * @date 2021/2/26
  **/
+@Slf4j
 @Configuration
 public class AlarmConfig {
 
@@ -61,14 +65,17 @@ public class AlarmConfig {
         @Bean
         public static MailAlarmServiceImpl mailAlarmService(JavaMailSender javaMailSender,
                                                      MailAlarmProperties mailAlarmProperties){
-            return new MailAlarmServiceImpl(javaMailSender,mailAlarmProperties.getSendTo());
+            return new MailAlarmServiceImpl(javaMailSender,mailAlarmProperties);
         }
     }
 
 
-    @Bean
+    @Primary
+    @Bean(name = {"alarmService","delegaAlarmService"})
     public DelegaAlarmService delegaAlarmService(ObjectProvider<List<AlarmService>> provider){
-        return new DelegaAlarmService(provider.getIfAvailable(ArrayList::new));
+        List<AlarmService> alarmServices = provider.getIfAvailable(ArrayList::new);
+        log.info("current activate alarm [{}]",alarmServices.stream().map(AlarmService::name).collect(Collectors.joining(",")));
+        return new DelegaAlarmService(alarmServices);
     }
 
 }

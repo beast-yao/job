@@ -50,7 +50,7 @@ public class MailAlarmProperties {
     private List<String> sendTo;
 
     /**
-     * 默认编码
+     * default mail encoding
      */
     private Charset defaultEncoding = StandardCharsets.UTF_8;
 

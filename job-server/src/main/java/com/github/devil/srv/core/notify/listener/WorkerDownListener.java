@@ -4,6 +4,7 @@ import com.github.devil.srv.core.notify.event.WorkerDownEvent;
 import lombok.extern.slf4j.Slf4j;
 
 /**
+ * worker down
  * @author eric.yao
  * @date 2021/2/1
  **/

@@ -1,8 +1,7 @@
 package com.github.devil.srv.core;
 
-import lombok.extern.slf4j.Slf4j;
-
 import java.util.concurrent.*;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author eric.yao
@@ -11,15 +10,22 @@ import java.util.concurrent.*;
 @Slf4j
 public class MainThreadUtil {
     /**
-     * 定时触发器
+     * 定时触发器.
      */
-    public final static ScheduledExecutorService SCHEDULE = new ScheduledThreadPoolExecutor(10,  newThreadFactory("SCHEDULE"));
+    public final static ScheduledExecutorService SCHEDULE = new ScheduledThreadPoolExecutor(10,
+                                                                    newThreadFactory("SCHEDULE"));
 
-    public final static ScheduledExecutorService JOB_PUSH = new ScheduledThreadPoolExecutor(1, newThreadFactory("JOB-PUSH"));
+    public final static ScheduledExecutorService JOB_PUSH = new ScheduledThreadPoolExecutor(1,
+                                                                    newThreadFactory("JOB-PUSH"));
 
-    public final static ThreadPoolExecutor GLOBAL = new ThreadPoolExecutor(Runtime.getRuntime().availableProcessors(),Runtime.getRuntime().availableProcessors()*4,60, TimeUnit.SECONDS,new SynchronousQueue<>(),newThreadFactory("GLOBAL"));
+    public final static ThreadPoolExecutor GLOBAL = new ThreadPoolExecutor(Runtime.getRuntime().availableProcessors(),
+                                        Runtime.getRuntime().availableProcessors() * 4,
+                                            60,
+                                                        TimeUnit.SECONDS,
+                                                        new SynchronousQueue<>(),
+                                                        newThreadFactory("GLOBAL"));
 
-    private static ThreadFactory newThreadFactory(String name){
+    private static ThreadFactory newThreadFactory(String name) {
         return r -> {
             Thread thread = new Thread(r);
             thread.setName(name);
@@ -28,10 +34,10 @@ public class MainThreadUtil {
         };
     }
 
-    private static Thread.UncaughtExceptionHandler newHandler(){
+    private static Thread.UncaughtExceptionHandler newHandler() {
         return (Thread t, Throwable e) -> {
-          if (log.isErrorEnabled()){
-              log.error("thread error,thread-name:{},error:",t.getName(),e);
+          if (log.isErrorEnabled()) {
+              log.error("thread error,thread-name:{},error:", t.getName(), e);
           }
         };
     }
