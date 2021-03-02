@@ -1,5 +1,6 @@
 package com.github.devil.srv.timer;
 
+import com.github.devil.srv.core.exception.JobException;
 import lombok.Getter;
 
 import java.util.*;
@@ -166,7 +167,7 @@ public class TimerWheel implements Timer{
                 executor.shutdown();
             }
         }else {
-            return Collections.emptySet();
+            throw new JobException("TimerWheel is not in start state that can not be stop");
         }
         return worker.unprocessedTask();
     }

@@ -12,7 +12,7 @@ import com.github.devil.srv.core.scheduler.runner.TaskRunner;
 import com.github.devil.srv.core.service.JobService;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
  **/
 @Slf4j
 @Component
-public class MainJobService  {
+public class MainJobService implements DisposableBean {
 
     private final static Integer MAX_BATCH = 50;
 
@@ -42,7 +42,35 @@ public class MainJobService  {
     private TaskRunner taskRunner;
 
     public void init(){
+        /**
+         * process wait task that because the un except stop
+         */
+        processWaitTask();
+
+        /**
+         * register the listener
+         */
         NotifyCenter.addListener(new JobExecuteFailListener());
+
+        /**
+         * process task from db to timer
+         */
+        processTaskToTimer();
+
+        /**
+         * process task that holder long time to receive the result
+         */
+        processLongTimeExecutingTask();
+    }
+
+    public void processWaitTask(){
+        //todo
+    }
+
+    public void processTaskToTimer(){
+        /**
+         * register job push task
+         */
         MainThreadUtil.JOB_PUSH.scheduleAtFixedRate(() -> {
             try {
                 this.pushJobToTimer();
@@ -52,7 +80,11 @@ public class MainJobService  {
         },100,SCHEDULER_FIX, TimeUnit.MILLISECONDS);
     }
 
-    public void pushJobToTimer(){
+    public void processLongTimeExecutingTask(){
+        //todo
+    }
+
+    private void pushJobToTimer(){
 
         /**
          * 当前时间----> 下次定时时间触发的时候，需要执行的任务
@@ -82,4 +114,12 @@ public class MainJobService  {
         }
     }
 
+    @Override
+    public void destroy() throws Exception {
+        try{
+            MainJobScheduler.stop();
+        }catch (Exception e){
+            log.error("stop scheduler error,",e);
+        }
+    }
 }

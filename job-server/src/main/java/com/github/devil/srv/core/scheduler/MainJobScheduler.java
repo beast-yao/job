@@ -9,6 +9,7 @@ import com.google.common.collect.Maps;
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -52,5 +53,11 @@ public class MainJobScheduler {
      */
     public static void cancel(Long id){
         Optional.ofNullable(FUTURE_MAP.get(id)).orElseThrow(() -> new JobException(NO_JOB_TO_CANCEL)).cancel();
+    }
+
+
+    public static void stop(){
+        TIMER.stop();
+        //todo maybe should handle the job that wait to process
     }
 }
