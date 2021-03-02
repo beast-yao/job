@@ -1,6 +1,7 @@
 package com.github.devil.srv.core.notify.listener;
 
-import com.github.devil.srv.config.alarm.Message;
+import com.github.devil.srv.core.Constants;
+import com.github.devil.srv.core.alarm.Message;
 import com.github.devil.srv.core.SpringContextHolder;
 import com.github.devil.srv.core.alarm.AlarmService;
 import com.github.devil.srv.core.notify.event.JobExecuteFailEvent;
@@ -13,14 +14,14 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class JobExecuteFailListener implements Listener<JobExecuteFailEvent> {
 
-    private final static String FAIL_JOB_TITLE = "任务执行失败";
+
 
     @Override
     public void onEvent(JobExecuteFailEvent event) {
         log.error("{}",event);
         Message message = Message.builder()
                 .content(buildMessage(event))
-                .title(FAIL_JOB_TITLE).build();
+                .title(Constants.FAIL_JOB_TITLE).build();
         SpringContextHolder.getBean(AlarmService.class).alarm(message);
     }
 

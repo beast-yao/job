@@ -1,4 +1,4 @@
-package com.github.devil.srv.config.alarm;
+package com.github.devil.srv.core.alarm;
 
 import lombok.Builder;
 import lombok.Data;

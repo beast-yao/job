@@ -1,7 +1,5 @@
 package com.github.devil.srv.core.alarm;
 
-import com.github.devil.srv.config.alarm.Message;
-
 /**
  * @author eric.yao
  * @date 2021/2/26

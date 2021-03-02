@@ -7,6 +7,7 @@ import com.github.devil.common.request.HeartBeat;
 import com.github.devil.common.util.InetUtils;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.Assert;
@@ -25,7 +26,10 @@ import static com.github.devil.common.CommonConstants.*;
  * @date 2021/2/2
  **/
 @Slf4j
+@AllArgsConstructor
 public class ClientAkkaServer {
+
+    private AkkaProperties akkaProperties;
 
     private final static AtomicBoolean isStart = new AtomicBoolean(false);
 
@@ -46,7 +50,7 @@ public class ClientAkkaServer {
         return isStart.get();
     }
 
-    public void init(AkkaProperties akkaProperties){
+    public void init(){
 
         if (isStart.get()){
             return;

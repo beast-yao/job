@@ -20,14 +20,11 @@ public class JobClientAutoConfig {
     }
 
 
-    @Bean
+    @Bean(initMethod = "init")
     @ConditionalOnMissingBean
     public ClientAkkaServer clientAkkaServer(AkkaProperties akkaProperties){
-        ClientAkkaServer clientAkkaServer = new ClientAkkaServer();
-        clientAkkaServer.init(akkaProperties);
-        return clientAkkaServer;
+        return new ClientAkkaServer(akkaProperties);
     }
-
 
     @Bean
     public static ScheduleBeanPostProcess scheduleBeanPostProcess(){

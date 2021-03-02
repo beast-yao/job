@@ -10,6 +10,8 @@ import com.github.devil.srv.core.SpringContextHolder;
 import com.github.devil.srv.core.service.JobService;
 import com.github.devil.srv.core.service.LoggingService;
 import lombok.extern.slf4j.Slf4j;
+import scala.PartialFunction;
+import scala.runtime.BoxedUnit;
 
 /**
  * @author eric.yao
@@ -17,6 +19,13 @@ import lombok.extern.slf4j.Slf4j;
  **/
 @Slf4j
 class MainActor extends AbstractActor {
+
+    @Override
+    public void aroundReceive( PartialFunction<Object, BoxedUnit> receive,  Object msg) {
+        debug(msg);
+        super.aroundReceive(receive, msg);
+    }
+
     @Override
     public Receive createReceive() {
         return receiveBuilder()
@@ -73,4 +82,9 @@ class MainActor extends AbstractActor {
         }
     }
 
+    private void debug(Object o){
+        if (log.isDebugEnabled()){
+            log.debug("receive message:{}",o);
+        }
+    }
 }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration scan="true" scanPeriod="10 seconds">
+<configuration scan="true" scanPeriod="30 seconds">
 
     <springProperty scope="context" name="logPath" source="job.logs.path" defaultValue="${job.home}/logs"/>
     <property name="LOG_HOME" value="${logPath}"/>
@@ -16,11 +16,10 @@
             <cleanHistoryOnStart>true</cleanHistoryOnStart>
         </rollingPolicy>
         <encoder>
-            <Pattern>%date %level %msg%n%n</Pattern>
+            <Pattern>%d{yyyy-MM-dd HH:mm:ss:SSS} [%level] --- [%15.15t] %-40.40logger{39} : %msg%n%n</Pattern>
             <charset>UTF-8</charset>
         </encoder>
     </appender>
-
 
     <root>
         <level value="INFO"/>

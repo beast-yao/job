@@ -1,6 +1,6 @@
 package com.github.devil.srv.core.alarm.mail;
 
-import com.github.devil.srv.config.alarm.Message;
+import com.github.devil.srv.core.alarm.Message;
 import com.github.devil.srv.core.alarm.AlarmService;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
