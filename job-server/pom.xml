@@ -141,7 +141,6 @@
                             <mainClass>com.github.devil.srv.JobServerApplication</mainClass>
                         </manifest>
                         <manifestEntries>
-                            <Built-By>${author}</Built-By>
                             <Build-Jdk>${java.version}</Build-Jdk>
                             <Build-Time>${maven.build.timestamp}</Build-Time>
                         </manifestEntries>
