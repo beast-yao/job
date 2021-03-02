@@ -1,13 +1,4 @@
 #!/bin/bash
-
-cygwin=false
-darwin=false
-os400=false
-case "`uname`" in
-CYGWIN*) cygwin=true;;
-Darwin*) darwin=true;;
-OS400*) os400=true;;
-esac
 error_exit ()
 {
     echo "ERROR: $1 !!"
@@ -39,14 +30,10 @@ if [ -z "$JAVA_HOME" ]; then
 fi
 
 export SERVER="job-server"
-export MODE="cluster"
 export MEMBER_LIST=""
-export EMBEDDED_STORAGE=""
 while getopts ":m:f:s:c:p:" opt
 do
     case $opt in
-        m)
-            MODE=$OPTARG;;
         s)
             SERVER=$OPTARG;;
         c)
@@ -65,17 +52,15 @@ export CUSTOM_SEARCH_LOCATIONS=file:${BASE_DIR}/conf/
 #===========================================================================================
 # JVM Configuration
 #===========================================================================================
-if [[ "${MODE}" == "standalone" ]]; then
-    JAVA_OPT="${JAVA_OPT} -Xms512m -Xmx512m -Xmn256m"
-#    JAVA_OPT="${JAVA_OPT} -Dnacos.standalone=true"
-else
-    JAVA_OPT="${JAVA_OPT} -server -Xms1g -Xmx1g -Xmn512m -XX:MetaspaceSize=128m -XX:MaxMetaspaceSize=320m"
-    JAVA_OPT="${JAVA_OPT} -XX:-OmitStackTraceInFastThrow -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=${BASE_DIR}/logs/java_heapdump.hprof"
-    JAVA_OPT="${JAVA_OPT} -XX:-UseLargePages"
 
+JAVA_OPT="${JAVA_OPT} -server -Xms2g -Xmx2g -Xmn1g -XX:MetaspaceSize=256m -XX:MaxMetaspaceSize=512m"
+JAVA_OPT="${JAVA_OPT} -XX:-OmitStackTraceInFastThrow -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=${BASE_DIR}/logs/java_heapdump.hprof"
+JAVA_OPT="${JAVA_OPT} -XX:-UseLargePages"
+
+if [ -n "$MEMBER_LIST" ]; then
+    JAVA_OPT="${JAVA_OPT} -Dmain.job.member-list=${MEMBER_LIST}"
 fi
 
-JAVA_OPT="${JAVA_OPT} -Dmain.job.member-list=${MEMBER_LIST}"
 
 JAVA_MAJOR_VERSION=$($JAVA -version 2>&1 | sed -E -n 's/.* version "([0-9]*).*$/\1/p')
 if [[ "$JAVA_MAJOR_VERSION" -ge "9" ]] ; then
@@ -96,13 +81,7 @@ if [ ! -d "${BASE_DIR}/logs" ]; then
   mkdir ${BASE_DIR}/logs
 fi
 
-echo "$JAVA ${JAVA_OPT}"
-
-if [[ "${MODE}" == "standalone" ]]; then
-    echo "job is starting with standalone"
-else
-    echo "job is starting with cluster"
-fi
+echo "job is prepared to start"
 
 # check the start.out log output file
 if [ ! -f "${BASE_DIR}/logs/start.out" ]; then
