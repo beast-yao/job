@@ -1,4 +1,4 @@
-package com.github.devil.common.request;
+package com.github.devil.common.dto;
 
 import com.github.devil.common.enums.TaskType;
 import com.github.devil.common.serialization.JobSerializable;

@@ -4,7 +4,7 @@ import com.github.devil.client.process.InvokeProcess;
 import com.github.devil.client.process.TaskContext;
 import com.github.devil.client.process.TaskContextHolder;
 import com.github.devil.common.enums.ResultEnums;
-import com.github.devil.common.request.WorkerExecuteReq;
+import com.github.devil.common.dto.WorkerExecuteReq;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;

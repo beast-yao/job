@@ -3,7 +3,7 @@ package com.github.devil.client.akka;
 import akka.actor.*;
 import akka.routing.RoundRobinPool;
 import com.github.devil.client.ThreadUtil;
-import com.github.devil.common.request.HeartBeat;
+import com.github.devil.common.dto.HeartBeat;
 import com.github.devil.common.util.InetUtils;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;

@@ -5,7 +5,7 @@ import com.github.devil.client.logger.LogPushCenter;
 import com.github.devil.client.logger.Logger;
 import com.github.devil.client.process.TaskContext;
 import com.github.devil.common.enums.LogLevel;
-import com.github.devil.common.request.LogContent;
+import com.github.devil.common.dto.LogContent;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.helpers.FormattingTuple;
 import org.slf4j.helpers.MessageFormatter;

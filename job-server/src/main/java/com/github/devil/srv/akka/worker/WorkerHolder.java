@@ -1,6 +1,6 @@
 package com.github.devil.srv.akka.worker;
 
-import com.github.devil.common.request.HeartBeat;
+import com.github.devil.common.dto.HeartBeat;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import org.springframework.util.Assert;

@@ -2,13 +2,10 @@ package com.github.devil.client.akka;
 
 import akka.actor.*;
 import akka.japi.pf.ReceiveBuilder;
-import akka.pattern.Patterns;
+import com.github.devil.client.ThreadUtil;
 import com.github.devil.client.spring.TaskCenter;
+import com.github.devil.common.dto.*;
 import com.github.devil.common.enums.ResultEnums;
-import com.github.devil.common.request.MsgError;
-import com.github.devil.common.request.ServicesRes;
-import com.github.devil.common.request.WorkerExecuteReq;
-import com.github.devil.common.request.WorkerExecuteRes;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -33,14 +30,21 @@ class ClientActor extends AbstractActor {
     }
 
     private void onReceiveReq(WorkerExecuteReq executeReq){
-        ResultEnums result =  TaskCenter.runProcess(executeReq);
+        ThreadUtil.GLOBAL.execute(() -> {
+            try {
+                ResultEnums result =  TaskCenter.runProcess(executeReq);
 
-        WorkerExecuteRes res = new WorkerExecuteRes();
-        res.setInstanceId(executeReq.getInstanceId());
-        res.setJobId(executeReq.getJobId());
-        res.setResult(result);
-        res.setWorkInstanceId(executeReq.getWorkInstanceId());
-        //上报执行结果
-        ClientAkkaServer.getSrv().tell(res,getSelf());
+                WorkerExecuteRes res = new WorkerExecuteRes();
+                res.setInstanceId(executeReq.getInstanceId());
+                res.setJobId(executeReq.getJobId());
+                res.setResult(result);
+                res.setWorkInstanceId(executeReq.getWorkInstanceId());
+                //上报执行结果
+                ClientAkkaServer.getSrv().tell(res,getSelf());
+            }catch (Exception e){
+                log.error("execute task fail,",e);
+            }
+        });
+        getSender().tell(NoResponse.class,getSelf());
     }
 }

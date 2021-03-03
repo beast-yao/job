@@ -1,7 +1,7 @@
 package com.github.devil.srv.core.service;
 
-import com.github.devil.common.request.LogContent;
-import com.github.devil.common.request.LoggingReq;
+import com.github.devil.common.dto.LogContent;
+import com.github.devil.common.dto.LoggingReq;
 import com.github.devil.srv.core.persist.logging.entity.LoggingEntity;
 import com.github.devil.srv.core.persist.logging.repository.LoggingRepository;
 import lombok.extern.slf4j.Slf4j;

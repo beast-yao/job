@@ -1,7 +1,7 @@
 package com.github.devil.srv.akka;
 
 import akka.actor.AbstractActor;
-import com.github.devil.common.request.*;
+import com.github.devil.common.dto.*;
 import com.github.devil.srv.akka.request.Echo;
 import com.github.devil.srv.akka.request.ServerInfo;
 import com.github.devil.srv.akka.server.ServerHolder;

@@ -1,6 +1,6 @@
 package com.github.devil.client.akka;
 
-import com.github.devil.common.request.ServicesRes;
+import com.github.devil.common.dto.ServicesRes;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;

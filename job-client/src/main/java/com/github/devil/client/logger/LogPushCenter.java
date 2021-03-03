@@ -2,8 +2,8 @@ package com.github.devil.client.logger;
 
 import com.github.devil.client.ThreadUtil;
 import com.github.devil.client.akka.ClientAkkaServer;
-import com.github.devil.common.request.LogContent;
-import com.github.devil.common.request.LoggingReq;
+import com.github.devil.common.dto.LogContent;
+import com.github.devil.common.dto.LoggingReq;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 

@@ -2,8 +2,7 @@ package com.github.devil.srv.core.service;
 
 import com.github.devil.common.CommonConstants;
 import com.github.devil.common.enums.ResultEnums;
-import com.github.devil.common.enums.TaskType;
-import com.github.devil.common.request.WorkerExecuteRes;
+import com.github.devil.common.dto.WorkerExecuteRes;
 import com.github.devil.srv.akka.MainAkServer;
 import com.github.devil.srv.akka.ha.ServerManager;
 import com.github.devil.srv.akka.worker.WorkerHolder;
@@ -16,7 +15,6 @@ import com.github.devil.srv.core.persist.core.repository.JobInstanceRepository;
 import com.github.devil.common.enums.ExecuteStatue;
 import com.github.devil.common.enums.TimeType;
 import com.github.devil.srv.core.persist.core.repository.WorkInstanceRepository;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
