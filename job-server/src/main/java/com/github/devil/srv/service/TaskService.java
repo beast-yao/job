@@ -15,4 +15,8 @@ public interface TaskService {
      */
     Boolean newTask(NewTaskRequest request);
 
+    /**
+     * 停止所有任务，并将当前服务任务进行转移
+     */
+    void stopAllAndTransfer();
 }

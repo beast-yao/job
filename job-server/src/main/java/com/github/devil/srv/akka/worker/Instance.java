@@ -28,7 +28,7 @@ public class Instance {
 
     public Instance(String appName){
         this.appName = appName;
-        MainThreadUtil.SCHEDULE.scheduleWithFixedDelay(() -> {
+        MainThreadUtil.scheduleWithFixedDelay(() -> {
             Iterator<Map.Entry<String,Long>> iterator = survival.entrySet().iterator();
             while (iterator.hasNext()){
                 Map.Entry<String,Long> entry = iterator.next();

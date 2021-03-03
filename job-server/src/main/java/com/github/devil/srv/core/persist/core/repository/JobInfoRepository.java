@@ -41,4 +41,10 @@ public interface JobInfoRepository extends JpaRepository<JobInfoEntity,Long> {
             " union " +
             "select * from job_info where serve_host=?1 and next_trigger_time < ?2 and time_type = 'DELAY' and job_status = 'NORMAL' and id not in (select job_id from job_instance where job_instance.execute_statue in (?3))",nativeQuery = true)
     List<JobInfoEntity> findUnExecuteJob(String serveHost, Date time,List<String> unCompleteStatus);
+
+
+    @Modifying
+    @Transactional(transactionManager = "transactionManager",rollbackFor = Exception.class)
+    @Query("update JobInfoEntity set serveHost=?2 where serveHost=?1")
+    int transferToAnotherServer(String current,String next);
 }

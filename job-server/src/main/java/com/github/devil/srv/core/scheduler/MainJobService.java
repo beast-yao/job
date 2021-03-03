@@ -48,6 +48,11 @@ public class MainJobService implements DisposableBean {
         processWaitTask();
 
         /**
+         * take the job that has no server to run
+         */
+        takeUnServerTask();
+
+        /**
          * register the listener
          */
         NotifyCenter.addListener(new JobExecuteFailListener());
@@ -63,24 +68,33 @@ public class MainJobService implements DisposableBean {
         processLongTimeExecutingTask();
     }
 
-    public void processWaitTask(){
+    private void processWaitTask(){
         //todo
+        MainThreadUtil.scheduleAtFixedRate(() -> {
+
+        },10,SCHEDULER_FIX,TimeUnit.MILLISECONDS);
     }
 
-    public void processTaskToTimer(){
+    private void processTaskToTimer(){
         /**
          * register job push task
          */
         MainThreadUtil.JOB_PUSH.scheduleAtFixedRate(() -> {
             try {
-                this.pushJobToTimer();
+                if (MainAkServer.isNormal()) {
+                    this.pushJobToTimer();
+                }
             }catch (Exception e){
                 log.error("job push error,thread-name:{},error",Thread.currentThread().getName(),e);
             }
         },100,SCHEDULER_FIX, TimeUnit.MILLISECONDS);
     }
 
-    public void processLongTimeExecutingTask(){
+    private void processLongTimeExecutingTask(){
+        //todo
+    }
+
+    private void takeUnServerTask(){
         //todo
     }
 
@@ -117,6 +131,7 @@ public class MainJobService implements DisposableBean {
     @Override
     public void destroy() throws Exception {
         try{
+            MainThreadUtil.shutdown();
             MainJobScheduler.stop();
         }catch (Exception e){
             log.error("stop scheduler error,",e);

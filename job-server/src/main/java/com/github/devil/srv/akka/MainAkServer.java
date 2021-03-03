@@ -21,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.Nonnull;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author eric.yao
@@ -38,6 +39,31 @@ public class MainAkServer {
 
     @Getter
     private static String currentHost;
+
+    /**
+     * 0 - unstart
+     * 1 - normal
+     * 2 - someThing error
+     */
+    private final static AtomicInteger state = new AtomicInteger(0);
+
+    public static boolean isNormal(){
+        return state.get() == 1;
+    }
+
+    /**
+     * state from 1 -> 2
+     */
+    public static void stateFail(){
+        state.compareAndSet(1,2);
+    }
+
+    /**
+     * state from 2 -> 1
+     */
+    public static void stateNormal(){
+        state.compareAndSet(2,1);
+    }
 
     public static void start(@Nonnull ServerProperties serverProperties){
         //初始化akka server
@@ -78,6 +104,7 @@ public class MainAkServer {
 
         system.actorOf(Props.create(MessageDeadActor.class));
 
+        state.compareAndSet(0,1);
         log.info("===============Job SRV Started==============");
     }
 

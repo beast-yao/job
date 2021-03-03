@@ -12,7 +12,7 @@ public class MainThreadUtil {
     /**
      * 定时触发器.
      */
-    public final static ScheduledExecutorService SCHEDULE = new ScheduledThreadPoolExecutor(10,
+    private final static ScheduledExecutorService SCHEDULE = new ScheduledThreadPoolExecutor(10,
                                                                     newThreadFactory("SCHEDULE"));
 
     public final static ScheduledExecutorService JOB_PUSH = new ScheduledThreadPoolExecutor(1,
@@ -24,6 +24,21 @@ public class MainThreadUtil {
                                                         TimeUnit.SECONDS,
                                                         new SynchronousQueue<>(),
                                                         newThreadFactory("GLOBAL"));
+
+    public static void shutdown(){
+
+        if (!JOB_PUSH.isShutdown()){
+            JOB_PUSH.shutdown();
+        }
+
+        if (!GLOBAL.isShutdown()){
+            GLOBAL.shutdown();
+        }
+
+        if (!SCHEDULE.isShutdown()){
+            SCHEDULE.shutdown();
+        }
+    }
 
     private static ThreadFactory newThreadFactory(String name) {
         return r -> {
@@ -41,4 +56,27 @@ public class MainThreadUtil {
           }
         };
     }
+
+    public static ScheduledFuture<?> scheduleAtFixedRate(Runnable runnable,long delay,long rate,TimeUnit unit){
+       return SCHEDULE.scheduleAtFixedRate(() -> {
+            try {
+                runnable.run();
+            }catch (Exception e){
+                log.error("execute schedule fail,",e);
+            }
+        },delay,rate,unit);
+    }
+
+    public static ScheduledFuture<?> scheduleWithFixedDelay(Runnable runnable,
+                                                     long initialDelay,
+                                                     long delay,
+                                                     TimeUnit unit){
+        return SCHEDULE.scheduleWithFixedDelay(() -> {
+            try {
+                runnable.run();
+            }catch (Exception e){
+                log.error("execute schedule fail,",e);
+            }
+        },initialDelay,delay,unit);
+    };
 }

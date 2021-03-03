@@ -34,7 +34,7 @@ public class ServerHolder {
     private final static Set<String> DOWN_SERVE = Sets.newConcurrentHashSet();
 
     public static void echo(String serveHost){
-        MainThreadUtil.SCHEDULE.scheduleAtFixedRate(() -> {
+        MainThreadUtil.scheduleAtFixedRate(() -> {
             CompletionStage<Object> askEcho = Patterns.ask(MainAkServer.getSrv(serveHost),new Echo(), Duration.ofMillis(HEART_INTERVAL));
             try {
                 ServerInfo serverInfo =  (ServerInfo)askEcho.toCompletableFuture().get(HEART_INTERVAL,TimeUnit.MILLISECONDS);

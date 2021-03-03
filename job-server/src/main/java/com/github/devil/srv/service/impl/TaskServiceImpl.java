@@ -1,15 +1,22 @@
 package com.github.devil.srv.service.impl;
 
+import com.github.devil.common.enums.ExecuteStatue;
 import com.github.devil.srv.akka.MainAkServer;
 import com.github.devil.srv.core.enums.JobStatus;
+import com.github.devil.srv.core.persist.core.entity.InstanceEntity;
 import com.github.devil.srv.core.persist.core.entity.JobInfoEntity;
 import com.github.devil.srv.core.persist.core.repository.JobInfoRepository;
+import com.github.devil.srv.core.persist.core.repository.JobInstanceRepository;
+import com.github.devil.srv.core.persist.core.repository.WorkInstanceRepository;
 import com.github.devil.srv.dto.request.NewTaskRequest;
 import com.github.devil.srv.service.TaskService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author eric.yao
@@ -20,6 +27,10 @@ public class TaskServiceImpl implements TaskService {
 
     @Resource
     private JobInfoRepository jobInfoRepository;
+    @Resource
+    private JobInstanceRepository instanceRepository;
+    @Resource
+    private WorkInstanceRepository workInstanceRepository;
 
     @Override
     public Boolean newTask(NewTaskRequest request) {
@@ -41,4 +52,19 @@ public class TaskServiceImpl implements TaskService {
         jobInfoRepository.saveAndFlush(entity);
         return true;
     }
+
+    @Override
+    @Transactional(transactionManager = "transactionManager",rollbackFor = Exception.class)
+    public void stopAllAndTransfer() {
+        List<InstanceEntity> entities = instanceRepository.findByServeHostAndExecuteStatueIn(MainAkServer.getCurrentHost(), Collections.singletonList(ExecuteStatue.WAIT));
+
+        if (!entities.isEmpty()){
+            instanceRepository.cancelAllWaitTask(MainAkServer.getCurrentHost());
+            workInstanceRepository.cancelAllInstance(MainAkServer.getCurrentHost());
+        }
+
+        jobInfoRepository.transferToAnotherServer(MainAkServer.getCurrentHost(),MainAkServer.nextHealthServer());
+
+    }
+
 }

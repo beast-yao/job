@@ -6,6 +6,8 @@ import com.github.devil.srv.timer.TimerFuture;
 import com.github.devil.srv.timer.TimerTask;
 import com.github.devil.srv.timer.TimerWheel;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
 import java.util.Optional;
@@ -16,6 +18,7 @@ import java.util.concurrent.TimeUnit;
  * @author eric.yao
  * @date 2021/1/19
  **/
+@Slf4j
 public class MainJobScheduler {
 
     /**
@@ -57,7 +60,32 @@ public class MainJobScheduler {
 
 
     public static void stop(){
+        /**
+         * stop the timer
+         */
         TIMER.stop();
-        //todo maybe should handle the job that wait to process
+
+        /**
+         * cancel all the task that not execute
+         */
+        cancelAllTask();
+    }
+
+    /**
+     * cancel all task
+     * @return all cancel instanceIds
+     */
+    public static Set<Long> cancelAllTask(){
+        Set<Long> instances = Sets.newHashSet();
+        for (Map.Entry<Long, TimerFuture> futureEntry : FUTURE_MAP.entrySet()) {
+            Long instanceId = futureEntry.getKey();
+            try {
+                futureEntry.getValue().cancel();
+                instances.add(instanceId);
+            }catch (Exception e){
+                log.warn("stop task fail,taskId:[{}]",instanceId);
+            }
+        }
+        return instances;
     }
 }

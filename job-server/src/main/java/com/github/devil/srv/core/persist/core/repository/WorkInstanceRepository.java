@@ -50,4 +50,9 @@ public interface WorkInstanceRepository extends JpaRepository<WorkInstanceEntity
      * @return
      */
     List<WorkInstanceEntity> findByExecuteStatueInAndInstanceId(List<ExecuteStatue> statue,Long instanceId);
+
+    @Modifying
+    @Transactional(transactionManager = "transactionManager",rollbackFor = Exception.class)
+    @Query("update WorkInstanceEntity set executeStatue='CANCEL' where executeStatue='WAIT' and serveHost=?1")
+    int cancelAllInstance(String serverHost);
 }

@@ -31,7 +31,7 @@ fi
 
 export SERVER="job-server"
 export MEMBER_LIST=""
-while getopts ":m:f:s:c:p:" opt
+while getopts ":s:c:" opt
 do
     case $opt in
         s)
