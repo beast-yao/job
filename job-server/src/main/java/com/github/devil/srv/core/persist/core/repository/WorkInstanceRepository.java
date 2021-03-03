@@ -29,7 +29,7 @@ public interface WorkInstanceRepository extends JpaRepository<WorkInstanceEntity
     @Modifying
     @Query("update WorkInstanceEntity set executeStatue=?1,triggerTime=?2,upt=?3 where id=?4")
     @Transactional(transactionManager = "transactionManager",rollbackFor = Exception.class)
-    int mergeTriggerTimeAndExecuteStatueById(ExecuteStatue statue, Date triggerTime, Date upt, Long id);
+    int updateTriggerTimeAndExecuteStatueById(ExecuteStatue statue, Date triggerTime, Date upt, Long id);
 
     /**
      * 修改执行状态

@@ -138,6 +138,12 @@ public class JobService {
             List<WorkInstanceEntity> fails = workInstanceRepository.findByExecuteStatueInAndInstanceId(Collections.singletonList(ExecuteStatue.FAILURE),res.getInstanceId());
             jobInstanceRepository.updateStatusById(res.getInstanceId(),new Date(),fails.isEmpty()?ExecuteStatue.SUCCESS:ExecuteStatue.FAILURE);
         }
+        Optional<JobInfoEntity> optional = jobInfoRepository.findById(res.getJobId());
+        optional.ifPresent(entity -> {
+            if (Objects.equals(entity.getTimeType(),TimeType.DELAY)){
+                refreshNextTriggerTime(entity);
+            }
+        });
     }
 
     /**

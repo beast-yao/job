@@ -4,6 +4,7 @@ import akka.actor.ActorSelection;
 import akka.pattern.Patterns;
 import com.github.devil.common.enums.ExecuteStatue;
 import com.github.devil.common.dto.WorkerExecuteReq;
+import com.github.devil.common.enums.TimeType;
 import com.github.devil.srv.akka.MainAkServer;
 import com.github.devil.srv.core.exception.JobException;
 import com.github.devil.srv.core.notify.NotifyCenter;
@@ -53,7 +54,10 @@ public class TaskRunner {
             return;
         }
 
-        jobService.refreshNextTriggerTime(jobInfoEntity);
+        // 不是延时任务，需要修改触发时间
+        if (!Objects.equals(jobInfoEntity.getTimeType(), TimeType.DELAY)) {
+            jobService.refreshNextTriggerTime(jobInfoEntity);
+        }
         // 设置开始时间
         instanceEntity.setTriggerTime(jobInfoEntity.getLastTriggerTime());
 
@@ -90,7 +94,7 @@ public class TaskRunner {
                 // 不需要返回结果，只需要确保接收到了消息
                 Patterns.ask(selection,req,1000);
 
-                workInstanceRepository.mergeTriggerTimeAndExecuteStatueById(ExecuteStatue.EXECUTING,new Date(),new Date(),worker.getId());
+                workInstanceRepository.updateTriggerTimeAndExecuteStatueById(ExecuteStatue.EXECUTING,new Date(),new Date(),worker.getId());
             }
         }
 
