@@ -16,6 +16,8 @@ import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.Resource;
 import java.util.Date;
@@ -42,6 +44,8 @@ public class MainJobService implements DisposableBean {
     private JobService jobService;
     @Resource
     private TaskRunner taskRunner;
+    @Resource
+    private TransactionTemplate transactionTemplate;
 
     /**
      * init the schedule task after
@@ -140,8 +144,8 @@ public class MainJobService implements DisposableBean {
         List<JobInfoEntity> jobInfoEntities = jobInfoRepository.findUnExecuteJob(MainAkServer.getCurrentHost(), new Date(System.currentTimeMillis()+(int)(SCHEDULER_FIX*1.5)),Lists.newArrayList(ExecuteStatue.WAIT.name(),ExecuteStatue.EXECUTING.name()));
 
         for (List<JobInfoEntity> lists : Lists.partition(jobInfoEntities, MAX_BATCH)) {
+            transactionTemplate.executeWithoutResult(status -> {
 
-            try {
                 if (log.isDebugEnabled()) {
                     log.debug("process task to timer,task count :{}", lists.size());
                 }
@@ -157,18 +161,16 @@ public class MainJobService implements DisposableBean {
                             taskRunner.runTask(map.get(instanceEntity.getJobId()),instanceEntity.getId());
                         });
                     }catch (Exception e){
-                        //todo notify the job error
                         log.error("timer delay the job fail,",e);
+                        jobService.failInstance(instanceEntity.getId());
                         NotifyCenter.onEvent(SchedulerJobErrorEvent.builder()
-                                .instanceId(instanceEntity.getId())
-                                .jobId(instanceEntity.getJobId())
-                                .describe(e.getMessage())
-                                .build());
+                                            .instanceId(instanceEntity.getId())
+                                            .jobId(instanceEntity.getJobId())
+                                            .describe(e.getMessage())
+                                            .build());
                     }
                 });
-            }catch (Exception e){
-                e.printStackTrace();
-            }
+            });
         }
     }
 

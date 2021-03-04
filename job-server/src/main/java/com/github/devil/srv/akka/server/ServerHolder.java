@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.time.Duration;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
@@ -62,6 +63,12 @@ public class ServerHolder {
     }
 
     private static void onReceiveServerInfo(ServerInfo serverInfo){
-        log.debug("{}",serverInfo);
+        if (log.isDebugEnabled()) {
+            log.debug("{}", serverInfo);
+        }
+        // receive self message process state to normal
+        if (Objects.equals(serverInfo.getServerHost(),MainAkServer.getCurrentHost())){
+            MainAkServer.stateNormal();
+        }
     }
 }

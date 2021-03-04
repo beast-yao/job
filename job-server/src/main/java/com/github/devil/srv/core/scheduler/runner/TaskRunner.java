@@ -18,6 +18,7 @@ import com.github.devil.srv.core.service.JobService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.Date;
@@ -96,10 +97,9 @@ public class TaskRunner {
 
                 workInstanceRepository.updateTriggerTimeAndExecuteStatueById(ExecuteStatue.EXECUTING,new Date(),new Date(),worker.getId());
             }
+            instanceEntity.setExecuteStatue(ExecuteStatue.EXECUTING);
+            jobInstanceRepository.updateTriggerTimeAndStatus(instanceEntity.getTriggerTime(),instanceEntity.getExecuteStatue(),instanceId,new Date());
         }
-
-        instanceEntity.setExecuteStatue(ExecuteStatue.EXECUTING);
-        jobInstanceRepository.updateTriggerTimeAndStatus(instanceEntity.getTriggerTime(),instanceEntity.getExecuteStatue(),instanceId,new Date());
     }
 
 }

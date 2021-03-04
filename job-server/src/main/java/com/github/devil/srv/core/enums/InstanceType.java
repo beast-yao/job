@@ -1,13 +1,13 @@
 package com.github.devil.srv.core.enums;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 
 /**
  * @author eric.yao
  * @date 2021/3/4
  **/
-@Data
+@Getter
 @AllArgsConstructor
 public enum InstanceType {
 

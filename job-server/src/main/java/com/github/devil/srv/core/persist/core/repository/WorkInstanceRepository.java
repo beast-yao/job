@@ -31,6 +31,11 @@ public interface WorkInstanceRepository extends JpaRepository<WorkInstanceEntity
     @Transactional(transactionManager = "transactionManager",rollbackFor = Exception.class)
     int updateTriggerTimeAndExecuteStatueById(ExecuteStatue statue, Date triggerTime, Date upt, Long id);
 
+    @Modifying
+    @Query("update WorkInstanceEntity set executeStatue=?1,triggerTime=?2,upt=?3 where instanceId=?4 and executeStatue = ?5")
+    @Transactional(transactionManager = "transactionManager",rollbackFor = Exception.class)
+    int updateTriggerTimeAndExecuteStatueByInstanceId(ExecuteStatue statue, Date triggerTime, Date upt, Long instanceId,ExecuteStatue before);
+
     /**
      * 修改执行状态
      * @param id

@@ -2,6 +2,7 @@ package com.github.devil.srv.core.config;
 
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateProperties;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateSettings;
 import org.springframework.boot.autoconfigure.orm.jpa.JpaProperties;
@@ -18,6 +19,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.Resource;
 import javax.sql.DataSource;
@@ -72,5 +74,11 @@ public class CoreJpaConfig{
     @Bean("transactionManager")
     public PlatformTransactionManager transactionManager(LocalContainerEntityManagerFactoryBean entityManagerFactoryBean){
         return new JpaTransactionManager(Objects.requireNonNull(entityManagerFactoryBean.getObject()));
+    }
+
+    @Primary
+    @Bean("transactionTemplate")
+    public TransactionTemplate transactionTemplate(@Qualifier("transactionManager") PlatformTransactionManager transactionManager){
+        return new TransactionTemplate(transactionManager);
     }
 }

@@ -171,7 +171,7 @@ public class TimerWheel implements Timer{
                 executor.shutdown();
             }
         }else {
-            throw new JobException("TimerWheel is not in start state that can not be stop");
+            return Collections.emptySet();
         }
         return worker.unprocessedTask();
     }
