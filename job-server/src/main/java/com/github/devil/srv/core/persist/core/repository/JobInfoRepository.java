@@ -47,4 +47,11 @@ public interface JobInfoRepository extends JpaRepository<JobInfoEntity,Long> {
     @Transactional(transactionManager = "transactionManager",rollbackFor = Exception.class)
     @Query("update JobInfoEntity set serveHost=?2 where serveHost=?1")
     int transferToAnotherServer(String current,String next);
+
+    /**
+     * 查询该服务下的所有任务信息
+     * @param serverHost
+     * @return
+     */
+    long countByServeHost(String serverHost);
 }

@@ -55,16 +55,19 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional(transactionManager = "transactionManager",rollbackFor = Exception.class)
-    public void stopAllAndTransfer() {
-        List<InstanceEntity> entities = instanceRepository.findByServeHostAndExecuteStatueIn(MainAkServer.getCurrentHost(), Collections.singletonList(ExecuteStatue.WAIT));
+    public void stopAllAndTransfer(String serverHost) {
 
-        if (!entities.isEmpty()){
-            instanceRepository.cancelAllWaitTask(MainAkServer.getCurrentHost());
-            workInstanceRepository.cancelAllInstance(MainAkServer.getCurrentHost());
+        if(jobInfoRepository.countByServeHost(serverHost) > 0) {
+
+            List<InstanceEntity> entities = instanceRepository.findByServeHostAndExecuteStatueIn(serverHost, Collections.singletonList(ExecuteStatue.WAIT));
+
+            if (!entities.isEmpty()) {
+                instanceRepository.cancelAllWaitTask(serverHost);
+                workInstanceRepository.cancelAllInstance(serverHost);
+            }
+
+            jobInfoRepository.transferToAnotherServer(serverHost, MainAkServer.nextHealthServer());
         }
-
-        jobInfoRepository.transferToAnotherServer(MainAkServer.getCurrentHost(),MainAkServer.nextHealthServer());
-
     }
 
 }

@@ -4,6 +4,7 @@ import com.github.devil.common.enums.ExecuteStatue;
 import com.github.devil.common.enums.ExecuteType;
 import com.github.devil.common.enums.TaskType;
 import com.github.devil.common.enums.TimeType;
+import com.github.devil.srv.core.enums.InstanceType;
 import lombok.Data;
 import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
@@ -61,6 +62,10 @@ public class InstanceEntity {
 
     @Column(updatable = false)
     private String workerHost;
+
+    @Column(updatable = false)
+    @Enumerated(value = EnumType.STRING)
+    private InstanceType instanceType;
 
     @Enumerated(value = EnumType.STRING)
     private ExecuteStatue executeStatue;

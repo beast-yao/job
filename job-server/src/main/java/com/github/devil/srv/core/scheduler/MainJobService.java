@@ -4,7 +4,9 @@ import com.github.devil.common.enums.ExecuteStatue;
 import com.github.devil.srv.akka.MainAkServer;
 import com.github.devil.srv.core.MainThreadUtil;
 import com.github.devil.srv.core.notify.NotifyCenter;
+import com.github.devil.srv.core.notify.event.SchedulerJobErrorEvent;
 import com.github.devil.srv.core.notify.listener.JobExecuteFailListener;
+import com.github.devil.srv.core.notify.listener.SchedulerJobErrorListener;
 import com.github.devil.srv.core.persist.core.entity.InstanceEntity;
 import com.github.devil.srv.core.persist.core.entity.JobInfoEntity;
 import com.github.devil.srv.core.persist.core.repository.JobInfoRepository;
@@ -41,6 +43,11 @@ public class MainJobService implements DisposableBean {
     @Resource
     private TaskRunner taskRunner;
 
+    /**
+     * init the schedule task after
+     * {@link org.springframework.context.ApplicationContext}
+     * is ready and all spring bean has bean init
+     */
     public void init(){
         /**
          * process wait task that because the un except stop
@@ -53,9 +60,9 @@ public class MainJobService implements DisposableBean {
         takeUnServerTask();
 
         /**
-         * register the listener
+         * register listener to handle the event
          */
-        NotifyCenter.addListener(new JobExecuteFailListener());
+        registerListener();
 
         /**
          * process task from db to timer
@@ -68,6 +75,9 @@ public class MainJobService implements DisposableBean {
         processLongTimeExecutingTask();
     }
 
+    /**
+     * process the task that is in WAIT state in app start
+     */
     private void processWaitTask(){
         //todo
         MainThreadUtil.scheduleAtFixedRate(() -> {
@@ -75,6 +85,21 @@ public class MainJobService implements DisposableBean {
         },10,SCHEDULER_FIX,TimeUnit.MILLISECONDS);
     }
 
+    /**
+     * register listeners
+     */
+    private void registerListener(){
+        /**
+         * register the listener
+         */
+        NotifyCenter.addListener(new JobExecuteFailListener());
+        NotifyCenter.addListener(new SchedulerJobErrorListener());
+    }
+
+    /**
+     * schedule the task to push job to schedule
+     * @see #pushJobToTimer
+     */
     private void processTaskToTimer(){
         /**
          * register job push task
@@ -90,14 +115,23 @@ public class MainJobService implements DisposableBean {
         },100,SCHEDULER_FIX, TimeUnit.MILLISECONDS);
     }
 
+    /**
+     * notify the job that has long time to receive the execute res
+     */
     private void processLongTimeExecutingTask(){
         //todo
     }
 
+    /**
+     * take job that not have the server to schedule
+     */
     private void takeUnServerTask(){
         //todo
     }
 
+    /**
+     * push current server task to schedule
+     */
     private void pushJobToTimer(){
 
         /**
@@ -118,9 +152,19 @@ public class MainJobService implements DisposableBean {
 
                 instanceEntities.forEach(instanceEntity -> {
 
-                    MainJobScheduler.schedule(instanceEntity.getId(),Math.max(instanceEntity.getExceptTriggerTime().getTime() - System.currentTimeMillis(),0),() -> {
-                        taskRunner.runTask(map.get(instanceEntity.getJobId()),instanceEntity.getId());
-                    });
+                    try {
+                        MainJobScheduler.schedule(instanceEntity.getId(),Math.max(instanceEntity.getExceptTriggerTime().getTime() - System.currentTimeMillis(),0),() -> {
+                            taskRunner.runTask(map.get(instanceEntity.getJobId()),instanceEntity.getId());
+                        });
+                    }catch (Exception e){
+                        //todo notify the job error
+                        log.error("timer delay the job fail,",e);
+                        NotifyCenter.onEvent(SchedulerJobErrorEvent.builder()
+                                .instanceId(instanceEntity.getId())
+                                .jobId(instanceEntity.getJobId())
+                                .describe(e.getMessage())
+                                .build());
+                    }
                 });
             }catch (Exception e){
                 e.printStackTrace();
@@ -128,6 +172,11 @@ public class MainJobService implements DisposableBean {
         }
     }
 
+    /**
+     * destroy method stop used threadPool
+     * and cancel all the task
+     * @throws Exception
+     */
     @Override
     public void destroy() throws Exception {
         try{

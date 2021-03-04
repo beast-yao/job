@@ -6,6 +6,7 @@ import com.github.devil.common.dto.WorkerExecuteRes;
 import com.github.devil.srv.akka.MainAkServer;
 import com.github.devil.srv.akka.ha.ServerManager;
 import com.github.devil.srv.akka.worker.WorkerHolder;
+import com.github.devil.srv.core.enums.InstanceType;
 import com.github.devil.srv.core.exception.JobException;
 import com.github.devil.srv.core.persist.core.entity.InstanceEntity;
 import com.github.devil.srv.core.persist.core.entity.JobInfoEntity;
@@ -49,6 +50,8 @@ public class JobService {
         instanceEntity.setJobId(jobInfoEntity.getId());
         instanceEntity.setExceptTriggerTime(jobInfoEntity.getNextTriggerTime());
         instanceEntity.setServeHost(MainAkServer.getCurrentHost());
+        instanceEntity.setInstanceType(InstanceType.AUTO);
+        instanceEntity.setId(null);
         jobInstanceRepository.saveAndFlush(instanceEntity);
 
         List<WorkInstanceEntity> lists = getAllWorkers(jobInfoEntity).stream().map(s -> {
@@ -75,6 +78,7 @@ public class JobService {
             instanceEntity.setJobId(jobInfoEntity.getId());
             instanceEntity.setExceptTriggerTime(jobInfoEntity.getNextTriggerTime());
             instanceEntity.setServeHost(MainAkServer.getCurrentHost());
+            instanceEntity.setInstanceType(InstanceType.AUTO);
             instanceEntity.setId(null);
             return instanceEntity;
         }).collect(Collectors.toList());

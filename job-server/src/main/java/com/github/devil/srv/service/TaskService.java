@@ -17,6 +17,7 @@ public interface TaskService {
 
     /**
      * 停止所有任务，并将当前服务任务进行转移
+     * @param serverHost
      */
-    void stopAllAndTransfer();
+    void stopAllAndTransfer(String serverHost);
 }

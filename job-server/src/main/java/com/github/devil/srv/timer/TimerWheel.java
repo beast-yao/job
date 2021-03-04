@@ -134,6 +134,10 @@ public class TimerWheel implements Timer{
             throw new  NullPointerException("unit");
         }
 
+        if (state.get() == STATE_STOP){
+            throw new JobException("TimerWheel is stoped that cannot accept the task");
+        }
+
         /**
          * start workerThread
          */
