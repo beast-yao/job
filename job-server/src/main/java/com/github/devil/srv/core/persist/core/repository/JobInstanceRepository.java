@@ -26,9 +26,9 @@ public interface JobInstanceRepository extends JpaRepository<InstanceEntity,Long
      * @return
      */
     @Modifying
-    @Query("update InstanceEntity set triggerTime = ?1 , executeStatue = ?2 , upt = ?4 where id = ?3")
+    @Query("update InstanceEntity set triggerTime = ?1 , executeEndTime=?2 , executeStatue = ?2 , upt = ?1 where id = ?3")
     @Transactional(transactionManager = "transactionManager",rollbackFor = Exception.class)
-    int updateTriggerTimeAndStatus(Date triggerTime, ExecuteStatue executeStatue,Long id,Date upt);
+    int updateTriggerTimeAndStatus(Date triggerTime, ExecuteStatue executeStatue,Long id,Date executeEndTime);
 
     /**
      * 通过serverhost和executeStatue查询

@@ -19,12 +19,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import scala.concurrent.Future;
 
 import javax.annotation.Resource;
+import java.time.Duration;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.CompletionStage;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author eric.yao
@@ -77,6 +81,7 @@ public class TaskRunner {
             NotifyCenter.onEvent(new JobExecuteFailEvent()
                     .setInstanceId(instanceId)
                     .setJobId(jobInfoEntity.getId())
+                    .setAppName(instanceEntity.getAppName())
                     .setException(new JobException("can not find any worker to submit this task,Please check if all worker is down")));
 
         }else {
@@ -91,14 +96,36 @@ public class TaskRunner {
                 req.setTaskType(instanceEntity.getTaskType());
                 req.setServerHost(MainAkServer.getCurrentHost());
 
+
                 ActorSelection selection = MainAkServer.getWorker(worker.getWorkerHost());
                 // 不需要返回结果，只需要确保接收到了消息
-                Patterns.ask(selection,req,1000);
+                try {
+                    CompletionStage<?> stage = Patterns.ask(selection,req, Duration.ofMillis(1000));
+                    stage.toCompletableFuture().get(1000, TimeUnit.MILLISECONDS);
 
-                workInstanceRepository.updateTriggerTimeAndExecuteStatueById(ExecuteStatue.EXECUTING,new Date(),new Date(),worker.getId());
+                    workInstanceRepository.updateTriggerTimeAndExecuteStatueById(ExecuteStatue.EXECUTING,new Date(),new Date(),worker.getId());
+
+                }catch (Exception e){
+                    log.error("send execute req error,",e);
+                    workInstanceRepository.endWorkById(ExecuteStatue.FAILURE,new Date(),worker.getId(),ExecuteStatue.WAIT);
+                    worker.setExecuteStatue(ExecuteStatue.FAILURE);
+
+                    NotifyCenter.onEvent(new JobExecuteFailEvent()
+                            .setInstanceId(instanceId)
+                            .setJobId(jobInfoEntity.getId())
+                            .setAppName(instanceEntity.getAppName())
+                            .setWorkInstanceId(worker.getId())
+                            .setWorkHost(worker.getWorkerHost())
+                            .setException(new JobException("send execute req error",e)));
+
+                }
             }
-            instanceEntity.setExecuteStatue(ExecuteStatue.EXECUTING);
-            jobInstanceRepository.updateTriggerTimeAndStatus(instanceEntity.getTriggerTime(),instanceEntity.getExecuteStatue(),instanceId,new Date());
+            // whether all the work task is fail
+            boolean hasNoFail = workers.stream().anyMatch(e -> !Objects.equals(e.getExecuteStatue(), ExecuteStatue.FAILURE));
+            jobInstanceRepository.updateTriggerTimeAndStatus( instanceEntity.getTriggerTime(),
+                                                                hasNoFail ? ExecuteStatue.EXECUTING : ExecuteStatue.FAILURE,
+                                                                instanceId,
+                                                                hasNoFail ? null : new Date());
         }
     }
 

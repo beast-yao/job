@@ -44,6 +44,11 @@ public class LoggerImpl implements Logger {
         LogPushCenter.log(getLogContent(LogLevel.ERROR,message,args));
     }
 
+    @Override
+    public void log(String message, LogLevel logLevel, Object... args) {
+        LogPushCenter.log(getLogContent(logLevel,message,args));
+    }
+
     private LogContent getLogContent(LogLevel logLevel,String message, Object[] args){
         LogContent content = new LogContent();
         FormattingTuple tuple = MessageFormatter.arrayFormat(message,args);

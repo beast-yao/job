@@ -1,5 +1,7 @@
 package com.github.devil.client.logger;
 
+import com.github.devil.common.enums.LogLevel;
+
 /**
  * @author eric.yao
  * @date 2021/2/3
@@ -35,4 +37,11 @@ public interface Logger {
      */
     public void error(String message,Object ... args);
 
+    /**
+     *
+     * @param message
+     * @param logLevel
+     * @param args
+     */
+    public void log(String message, LogLevel logLevel, Object ... args);
 }

@@ -31,10 +31,16 @@ public interface WorkInstanceRepository extends JpaRepository<WorkInstanceEntity
     @Transactional(transactionManager = "transactionManager",rollbackFor = Exception.class)
     int updateTriggerTimeAndExecuteStatueById(ExecuteStatue statue, Date triggerTime, Date upt, Long id);
 
+
     @Modifying
-    @Query("update WorkInstanceEntity set executeStatue=?1,triggerTime=?2,upt=?3 where instanceId=?4 and executeStatue = ?5")
+    @Query("update WorkInstanceEntity set executeStatue=?1,triggerTime=?2,upt=?3,executeEndTime=?3 where instanceId=?4 and executeStatue = ?5")
     @Transactional(transactionManager = "transactionManager",rollbackFor = Exception.class)
-    int updateTriggerTimeAndExecuteStatueByInstanceId(ExecuteStatue statue, Date triggerTime, Date upt, Long instanceId,ExecuteStatue before);
+    int endWorkByInstanceId(ExecuteStatue statue, Date triggerTime, Date upt, Long instanceId, ExecuteStatue before);
+
+    @Modifying
+    @Query("update WorkInstanceEntity set executeStatue=?1,triggerTime=?2,upt=?3,executeEndTime=?3 where id=?4 and executeStatue = ?5")
+    @Transactional(transactionManager = "transactionManager",rollbackFor = Exception.class)
+    int endWorkById(ExecuteStatue statue, Date triggerTime, Long id, ExecuteStatue before);
 
     /**
      * 修改执行状态
@@ -46,7 +52,7 @@ public interface WorkInstanceRepository extends JpaRepository<WorkInstanceEntity
     @CanIgnoreReturnValue
     @Query("update WorkInstanceEntity set executeStatue=?2,executeEndTime=?3 where id=?1 and executeStatue='EXECUTING'")
     @Transactional(transactionManager = "transactionManager",rollbackFor = Exception.class)
-    int updateStatus(Long id,ExecuteStatue statue,Date endTime);
+    int endWorkFromExecuteById(Long id, ExecuteStatue statue, Date endTime);
 
     /**
      * 更具状态和instanceId查询

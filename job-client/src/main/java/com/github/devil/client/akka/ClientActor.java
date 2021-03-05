@@ -40,6 +40,7 @@ class ClientActor extends AbstractActor {
         taskContext.setServer(executeReq.getServerHost());
         taskContext.setName(executeReq.getUniqueName());
         taskContext.setTaskType(executeReq.getTaskType());
+        taskContext.setMeatInfo(executeReq.getJobMeta());
 
         TaskCenter.beforeProcess(taskContext);
 

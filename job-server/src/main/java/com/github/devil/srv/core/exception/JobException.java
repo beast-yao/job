@@ -16,4 +16,9 @@ public class JobException extends RuntimeException {
         this.message = message;
     }
 
+    public JobException(String message,Throwable throwable){
+        super(message,throwable);
+        this.message = message;
+    }
+
 }

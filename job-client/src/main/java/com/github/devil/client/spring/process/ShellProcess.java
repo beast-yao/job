@@ -1,10 +1,20 @@
 package com.github.devil.client.spring.process;
 
+import com.github.devil.client.logger.Logger;
 import com.github.devil.client.process.InvokeProcess;
 import com.github.devil.client.process.TaskContext;
+import com.github.devil.common.enums.LogLevel;
 import com.github.devil.common.enums.ResultEnums;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.apache.commons.lang3.SystemUtils;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author eric.yao
@@ -16,6 +26,66 @@ public class ShellProcess implements InvokeProcess {
 
     @Override
     public ResultEnums run(TaskContext taskContext) {
-        return null;
+        Logger logger = taskContext.getLogger();
+        try {
+            String meta = taskContext.getMeatInfo();
+
+            if (meta == null || meta.isEmpty()){
+                logger.error("can not execute shell task, shell script is empty");
+                return ResultEnums.F;
+            }
+
+            String shellRootPath = getScriptDir();
+            String fileName = writeShell(taskContext,shellRootPath);
+
+
+            Runtime runtime = Runtime.getRuntime();
+            // 修改权限
+            runtime.exec(new String[]{"/bin/chmod ","777",fileName}).waitFor();
+            Process process = runtime.exec(new String[]{"/bin/sh",fileName});
+
+            new Thread(() -> logFromIo(process.getInputStream(),logger,LogLevel.INFO));
+            new Thread(() -> logFromIo(process.getErrorStream(),logger,LogLevel.ERROR));
+
+            process.waitFor(30, TimeUnit.SECONDS);
+
+            return ResultEnums.S;
+        }catch (Exception e){
+            logger.error("execute script error,jobId [{}],instanceId:[{}],error:",taskContext.getJobId(),taskContext.getInstanceId(),e);
+            return ResultEnums.F;
+        }
+    }
+
+    private String getScriptDir(){
+        return SystemUtils.getJavaIoTmpDir().getAbsolutePath();
+    }
+
+    private String getFileName(TaskContext taskContext){
+       return "_"+taskContext.getInstanceId()+"_"+taskContext.getClass();
+    }
+
+    private String writeShell(TaskContext taskContext,String rootPath) throws IOException {
+
+        String shellName = getFileName(taskContext);
+        File file = new File(rootPath,shellName);
+        try (FileWriter writer = new FileWriter(file, true)){
+            writer.write(taskContext.getMeatInfo());
+            writer.flush();
+        }
+        return file.getAbsolutePath();
+    }
+
+    private void logFromIo(InputStream in, Logger logger, LogLevel level) {
+        try {
+            byte[] bytes = new byte[1024];
+            int length = 0;
+            StringBuilder builder = new StringBuilder();
+            while ((length = in.read(bytes)) > 0){
+                builder.append(new String(bytes,0,length,StandardCharsets.UTF_8));
+            }
+            logger.log(builder.toString(),level);
+        }catch (Exception e){
+            logger.error("read script execute res error,",e);
+        }
     }
 }

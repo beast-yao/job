@@ -132,7 +132,7 @@ public class JobService {
         /**
          * 修改任务执行状态
          */
-        workInstanceRepository.updateStatus(res.getWorkInstanceId(),res.getResult().equals(ResultEnums.S)?ExecuteStatue.SUCCESS:ExecuteStatue.FAILURE,new Date());
+        workInstanceRepository.endWorkFromExecuteById(res.getWorkInstanceId(),res.getResult().equals(ResultEnums.S)?ExecuteStatue.SUCCESS:ExecuteStatue.FAILURE,new Date());
 
         List<WorkInstanceEntity> lists = workInstanceRepository.findByExecuteStatueInAndInstanceId(Arrays.asList(ExecuteStatue.EXECUTING,ExecuteStatue.WAIT),res.getInstanceId());
         /**
@@ -158,7 +158,7 @@ public class JobService {
     public void failInstance(Long instanceId){
         jobInstanceRepository.updateTriggerTimeAndStatus(new Date(),ExecuteStatue.FAILURE,instanceId,new Date());
 
-        workInstanceRepository.updateTriggerTimeAndExecuteStatueByInstanceId(ExecuteStatue.FAILURE,new Date(),new Date(),instanceId,ExecuteStatue.WAIT);
+        workInstanceRepository.endWorkByInstanceId(ExecuteStatue.FAILURE,new Date(),new Date(),instanceId,ExecuteStatue.WAIT);
     }
 
 }

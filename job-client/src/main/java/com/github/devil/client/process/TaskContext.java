@@ -30,6 +30,8 @@ public class TaskContext {
 
     private TaskType taskType;
 
+    private String meatInfo;
+
     private Map<String,String> extension = new HashMap<>();
 
     private Logger logger = new LoggerImpl(this);

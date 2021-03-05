@@ -26,10 +26,12 @@ public class JobExecuteFailListener implements Listener<JobExecuteFailEvent> {
     }
 
     private String buildMessage(JobExecuteFailEvent event){
-        return String.format("任务编号:%s,任务实例:%s,执行器地址:%s,异常信息:%s",
+        return String.format("任务编号:%s,任务实例:%s,AppName:[%s],执行器执行编号 %s ,执行器地址:%s,异常信息:%s",
                         event.getJobId(),
                         event.getInstanceId(),
+                        event.getAppName(),
                         event.getWorkHost(),
+                        event.getWorkInstanceId(),
                         event.getException() == null?"":event.getException().getMessage());
     }
 }

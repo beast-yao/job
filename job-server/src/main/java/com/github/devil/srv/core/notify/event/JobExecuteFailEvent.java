@@ -20,4 +20,8 @@ public class JobExecuteFailEvent extends Event {
     private String workHost;
 
     private JobException exception;
+
+    private Long workInstanceId;
+
+    private String appName;
 }
