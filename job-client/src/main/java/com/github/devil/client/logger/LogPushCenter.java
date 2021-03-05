@@ -26,6 +26,8 @@ public class LogPushCenter {
 
     private final static DelayQueue<DelayLog> loggers = new DelayQueue<>();
 
+    private final static int MAX_SIZE = 50;
+
     public static void log(LogContent logContent){
         loggers.add(new DelayLog(logContent));
         if (starting.compareAndSet(false,true)){
@@ -46,7 +48,7 @@ public class LogPushCenter {
             while (ClientAkkaServer.hasStart()){
                 // poll log
                 List<DelayLog> delayLogs = new ArrayList<>();
-                loggers.drainTo(delayLogs);
+                loggers.drainTo(delayLogs,MAX_SIZE);
                 pushLog(delayLogs.stream().map(DelayLog::getLogContent).collect(Collectors.toList()));
             }
 
@@ -62,6 +64,10 @@ public class LogPushCenter {
                 }
                 if (delayLog != null){
                     lists.add(delayLog.getLogContent());
+                }
+                if (lists.size() >= MAX_SIZE){
+                    pushLog(lists);
+                    lists.clear();
                 }
             }
 
