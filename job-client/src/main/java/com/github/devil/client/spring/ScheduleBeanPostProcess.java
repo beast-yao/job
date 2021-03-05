@@ -1,7 +1,9 @@
 package com.github.devil.client.spring;
 
 import com.github.devil.client.akka.ClientAkkaServer;
+import com.github.devil.client.process.TaskLifecycle;
 import com.github.devil.client.spring.annotation.Scheduled;
+import com.github.devil.client.spring.process.MethodInvokeProcess;
 import org.springframework.aop.framework.AopInfrastructureBean;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.BeansException;
@@ -42,7 +44,7 @@ public class ScheduleBeanPostProcess implements BeanPostProcessor, SmartInitiali
         }
 
         // 代理类需要找到原始类型
-        Class target = AopUtils.getTargetClass(bean);
+        Class<?> target = AopUtils.getTargetClass(bean);
         if (!nonAnnotatedClasses.contains(target)) {
             Map<Method, Scheduled> annotations = MethodIntrospector.selectMethods(target, (MethodIntrospector.MetadataLookup<Scheduled>) method -> AnnotationUtils.findAnnotation(method, Scheduled.class));
 
@@ -52,6 +54,11 @@ public class ScheduleBeanPostProcess implements BeanPostProcessor, SmartInitiali
                 annotations.forEach((method, scheduled) -> registerTask(bean,method,scheduled));
             }
         }
+
+        if (bean instanceof TaskLifecycle){
+            registerLifecycle((TaskLifecycle)bean);
+        }
+
         return bean;
     }
 
@@ -62,6 +69,11 @@ public class ScheduleBeanPostProcess implements BeanPostProcessor, SmartInitiali
             uniqueName = defaultName(bean,method);
         }
         TaskCenter.registerProcess(uniqueName,new MethodInvokeProcess(bean, method));
+    }
+
+    private void  registerLifecycle(TaskLifecycle lifecycle){
+        String name = Optional.ofNullable(lifecycle.name()).orElse("");
+        TaskCenter.registerTaskAspect(name,lifecycle);
     }
 
     private String defaultName(Object bean,Method method){

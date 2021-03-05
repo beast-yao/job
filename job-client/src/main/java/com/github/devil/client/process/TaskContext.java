@@ -2,7 +2,12 @@ package com.github.devil.client.process;
 
 import com.github.devil.client.logger.Logger;
 import com.github.devil.client.logger.impl.LoggerImpl;
+import com.github.devil.common.enums.ExecuteType;
+import com.github.devil.common.enums.TaskType;
 import lombok.Data;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author eric.yao
@@ -22,6 +27,10 @@ public class TaskContext {
     private String server;
 
     private String name;
+
+    private TaskType taskType;
+
+    private Map<String,String> extension = new HashMap<>();
 
     private Logger logger = new LoggerImpl(this);
 }

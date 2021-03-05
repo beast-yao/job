@@ -3,6 +3,7 @@ package com.github.devil.client.akka;
 import akka.actor.*;
 import akka.japi.pf.ReceiveBuilder;
 import com.github.devil.client.ThreadUtil;
+import com.github.devil.client.process.TaskContext;
 import com.github.devil.client.spring.TaskCenter;
 import com.github.devil.common.dto.*;
 import com.github.devil.common.enums.ResultEnums;
@@ -30,9 +31,21 @@ class ClientActor extends AbstractActor {
     }
 
     private void onReceiveReq(WorkerExecuteReq executeReq){
+
+        TaskContext taskContext = new TaskContext();
+        taskContext.setInstanceId(executeReq.getInstanceId());
+        taskContext.setJobId(executeReq.getJobId());
+        taskContext.setParam(executeReq.getParams());
+        taskContext.setWorkInstanceId(executeReq.getWorkInstanceId());
+        taskContext.setServer(executeReq.getServerHost());
+        taskContext.setName(executeReq.getUniqueName());
+        taskContext.setTaskType(executeReq.getTaskType());
+
+        TaskCenter.beforeProcess(taskContext);
+
         ThreadUtil.GLOBAL.execute(() -> {
             try {
-                ResultEnums result =  TaskCenter.runProcess(executeReq);
+                ResultEnums result =  TaskCenter.runProcess(taskContext);
 
                 WorkerExecuteRes res = new WorkerExecuteRes();
                 res.setInstanceId(executeReq.getInstanceId());
