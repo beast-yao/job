@@ -58,6 +58,6 @@ class ClientActor extends AbstractActor {
                 log.error("execute task fail,",e);
             }
         });
-        getSender().tell(NoResponse.class,getSelf());
+        getSender().tell(new NoResponse(),getSelf());
     }
 }
