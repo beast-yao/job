@@ -6,6 +6,7 @@ import com.github.devil.common.enums.ExecuteStatue;
 import com.github.devil.common.dto.WorkerExecuteReq;
 import com.github.devil.common.enums.TimeType;
 import com.github.devil.srv.akka.MainAkServer;
+import com.github.devil.srv.core.enums.InstanceType;
 import com.github.devil.srv.core.exception.JobException;
 import com.github.devil.srv.core.notify.NotifyCenter;
 import com.github.devil.srv.core.notify.event.JobExecuteFailEvent;
@@ -59,8 +60,9 @@ public class TaskRunner {
             return;
         }
 
-        // 不是延时任务，需要修改触发时间
-        if (!Objects.equals(jobInfoEntity.getTimeType(), TimeType.DELAY)) {
+        // 不是延时任务和手动执行任务，需要修改触发时间
+        if (!Objects.equals(jobInfoEntity.getTimeType(), TimeType.DELAY)
+                && !Objects.equals(instanceEntity.getInstanceType(), InstanceType.HAND)) {
             jobService.refreshNextTriggerTime(jobInfoEntity);
         }
         // 设置开始时间

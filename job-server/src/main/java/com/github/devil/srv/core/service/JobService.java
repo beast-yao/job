@@ -42,15 +42,19 @@ public class JobService {
     @Resource
     private ServerManager serverManager;
 
+    private final static Integer HAND_VERSION = -1;
+
     @Transactional(transactionManager = "transactionManager",rollbackFor = Exception.class)
-    public InstanceEntity newInstance(JobInfoEntity jobInfoEntity){
+    public InstanceEntity newHandleInstance(JobInfoEntity jobInfoEntity){
         InstanceEntity instanceEntity = new InstanceEntity();
         BeanUtils.copyProperties(jobInfoEntity,instanceEntity);
         instanceEntity.setExecuteStatue(ExecuteStatue.WAIT);
         instanceEntity.setJobId(jobInfoEntity.getId());
         instanceEntity.setExceptTriggerTime(jobInfoEntity.getNextTriggerTime());
         instanceEntity.setServeHost(MainAkServer.getCurrentHost());
-        instanceEntity.setInstanceType(InstanceType.AUTO);
+        instanceEntity.setInstanceType(InstanceType.HAND);
+        // 手动执行版本号为-1
+        instanceEntity.setVersion(HAND_VERSION);
         instanceEntity.setId(null);
         jobInstanceRepository.saveAndFlush(instanceEntity);
 
@@ -59,6 +63,7 @@ public class JobService {
             BeanUtils.copyProperties(instanceEntity,workInstanceEntity);
             workInstanceEntity.setInstanceId(instanceEntity.getId());
             workInstanceEntity.setWorkerHost(s);
+            workInstanceEntity.setId(null);
             return workInstanceEntity;
         }).collect(Collectors.toList());
 
