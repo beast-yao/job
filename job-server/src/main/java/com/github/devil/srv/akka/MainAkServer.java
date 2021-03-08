@@ -66,14 +66,18 @@ public class MainAkServer {
     }
 
     public static void start(@Nonnull ServerProperties serverProperties){
-        //初始化akka server
-        initServer(serverProperties);
+        if (state.get() == 0) {
+            //初始化akka server
+            initServer(serverProperties);
 
-        //初始化节点通信
-        initEcho(serverProperties);
+            //初始化节点通信
+            initEcho(serverProperties);
 
-        //初始化监听器
-        initListener();
+            //初始化监听器
+            initListener();
+        }else {
+            log.warn("Akka Server had init , cannot init again");
+        }
     }
 
     private static void initServer(ServerProperties serverProperties){

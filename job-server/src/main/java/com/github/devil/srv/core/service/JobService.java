@@ -45,7 +45,7 @@ public class JobService {
     private final static Integer HAND_VERSION = -1;
 
     @Transactional(transactionManager = "transactionManager",rollbackFor = Exception.class)
-    public InstanceEntity newHandleInstance(JobInfoEntity jobInfoEntity){
+    public InstanceEntity newHandInstance(JobInfoEntity jobInfoEntity){
         InstanceEntity instanceEntity = new InstanceEntity();
         BeanUtils.copyProperties(jobInfoEntity,instanceEntity);
         instanceEntity.setExecuteStatue(ExecuteStatue.WAIT);

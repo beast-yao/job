@@ -10,6 +10,7 @@ import com.github.devil.srv.core.persist.core.repository.JobInstanceRepository;
 import com.github.devil.srv.core.persist.core.repository.WorkInstanceRepository;
 import com.github.devil.srv.dto.request.NewTaskRequest;
 import com.github.devil.srv.service.TaskService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +23,7 @@ import java.util.List;
  * @author eric.yao
  * @date 2021/2/18
  **/
+@Slf4j
 @Service
 public class TaskServiceImpl implements TaskService {
 
@@ -64,9 +66,14 @@ public class TaskServiceImpl implements TaskService {
             if (!entities.isEmpty()) {
                 instanceRepository.cancelAllWaitTask(serverHost);
                 workInstanceRepository.cancelAllInstance(serverHost);
+
+                log.info("cancel task from dead server:[{}],task count:[{}]",serverHost,entities.size());
             }
 
-            jobInfoRepository.transferToAnotherServer(serverHost, MainAkServer.nextHealthServer());
+            String healthServer = MainAkServer.nextHealthServer();
+            int count = jobInfoRepository.transferToAnotherServer(serverHost, healthServer);
+
+            log.info("transfer task from dead server:[{}] to another server:[{}], task count:[{}]",serverHost,healthServer,count);
         }
     }
 
