@@ -13,17 +13,17 @@ public class MainThreadUtil {
      * 定时触发器.
      */
     private final static ScheduledExecutorService SCHEDULE = new ScheduledThreadPoolExecutor(10,
-                                                                    newThreadFactory("SCHEDULE"));
+                                                                    new NamedThreadFactory("SCHEDULE"));
 
     public final static ScheduledExecutorService JOB_PUSH = new ScheduledThreadPoolExecutor(1,
-                                                                    newThreadFactory("JOB-PUSH"));
+                                                                    new NamedThreadFactory("JOB-PUSH"));
 
     public final static ThreadPoolExecutor GLOBAL = new ThreadPoolExecutor(Runtime.getRuntime().availableProcessors(),
                                         Runtime.getRuntime().availableProcessors() * 4,
                                             60,
                                                         TimeUnit.SECONDS,
                                                         new SynchronousQueue<>(),
-                                                        newThreadFactory("GLOBAL"));
+                                                        new NamedThreadFactory("GLOBAL"));
 
     public static void shutdown(){
 
@@ -38,23 +38,6 @@ public class MainThreadUtil {
         if (!SCHEDULE.isShutdown()){
             SCHEDULE.shutdown();
         }
-    }
-
-    private static ThreadFactory newThreadFactory(String name) {
-        return r -> {
-            Thread thread = new Thread(r);
-            thread.setName(name);
-            thread.setUncaughtExceptionHandler(newHandler());
-            return thread;
-        };
-    }
-
-    private static Thread.UncaughtExceptionHandler newHandler() {
-        return (Thread t, Throwable e) -> {
-          if (log.isErrorEnabled()) {
-              log.error("thread error,thread-name:{},error:", t.getName(), e);
-          }
-        };
     }
 
     public static ScheduledFuture<?> scheduleAtFixedRate(Runnable runnable,long delay,long rate,TimeUnit unit){

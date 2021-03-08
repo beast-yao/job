@@ -161,7 +161,7 @@ public class JobService {
      */
     @Transactional(transactionManager = "transactionManager",rollbackFor = Exception.class)
     public void failInstance(Long instanceId){
-        jobInstanceRepository.updateTriggerTimeAndStatus(new Date(),ExecuteStatue.FAILURE,instanceId,new Date());
+        jobInstanceRepository.updateStatusById(instanceId,new Date(),ExecuteStatue.FAILURE);
 
         workInstanceRepository.endWorkByInstanceId(ExecuteStatue.FAILURE,new Date(),new Date(),instanceId,ExecuteStatue.WAIT);
     }

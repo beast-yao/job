@@ -144,32 +144,30 @@ public class MainJobService implements DisposableBean {
         List<JobInfoEntity> jobInfoEntities = jobInfoRepository.findUnExecuteJob(MainAkServer.getCurrentHost(), new Date(System.currentTimeMillis()+(int)(SCHEDULER_FIX*1.5)),Lists.newArrayList(ExecuteStatue.WAIT.name(),ExecuteStatue.EXECUTING.name()));
 
         for (List<JobInfoEntity> lists : Lists.partition(jobInfoEntities, MAX_BATCH)) {
-            transactionTemplate.executeWithoutResult(status -> {
 
-                if (log.isDebugEnabled()) {
-                    log.debug("process task to timer,task count :{}", lists.size());
+            if (log.isDebugEnabled()) {
+                log.debug("process task to timer,task count :{}", lists.size());
+            }
+
+            Map<Long,JobInfoEntity> map = lists.stream().collect(Collectors.toMap(JobInfoEntity::getId,e -> e));
+
+            List<InstanceEntity> instanceEntities = jobService.newInstance(lists);
+
+            instanceEntities.forEach(instanceEntity -> {
+
+                try {
+                    MainJobScheduler.schedule(instanceEntity.getId(),Math.max(instanceEntity.getExceptTriggerTime().getTime() - System.currentTimeMillis(),0),() -> {
+                        taskRunner.runTask(map.get(instanceEntity.getJobId()),instanceEntity.getId());
+                    });
+                }catch (Exception e){
+                    log.error("timer delay the job fail,",e);
+                    jobService.failInstance(instanceEntity.getId());
+                    NotifyCenter.onEvent(SchedulerJobErrorEvent.builder()
+                                        .instanceId(instanceEntity.getId())
+                                        .jobId(instanceEntity.getJobId())
+                                        .describe(e.getMessage())
+                                        .build());
                 }
-
-                Map<Long,JobInfoEntity> map = lists.stream().collect(Collectors.toMap(JobInfoEntity::getId,e -> e));
-
-                List<InstanceEntity> instanceEntities = jobService.newInstance(lists);
-
-                instanceEntities.forEach(instanceEntity -> {
-
-                    try {
-                        MainJobScheduler.schedule(instanceEntity.getId(),Math.max(instanceEntity.getExceptTriggerTime().getTime() - System.currentTimeMillis(),0),() -> {
-                            taskRunner.runTask(map.get(instanceEntity.getJobId()),instanceEntity.getId());
-                        });
-                    }catch (Exception e){
-                        log.error("timer delay the job fail,",e);
-                        jobService.failInstance(instanceEntity.getId());
-                        NotifyCenter.onEvent(SchedulerJobErrorEvent.builder()
-                                            .instanceId(instanceEntity.getId())
-                                            .jobId(instanceEntity.getJobId())
-                                            .describe(e.getMessage())
-                                            .build());
-                    }
-                });
             });
         }
     }

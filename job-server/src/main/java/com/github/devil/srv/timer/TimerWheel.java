@@ -1,5 +1,6 @@
 package com.github.devil.srv.timer;
 
+import com.github.devil.srv.core.NamedThreadFactory;
 import com.github.devil.srv.core.exception.JobException;
 import lombok.Getter;
 
@@ -55,7 +56,8 @@ public class TimerWheel implements Timer{
     public TimerWheel(long tickDuration,TimeUnit unit,int ticketPreSize){
         this(tickDuration,unit,ticketPreSize
                 ,Executors.defaultThreadFactory()
-                ,new ThreadPoolExecutor(Runtime.getRuntime().availableProcessors()*4,Integer.MAX_VALUE,60,TimeUnit.SECONDS,new SynchronousQueue<>()));
+                ,new ThreadPoolExecutor(Runtime.getRuntime().availableProcessors()*4,Integer.MAX_VALUE,60,
+                        TimeUnit.SECONDS,new SynchronousQueue<>(),new NamedThreadFactory("TIMER")));
     }
 
     /**

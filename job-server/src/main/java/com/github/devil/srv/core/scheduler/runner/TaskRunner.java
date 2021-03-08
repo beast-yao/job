@@ -61,12 +61,16 @@ public class TaskRunner {
         }
 
         // 不是延时任务和手动执行任务，需要修改触发时间
+        // 此时就可以进行下一次任务调度了
         if (!Objects.equals(jobInfoEntity.getTimeType(), TimeType.DELAY)
                 && !Objects.equals(instanceEntity.getInstanceType(), InstanceType.HAND)) {
             jobService.refreshNextTriggerTime(jobInfoEntity);
         }
         // 设置开始时间
         instanceEntity.setTriggerTime(jobInfoEntity.getLastTriggerTime());
+
+        // 设置为执行状态
+        jobInstanceRepository.updateTriggerTimeAndStatus(instanceEntity.getTriggerTime(),ExecuteStatue.EXECUTING,instanceId);
 
         WorkInstanceEntity query = new WorkInstanceEntity();
         query.setInstanceId(instanceId);
@@ -124,10 +128,9 @@ public class TaskRunner {
             }
             // whether all the work task is fail
             boolean hasNoFail = workers.stream().anyMatch(e -> !Objects.equals(e.getExecuteStatue(), ExecuteStatue.FAILURE));
-            jobInstanceRepository.updateTriggerTimeAndStatus( instanceEntity.getTriggerTime(),
-                                                                hasNoFail ? ExecuteStatue.EXECUTING : ExecuteStatue.FAILURE,
-                                                                instanceId,
-                                                                hasNoFail ? null : new Date());
+            if (!hasNoFail) {
+                jobInstanceRepository.updateStatusById(instanceId,new Date(),ExecuteStatue.FAILURE);
+            }
         }
     }
 
