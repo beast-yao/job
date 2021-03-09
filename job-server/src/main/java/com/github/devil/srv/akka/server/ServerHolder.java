@@ -17,7 +17,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * @author eric.yao
@@ -44,9 +46,8 @@ public class ServerHolder {
         if (!ALL_SERVE.contains(serveHost)) {
             ALL_SERVE.add(serveHost);
             MainThreadUtil.scheduleAtFixedRate(() -> {
-                CompletionStage<Object> askEcho = Patterns.ask(MainAkServer.getSrv(serveHost), new Echo(), Duration.ofMillis(HEART_INTERVAL));
                 try {
-                    ServerInfo serverInfo = (ServerInfo) askEcho.toCompletableFuture().get(HEART_INTERVAL, TimeUnit.MILLISECONDS);
+                    ServerInfo serverInfo = ask(serveHost);
                     onReceiveServerInfo(serverInfo);
                 } catch (Exception e) {
                     DOWN_SERVE.add(serveHost);
@@ -56,6 +57,11 @@ public class ServerHolder {
 
             }, 10, HEART_INTERVAL, TimeUnit.MILLISECONDS);
         }
+    }
+
+    public static ServerInfo ask(String serverHost) throws InterruptedException, ExecutionException, TimeoutException {
+        CompletionStage<Object> askEcho = Patterns.ask(MainAkServer.getSrv(serverHost), new Echo(), Duration.ofMillis(HEART_INTERVAL));
+        return  (ServerInfo) askEcho.toCompletableFuture().get(HEART_INTERVAL, TimeUnit.MILLISECONDS);
     }
 
     /**

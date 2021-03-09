@@ -1,8 +1,9 @@
 package com.github.devil.srv.core.persist.logging.entity;
 
 import com.github.devil.common.enums.LogLevel;
+import com.github.devil.srv.core.persist.BaseEntity;
 import lombok.Data;
-import org.hibernate.annotations.CreationTimestamp;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -13,12 +14,9 @@ import java.util.Date;
  **/
 @Data
 @Entity
+@EqualsAndHashCode(callSuper = true)
 @Table(name = "job_logging",indexes = {@Index(columnList = "instanceId",name = "idx_jl_instance")})
-public class LoggingEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class LoggingEntity extends BaseEntity {
 
     private Long workInstanceId;
 
@@ -35,8 +33,4 @@ public class LoggingEntity {
     private LogLevel logLevel;
 
     private String workAddress;
-
-    @CreationTimestamp
-    @Column(updatable = false)
-    private Date crt;
 }

@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
 @Component
 public class MainJobService implements DisposableBean {
 
-    private final static Integer MAX_BATCH = 50;
+    private final static Integer MAX_BATCH = 200;
 
     public static final long SCHEDULER_FIX = 800;
 
@@ -53,15 +53,16 @@ public class MainJobService implements DisposableBean {
      * is ready and all spring bean has bean init
      */
     public void init(){
-        /**
-         * process wait task that because the un except stop
-         */
-        processWaitTask();
 
         /**
          * take the job that has no server to run
          */
         takeUnServerTask();
+
+        /**
+         * process wait task that because the un except stop
+         */
+        processWaitTask();
 
         /**
          * register listener to handle the event
@@ -128,7 +129,7 @@ public class MainJobService implements DisposableBean {
      * take job that not have the server to schedule
      */
     private void takeUnServerTask(){
-        //todo
+        jobService.takeNoServerTask();
     }
 
     /**

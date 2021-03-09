@@ -5,10 +5,10 @@ import com.github.devil.common.enums.ExecuteType;
 import com.github.devil.common.enums.TaskType;
 import com.github.devil.common.enums.TimeType;
 import com.github.devil.srv.core.enums.InstanceType;
+import com.github.devil.srv.core.persist.BaseEntity;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -17,15 +17,13 @@ import java.util.Date;
  * @author eric.yao
  * @date 2021/1/18
  **/
+
 @Data
 @Entity
+@EqualsAndHashCode(callSuper = true)
 @Table(name = "job_instance",indexes = {@Index(name = "idx_ji_job_version",columnList = "jobId,version")})
-@ToString(exclude = "jobInfoEntity")
-public class InstanceEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@ToString(exclude = "jobInfoEntity",callSuper = true)
+public class InstanceEntity extends BaseEntity {
 
     @Column(nullable = false,updatable = false)
     private Long jobId;
@@ -78,14 +76,6 @@ public class InstanceEntity {
     private Date triggerTime;
 
     private Date executeEndTime;
-
-    @CreationTimestamp
-    @Column(insertable = true,updatable = false)
-    private Date crt;
-
-    @UpdateTimestamp
-    @Column(insertable = false,updatable = true)
-    private Date upt;
 
     @JoinColumn(name = "jobId",referencedColumnName = "id",updatable = false,insertable = false)
     @ManyToOne(targetEntity = JobInfoEntity.class,fetch = FetchType.LAZY)

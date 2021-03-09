@@ -1,9 +1,9 @@
 package com.github.devil.srv.core.persist.core.entity;
 
 import com.github.devil.common.enums.ExecuteStatue;
+import com.github.devil.srv.core.persist.BaseEntity;
 import lombok.Data;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -12,14 +12,12 @@ import java.util.Date;
  * @author eric.yao
  * @date 2021/1/25
  **/
+
 @Data
 @Entity
+@EqualsAndHashCode(callSuper = true)
 @Table(name = "job_work_instance",indexes = {@Index(columnList = "instanceId",name = "idx_jwi_instance")})
-public class WorkInstanceEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class WorkInstanceEntity extends BaseEntity {
 
     @Column(nullable = false,updatable = false)
     private Long jobId;
@@ -49,11 +47,4 @@ public class WorkInstanceEntity {
 
     private Date executeEndTime;
 
-    @CreationTimestamp
-    @Column(insertable = true,updatable = false)
-    private Date crt;
-
-    @UpdateTimestamp
-    @Column(insertable = false,updatable = true)
-    private Date upt;
 }

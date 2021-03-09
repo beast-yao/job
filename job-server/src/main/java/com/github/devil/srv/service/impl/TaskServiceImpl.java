@@ -1,13 +1,9 @@
 package com.github.devil.srv.service.impl;
 
-import com.github.devil.common.enums.ExecuteStatue;
 import com.github.devil.srv.akka.MainAkServer;
 import com.github.devil.srv.core.enums.JobStatus;
-import com.github.devil.srv.core.persist.core.entity.InstanceEntity;
 import com.github.devil.srv.core.persist.core.entity.JobInfoEntity;
 import com.github.devil.srv.core.persist.core.repository.JobInfoRepository;
-import com.github.devil.srv.core.persist.core.repository.JobInstanceRepository;
-import com.github.devil.srv.core.persist.core.repository.WorkInstanceRepository;
 import com.github.devil.srv.core.service.JobService;
 import com.github.devil.srv.dto.request.NewTaskRequest;
 import com.github.devil.srv.service.TaskService;
@@ -16,9 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 
 /**
  * @author eric.yao
@@ -30,10 +24,6 @@ public class TaskServiceImpl implements TaskService {
 
     @Resource
     private JobInfoRepository jobInfoRepository;
-    @Resource
-    private JobInstanceRepository instanceRepository;
-    @Resource
-    private WorkInstanceRepository workInstanceRepository;
     @Resource
     private JobService jobService;
 
@@ -67,7 +57,7 @@ public class TaskServiceImpl implements TaskService {
             jobService.cancelAllWaitTask(serverHost);
 
             String healthServer = MainAkServer.nextHealthServer();
-            int count = jobInfoRepository.transferToAnotherServer(serverHost, healthServer);
+            int count = jobInfoRepository.transferToAnotherServer(serverHost, healthServer,new Date());
 
             log.info("transfer task from dead server:[{}] to another server:[{}], task count:[{}]",serverHost,healthServer,count);
         }

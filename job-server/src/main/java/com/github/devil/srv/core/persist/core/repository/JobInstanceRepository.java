@@ -26,7 +26,7 @@ public interface JobInstanceRepository extends JpaRepository<InstanceEntity,Long
      * @return
      */
     @Modifying
-    @Query("update InstanceEntity set triggerTime = ?1 , executeStatue = ?2 , upt = ?1 where id = ?3")
+    @Query("update InstanceEntity set triggerTime = ?1 , upt = ?1 , executeStatue = ?2  where id = ?3")
     @Transactional(transactionManager = "transactionManager",rollbackFor = Exception.class)
     int updateTriggerTimeAndStatus(Date triggerTime, ExecuteStatue executeStatue,Long id);
 
@@ -45,7 +45,7 @@ public interface JobInstanceRepository extends JpaRepository<InstanceEntity,Long
      */
     @Modifying
     @Transactional(transactionManager = "transactionManager",rollbackFor = Exception.class)
-    @Query(value = "update InstanceEntity set  executeStatue = ?3,executeEndTime=?2 where id = ?1 and not exists (select id from WorkInstanceEntity where instanceId = ?1 and executeStatue in ('WAIT','EXECUTING'))")
+    @Query(value = "update InstanceEntity set  executeStatue = ?3, upt=?2,executeEndTime=?2 where id = ?1 and not exists (select id from WorkInstanceEntity where instanceId = ?1 and executeStatue in ('WAIT','EXECUTING'))")
     int updateStatusById(Long id,Date executeEndTime,ExecuteStatue statue);
 
     /**
@@ -54,8 +54,8 @@ public interface JobInstanceRepository extends JpaRepository<InstanceEntity,Long
      * @return
      */
     @Modifying
-    @Query("update InstanceEntity set executeStatue = 'CANCEL' where serveHost=?1 and executeStatue = 'WAIT'")
+    @Query("update InstanceEntity set executeStatue = 'CANCEL',upt=?2 where serveHost=?1 and executeStatue = 'WAIT'")
     @Transactional(transactionManager = "transactionManager",rollbackFor = Exception.class)
-    int cancelAllWaitTask(String serverHost);
+    int cancelAllWaitTask(String serverHost, Date date);
 
 }

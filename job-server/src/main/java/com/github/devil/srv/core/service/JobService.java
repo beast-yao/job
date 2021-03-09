@@ -111,10 +111,10 @@ public class JobService {
     }
 
     @Transactional(transactionManager = "transactionManager",rollbackFor = Exception.class)
-    public void refreshNextTriggerTime(JobInfoEntity jobInfoEntity){
-        TimeType timeType = jobInfoEntity.getTimeType();
-        Date next = timeType.getNext(jobInfoEntity.getLastTriggerTime(),jobInfoEntity.getTimeVal());
-        jobInfoRepository.updateNextAndPreTriggerTimeAndServerById(jobInfoEntity.getId(),next,jobInfoEntity.getLastTriggerTime(),MainAkServer.nextHealthServer());
+    public void refreshNextTriggerTime(InstanceEntity instanceEntity){
+        TimeType timeType = instanceEntity.getTimeType();
+        Date next = timeType.getNext(Objects.equals(instanceEntity.getTimeType(),TimeType.DELAY)?instanceEntity.getExecuteEndTime():instanceEntity.getTriggerTime(),instanceEntity.getTimeVal());
+        jobInfoRepository.updateNextAndPreTriggerTimeAndServerById(instanceEntity.getJobId(),next,instanceEntity.getTriggerTime(),MainAkServer.nextHealthServer(),MainAkServer.getCurrentHost());
     }
 
     private Set<String> getAllWorkers(JobInfoEntity jobInfoEntity){
@@ -148,13 +148,13 @@ public class JobService {
         if (lists.isEmpty()){
             List<WorkInstanceEntity> fails = workInstanceRepository.findByExecuteStatueInAndInstanceId(Collections.singletonList(ExecuteStatue.FAILURE),res.getInstanceId());
             jobInstanceRepository.updateStatusById(res.getInstanceId(),new Date(),fails.isEmpty()?ExecuteStatue.SUCCESS:ExecuteStatue.FAILURE);
+            Optional<InstanceEntity> optional = jobInstanceRepository.findById(res.getInstanceId());
+            optional.ifPresent(entity -> {
+                if (Objects.equals(entity.getTimeType(),TimeType.DELAY)){
+                    refreshNextTriggerTime(entity);
+                }
+            });
         }
-        Optional<JobInfoEntity> optional = jobInfoRepository.findById(res.getJobId());
-        optional.ifPresent(entity -> {
-            if (Objects.equals(entity.getTimeType(),TimeType.DELAY)){
-                refreshNextTriggerTime(entity);
-            }
-        });
     }
 
     /**
@@ -177,10 +177,18 @@ public class JobService {
         List<InstanceEntity> entities = jobInstanceRepository.findByServeHostAndExecuteStatueIn(serverHost, Collections.singletonList(ExecuteStatue.WAIT));
 
         if (!entities.isEmpty()) {
-            jobInstanceRepository.cancelAllWaitTask(serverHost);
-            workInstanceRepository.cancelAllInstance(serverHost);
+            jobInstanceRepository.cancelAllWaitTask(serverHost,new Date());
+            workInstanceRepository.cancelAllInstance(serverHost,new Date());
 
             log.info("cancel task from dead server:[{}],task count:[{}]",serverHost,entities.size());
+        }
+    }
+
+    @Transactional(transactionManager = "transactionManager",rollbackFor = Exception.class)
+    public void takeNoServerTask(){
+        int i = jobInfoRepository.updateServerHostWhereNull(MainAkServer.getCurrentHost(),new Date());
+        if ( i > 0 ) {
+            log.warn("process task that has no server hold,task count:[{}],that may impossible",i);
         }
     }
 }

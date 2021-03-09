@@ -19,7 +19,7 @@ public class WorkerDownListener implements Listener<WorkerDownEvent> {
     @Override
     public void onEvent(WorkerDownEvent event) {
 
-        log.error("find an work down {}",event);
+        log.warn("find an work down,appName:[{}],wrkHost: [{}]",event.getAppName(),event.getWorkHost());
         Message message = Message.builder()
                         .content(buildMessage(event))
                         .title(Constants.WORK_DOWN_TITLE)

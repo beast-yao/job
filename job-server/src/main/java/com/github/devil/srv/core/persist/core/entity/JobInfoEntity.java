@@ -4,10 +4,10 @@ import com.github.devil.common.enums.ExecuteType;
 import com.github.devil.common.enums.TaskType;
 import com.github.devil.common.enums.TimeType;
 import com.github.devil.srv.core.enums.JobStatus;
+import com.github.devil.srv.core.persist.BaseEntity;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -19,13 +19,10 @@ import java.util.List;
  **/
 @Data
 @Entity
+@EqualsAndHashCode(callSuper = true)
 @Table(name = "job_info",indexes = {@Index(name = "idx_ji_server",columnList = "serveHost")})
-@ToString(exclude = "instanceEntities")
-public class JobInfoEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@ToString(exclude = "instanceEntities",callSuper = true)
+public class JobInfoEntity extends BaseEntity {
 
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
@@ -66,14 +63,6 @@ public class JobInfoEntity {
 
     @Enumerated(value = EnumType.STRING)
     private JobStatus jobStatus;
-
-    @CreationTimestamp
-    @Column(insertable = true,updatable = false)
-    private Date crt;
-
-    @UpdateTimestamp
-    @Column(insertable = false,updatable = true)
-    private Date upt;
 
     @OneToMany(fetch = FetchType.LAZY,targetEntity = InstanceEntity.class,mappedBy = "jobId")
     private List<InstanceEntity> instanceEntities;

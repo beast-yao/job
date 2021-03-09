@@ -38,7 +38,7 @@ public interface WorkInstanceRepository extends JpaRepository<WorkInstanceEntity
     int endWorkByInstanceId(ExecuteStatue statue, Date triggerTime, Date upt, Long instanceId, ExecuteStatue before);
 
     @Modifying
-    @Query("update WorkInstanceEntity set executeStatue=?1,triggerTime=?2,upt=?3,executeEndTime=?3 where id=?4 and executeStatue = ?5")
+    @Query("update WorkInstanceEntity set executeStatue=?1,triggerTime=?2,upt=?2,executeEndTime=?2 where id=?3 and executeStatue = ?4")
     @Transactional(transactionManager = "transactionManager",rollbackFor = Exception.class)
     int endWorkById(ExecuteStatue statue, Date triggerTime, Long id, ExecuteStatue before);
 
@@ -50,7 +50,7 @@ public interface WorkInstanceRepository extends JpaRepository<WorkInstanceEntity
      */
     @Modifying
     @CanIgnoreReturnValue
-    @Query("update WorkInstanceEntity set executeStatue=?2,executeEndTime=?3 where id=?1 and executeStatue='EXECUTING'")
+    @Query("update WorkInstanceEntity set executeStatue=?2,upt=?3 ,executeEndTime=?3 where id=?1 and executeStatue='EXECUTING'")
     @Transactional(transactionManager = "transactionManager",rollbackFor = Exception.class)
     int endWorkFromExecuteById(Long id, ExecuteStatue statue, Date endTime);
 
@@ -64,6 +64,6 @@ public interface WorkInstanceRepository extends JpaRepository<WorkInstanceEntity
 
     @Modifying
     @Transactional(transactionManager = "transactionManager",rollbackFor = Exception.class)
-    @Query("update WorkInstanceEntity set executeStatue='CANCEL' where executeStatue='WAIT' and serveHost=?1")
-    int cancelAllInstance(String serverHost);
+    @Query("update WorkInstanceEntity set executeStatue='CANCEL',upt=?2 where executeStatue='WAIT' and serveHost=?1")
+    int cancelAllInstance(String serverHost,Date date);
 }

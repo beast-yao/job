@@ -10,4 +10,8 @@ public class Constants {
 
     public final static String WORK_DOWN_TITLE = "执行器节点下线";
 
+    public final static String SERVER_DOWN_TITLE = "服务节点异常下线";
+
+    public final static String SCHEDULE_JOB_TITLE = "任务定时失败";
+
 }

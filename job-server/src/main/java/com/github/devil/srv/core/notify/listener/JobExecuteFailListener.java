@@ -14,11 +14,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class JobExecuteFailListener implements Listener<JobExecuteFailEvent> {
 
-
-
     @Override
     public void onEvent(JobExecuteFailEvent event) {
-        log.error("{}",event);
         Message message = Message.builder()
                 .content(buildMessage(event))
                 .title(Constants.FAIL_JOB_TITLE).build();

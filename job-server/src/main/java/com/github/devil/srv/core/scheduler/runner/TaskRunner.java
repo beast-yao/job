@@ -60,14 +60,15 @@ public class TaskRunner {
             return;
         }
 
+        // 设置开始时间
+        instanceEntity.setTriggerTime(jobInfoEntity.getLastTriggerTime());
+
         // 不是延时任务和手动执行任务，需要修改触发时间
         // 此时就可以进行下一次任务调度了
         if (!Objects.equals(jobInfoEntity.getTimeType(), TimeType.DELAY)
                 && !Objects.equals(instanceEntity.getInstanceType(), InstanceType.HAND)) {
-            jobService.refreshNextTriggerTime(jobInfoEntity);
+            jobService.refreshNextTriggerTime(instanceEntity);
         }
-        // 设置开始时间
-        instanceEntity.setTriggerTime(jobInfoEntity.getLastTriggerTime());
 
         // 设置为执行状态
         jobInstanceRepository.updateTriggerTimeAndStatus(instanceEntity.getTriggerTime(),ExecuteStatue.EXECUTING,instanceId);
