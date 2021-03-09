@@ -17,6 +17,7 @@ import com.github.devil.common.enums.ExecuteStatue;
 import com.github.devil.common.enums.TimeType;
 import com.github.devil.srv.core.persist.core.repository.WorkInstanceRepository;
 import com.google.common.collect.Sets;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +31,7 @@ import java.util.stream.Collectors;
  * @author eric.yao
  * @date 2021/1/19
  **/
+@Slf4j
 @Component
 public class JobService {
 
@@ -166,4 +168,19 @@ public class JobService {
         workInstanceRepository.endWorkByInstanceId(ExecuteStatue.FAILURE,new Date(),new Date(),instanceId,ExecuteStatue.WAIT);
     }
 
+    /**
+     * 取消所有的待执行任务
+     * @param serverHost
+     */
+    @Transactional(transactionManager = "transactionManager",rollbackFor = Exception.class)
+    public void cancelAllWaitTask(String serverHost){
+        List<InstanceEntity> entities = jobInstanceRepository.findByServeHostAndExecuteStatueIn(serverHost, Collections.singletonList(ExecuteStatue.WAIT));
+
+        if (!entities.isEmpty()) {
+            jobInstanceRepository.cancelAllWaitTask(serverHost);
+            workInstanceRepository.cancelAllInstance(serverHost);
+
+            log.info("cancel task from dead server:[{}],task count:[{}]",serverHost,entities.size());
+        }
+    }
 }

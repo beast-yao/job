@@ -8,6 +8,7 @@ import com.github.devil.srv.core.persist.core.entity.JobInfoEntity;
 import com.github.devil.srv.core.persist.core.repository.JobInfoRepository;
 import com.github.devil.srv.core.persist.core.repository.JobInstanceRepository;
 import com.github.devil.srv.core.persist.core.repository.WorkInstanceRepository;
+import com.github.devil.srv.core.service.JobService;
 import com.github.devil.srv.dto.request.NewTaskRequest;
 import com.github.devil.srv.service.TaskService;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +34,8 @@ public class TaskServiceImpl implements TaskService {
     private JobInstanceRepository instanceRepository;
     @Resource
     private WorkInstanceRepository workInstanceRepository;
+    @Resource
+    private JobService jobService;
 
     @Override
     public Boolean newTask(NewTaskRequest request) {
@@ -61,14 +64,7 @@ public class TaskServiceImpl implements TaskService {
 
         if(jobInfoRepository.countByServeHost(serverHost) > 0) {
 
-            List<InstanceEntity> entities = instanceRepository.findByServeHostAndExecuteStatueIn(serverHost, Collections.singletonList(ExecuteStatue.WAIT));
-
-            if (!entities.isEmpty()) {
-                instanceRepository.cancelAllWaitTask(serverHost);
-                workInstanceRepository.cancelAllInstance(serverHost);
-
-                log.info("cancel task from dead server:[{}],task count:[{}]",serverHost,entities.size());
-            }
+            jobService.cancelAllWaitTask(serverHost);
 
             String healthServer = MainAkServer.nextHealthServer();
             int count = jobInfoRepository.transferToAnotherServer(serverHost, healthServer);

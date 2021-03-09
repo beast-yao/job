@@ -83,10 +83,8 @@ public class MainJobService implements DisposableBean {
      * process the task that is in WAIT state in app start
      */
     private void processWaitTask(){
-        //todo
-        MainThreadUtil.scheduleAtFixedRate(() -> {
-
-        },10,SCHEDULER_FIX,TimeUnit.MILLISECONDS);
+        // cancel all wait task before start schedule
+        jobService.cancelAllWaitTask(MainAkServer.getCurrentHost());
     }
 
     /**
@@ -145,29 +143,31 @@ public class MainJobService implements DisposableBean {
 
         for (List<JobInfoEntity> lists : Lists.partition(jobInfoEntities, MAX_BATCH)) {
 
-            if (log.isDebugEnabled()) {
-                log.debug("process task to timer,task count :{}", lists.size());
-            }
-
-            Map<Long,JobInfoEntity> map = lists.stream().collect(Collectors.toMap(JobInfoEntity::getId,e -> e));
-
-            List<InstanceEntity> instanceEntities = jobService.newInstance(lists);
-
-            instanceEntities.forEach(instanceEntity -> {
-
-                try {
-                    MainJobScheduler.schedule(instanceEntity.getId(),Math.max(instanceEntity.getExceptTriggerTime().getTime() - System.currentTimeMillis(),0),() -> {
-                        taskRunner.runTask(map.get(instanceEntity.getJobId()),instanceEntity.getId());
-                    });
-                }catch (Exception e){
-                    log.error("timer delay the job fail,",e);
-                    jobService.failInstance(instanceEntity.getId());
-                    NotifyCenter.onEvent(SchedulerJobErrorEvent.builder()
-                                        .instanceId(instanceEntity.getId())
-                                        .jobId(instanceEntity.getJobId())
-                                        .describe(e.getMessage())
-                                        .build());
+            transactionTemplate.executeWithoutResult(status -> {
+                if (log.isDebugEnabled()) {
+                    log.debug("process task to timer,task count :{}", lists.size());
                 }
+
+                Map<Long,JobInfoEntity> map = lists.stream().collect(Collectors.toMap(JobInfoEntity::getId,e -> e));
+
+                List<InstanceEntity> instanceEntities = jobService.newInstance(lists);
+
+                instanceEntities.forEach(instanceEntity -> {
+
+                    try {
+                        MainJobScheduler.schedule(instanceEntity.getId(),Math.max(instanceEntity.getExceptTriggerTime().getTime() - System.currentTimeMillis(),0),() -> {
+                            taskRunner.runTask(map.get(instanceEntity.getJobId()),instanceEntity.getId());
+                        });
+                    }catch (Exception e){
+                        log.error("timer delay the job fail,",e);
+                        jobService.failInstance(instanceEntity.getId());
+                        NotifyCenter.onEvent(SchedulerJobErrorEvent.builder()
+                                            .instanceId(instanceEntity.getId())
+                                            .jobId(instanceEntity.getJobId())
+                                            .describe(e.getMessage())
+                                            .build());
+                    }
+                });
             });
         }
     }

@@ -57,4 +57,5 @@ public interface JobInstanceRepository extends JpaRepository<InstanceEntity,Long
     @Query("update InstanceEntity set executeStatue = 'CANCEL' where serveHost=?1 and executeStatue = 'WAIT'")
     @Transactional(transactionManager = "transactionManager",rollbackFor = Exception.class)
     int cancelAllWaitTask(String serverHost);
+
 }
