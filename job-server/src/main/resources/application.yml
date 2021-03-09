@@ -27,6 +27,7 @@ main:
     port: 10010
     host:
     member-list:
+    max-execute-wait-seconds: 10
 management:
   endpoint:
     health:

@@ -2,6 +2,7 @@ package com.github.devil.srv.core.scheduler;
 
 import com.github.devil.common.enums.ExecuteStatue;
 import com.github.devil.srv.akka.MainAkServer;
+import com.github.devil.srv.akka.ServerProperties;
 import com.github.devil.srv.core.MainThreadUtil;
 import com.github.devil.srv.core.notify.NotifyCenter;
 import com.github.devil.srv.core.notify.event.SchedulerJobErrorEvent;
@@ -16,7 +17,6 @@ import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.Resource;
@@ -52,7 +52,7 @@ public class MainJobService implements DisposableBean {
      * {@link org.springframework.context.ApplicationContext}
      * is ready and all spring bean has bean init
      */
-    public void init(){
+    public void init(ServerProperties serverProperties){
 
         /**
          * take the job that has no server to run
@@ -77,7 +77,7 @@ public class MainJobService implements DisposableBean {
         /**
          * process task that holder long time to receive the result
          */
-        processLongTimeExecutingTask();
+        processLongTimeExecutingTask(serverProperties);
     }
 
     /**
@@ -121,8 +121,11 @@ public class MainJobService implements DisposableBean {
     /**
      * notify the job that has long time to receive the execute res
      */
-    private void processLongTimeExecutingTask(){
-        //todo
+    private void processLongTimeExecutingTask(ServerProperties serverProperties){
+
+        MainThreadUtil.scheduleAtFixedRate(() -> {
+            //todo query from db and process task
+        },100,serverProperties.getMaxExecuteWaitSeconds(),TimeUnit.SECONDS);
     }
 
     /**

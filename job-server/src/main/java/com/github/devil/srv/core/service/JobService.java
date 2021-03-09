@@ -180,7 +180,7 @@ public class JobService {
             jobInstanceRepository.cancelAllWaitTask(serverHost,new Date());
             workInstanceRepository.cancelAllInstance(serverHost,new Date());
 
-            log.info("cancel task from dead server:[{}],task count:[{}]",serverHost,entities.size());
+            log.info("cancel task from server:[{}],task count:[{}]",serverHost,entities.size());
         }
     }
 
