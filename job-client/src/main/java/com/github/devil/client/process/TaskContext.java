@@ -32,7 +32,7 @@ public class TaskContext {
 
     private String meatInfo;
 
-    private Map<String,String> extension = new HashMap<>();
+    private Map<String,Object> extension = new HashMap<>();
 
     private Logger logger = new LoggerImpl(this);
 }

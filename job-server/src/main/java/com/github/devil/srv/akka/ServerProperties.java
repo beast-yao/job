@@ -27,4 +27,11 @@ public class ServerProperties {
      */
     private Integer maxExecuteWaitSeconds;
 
+    /**
+     * 保留最近执行任务次数 > 0 生效
+     * 超过次数的历史任务实例会被删除，日志也会被删除
+     * 合理设置释放磁盘资源
+     */
+    private Integer maxTaskInstance = -1;
+
 }

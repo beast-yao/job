@@ -16,9 +16,14 @@ import com.github.devil.srv.core.persist.core.repository.JobInstanceRepository;
 import com.github.devil.common.enums.ExecuteStatue;
 import com.github.devil.common.enums.TimeType;
 import com.github.devil.srv.core.persist.core.repository.WorkInstanceRepository;
+import com.github.devil.srv.core.persist.logging.repository.LoggingRepository;
 import com.google.common.collect.Sets;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -43,6 +48,8 @@ public class JobService {
     private WorkInstanceRepository workInstanceRepository;
     @Resource
     private ServerManager serverManager;
+    @Resource
+    private LoggingRepository loggingRepository;
 
     private final static Integer HAND_VERSION = -1;
 
@@ -189,6 +196,19 @@ public class JobService {
         int i = jobInfoRepository.updateServerHostWhereNull(MainAkServer.getCurrentHost(),new Date());
         if ( i > 0 ) {
             log.warn("process task that has no server hold,task count:[{}],that may impossible",i);
+        }
+    }
+
+    public void clearTask(int maxInstances){
+
+        Pageable pageable = PageRequest.of(0,maxInstances, Sort.by(Sort.Direction.DESC,"id"));
+        Page<InstanceEntity> instances = jobInstanceRepository.findAll(pageable);
+
+        if (instances.getTotalElements() > maxInstances){
+            long minInstanceId = instances.get().mapToLong(InstanceEntity::getId).min().orElse(0);
+            jobInstanceRepository.deleteByIdLessThan(minInstanceId);
+            workInstanceRepository.deleteByInstanceIdLessThan(minInstanceId);
+            loggingRepository.deleteByInstanceIdLessThan(minInstanceId);
         }
     }
 }

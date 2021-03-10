@@ -45,7 +45,7 @@ public class MainThreadUtil {
             try {
                 runnable.run();
             }catch (Exception e){
-                log.error("execute schedule fail,",e);
+                log.error("execute schedule rate fail,",e);
             }
         },delay,rate,unit);
     }
@@ -58,7 +58,7 @@ public class MainThreadUtil {
             try {
                 runnable.run();
             }catch (Exception e){
-                log.error("execute schedule fail,",e);
+                log.error("execute schedule delay fail,",e);
             }
         },initialDelay,delay,unit);
     };

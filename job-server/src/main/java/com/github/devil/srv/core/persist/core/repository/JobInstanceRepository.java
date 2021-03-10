@@ -58,4 +58,19 @@ public interface JobInstanceRepository extends JpaRepository<InstanceEntity,Long
     @Transactional(transactionManager = "transactionManager",rollbackFor = Exception.class)
     int cancelAllWaitTask(String serverHost, Date date);
 
+    /**
+     * 查询状态持续时间
+     * @param statue
+     * @param upt
+     * @return
+     */
+    List<InstanceEntity> findByExecuteStatueAndUptBefore(ExecuteStatue statue,Date upt);
+
+    /**
+     * 删除
+     * @param id
+     * @return
+     */
+    @Transactional(transactionManager = "transactionManager",rollbackFor = Exception.class)
+    int deleteByIdLessThan(long id);
 }

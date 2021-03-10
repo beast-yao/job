@@ -28,6 +28,7 @@ main:
     host:
     member-list:
     max-execute-wait-seconds: 10
+    max-task-instance: 30
 management:
   endpoint:
     health:

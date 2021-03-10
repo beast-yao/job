@@ -1,9 +1,11 @@
 package com.github.devil.client.akka;
 
 import akka.actor.*;
+import akka.pattern.Patterns;
 import akka.routing.RoundRobinPool;
 import com.github.devil.client.ThreadUtil;
 import com.github.devil.common.dto.HeartBeat;
+import com.github.devil.common.dto.ServicesRes;
 import com.github.devil.common.util.InetUtils;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
@@ -12,10 +14,12 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.Assert;
 
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -122,11 +126,17 @@ public class ClientAkkaServer {
     }
 
     private void sendHeartBeat(String server,String appName){
-        HeartBeat heartBeat = new HeartBeat();
-        heartBeat.setAppName(appName);
-        heartBeat.setTimeStamp(System.currentTimeMillis());
-        heartBeat.setWorkerAddress(currentHost);
-        getSrv(server).tell(heartBeat,actorRef);
+        try {
+            HeartBeat heartBeat = new HeartBeat();
+            heartBeat.setAppName(appName);
+            heartBeat.setTimeStamp(System.currentTimeMillis());
+            heartBeat.setWorkerAddress(currentHost);
+            CompletableFuture<Object> completableFuture = Patterns.ask(getSrv(server),heartBeat, Duration.ofMillis(1000)).toCompletableFuture();
+            ServicesRes servicesRes = (ServicesRes)completableFuture.get(1000,TimeUnit.MILLISECONDS);
+            ServiceHolder.receiveSrv(servicesRes);
+        }catch (Exception e){
+            log.error("cannot send heartbeat message to server:[{}],maybe this server has down",server);
+        }
     }
 
     private static String getAddress(AkkaProperties akkaProperties){

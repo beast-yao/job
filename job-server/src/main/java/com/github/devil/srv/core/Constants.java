@@ -14,4 +14,6 @@ public class Constants {
 
     public final static String SCHEDULE_JOB_TITLE = "任务定时失败";
 
+    public final static String EXECUTE_TIMEOUT_TITLE = "任务执行时间超过执行时间";
+
 }

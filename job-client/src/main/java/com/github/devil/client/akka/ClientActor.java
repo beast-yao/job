@@ -20,7 +20,6 @@ class ClientActor extends AbstractActor {
     public Receive createReceive() {
         return ReceiveBuilder.create()
                 .match(WorkerExecuteReq.class,this::onReceiveReq)
-                .match(ServicesRes.class,ServiceHolder::receiveSrv)
                 .match(MsgError.class,this::onError)
                 .build()
                 ;

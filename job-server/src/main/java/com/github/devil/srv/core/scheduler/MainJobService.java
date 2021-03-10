@@ -5,17 +5,21 @@ import com.github.devil.srv.akka.MainAkServer;
 import com.github.devil.srv.akka.ServerProperties;
 import com.github.devil.srv.core.MainThreadUtil;
 import com.github.devil.srv.core.notify.NotifyCenter;
+import com.github.devil.srv.core.notify.event.ExecuteTooLongTimeEvent;
 import com.github.devil.srv.core.notify.event.SchedulerJobErrorEvent;
+import com.github.devil.srv.core.notify.listener.ExecuteTooLongTimeListener;
 import com.github.devil.srv.core.notify.listener.JobExecuteFailListener;
 import com.github.devil.srv.core.notify.listener.SchedulerJobErrorListener;
 import com.github.devil.srv.core.persist.core.entity.InstanceEntity;
 import com.github.devil.srv.core.persist.core.entity.JobInfoEntity;
 import com.github.devil.srv.core.persist.core.repository.JobInfoRepository;
+import com.github.devil.srv.core.persist.core.repository.JobInstanceRepository;
 import com.github.devil.srv.core.scheduler.runner.TaskRunner;
 import com.github.devil.srv.core.service.JobService;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.DisposableBean;
+import org.springframework.core.NestedExceptionUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.support.TransactionTemplate;
 
@@ -23,6 +27,7 @@ import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -40,6 +45,8 @@ public class MainJobService implements DisposableBean {
 
     @Resource
     private JobInfoRepository jobInfoRepository;
+    @Resource
+    private JobInstanceRepository jobInstanceRepository;
     @Resource
     private JobService jobService;
     @Resource
@@ -78,6 +85,11 @@ public class MainJobService implements DisposableBean {
          * process task that holder long time to receive the result
          */
         processLongTimeExecutingTask(serverProperties);
+
+        /**
+         * register task to release diskspace
+         */
+        registerClearTask(serverProperties);
     }
 
     /**
@@ -97,6 +109,7 @@ public class MainJobService implements DisposableBean {
          */
         NotifyCenter.addListener(new JobExecuteFailListener());
         NotifyCenter.addListener(new SchedulerJobErrorListener());
+        NotifyCenter.addListener(new ExecuteTooLongTimeListener());
     }
 
     /**
@@ -123,9 +136,31 @@ public class MainJobService implements DisposableBean {
      */
     private void processLongTimeExecutingTask(ServerProperties serverProperties){
 
-        MainThreadUtil.scheduleAtFixedRate(() -> {
-            //todo query from db and process task
-        },100,serverProperties.getMaxExecuteWaitSeconds(),TimeUnit.SECONDS);
+        int maxSeconds = Optional.ofNullable(serverProperties.getMaxExecuteWaitSeconds()).orElse(0);
+
+        if (maxSeconds > 0) {
+            MainThreadUtil.scheduleAtFixedRate(() -> {
+                List<InstanceEntity> entities = jobInstanceRepository.findByExecuteStatueAndUptBefore(ExecuteStatue.EXECUTING,
+                        new Date(System.currentTimeMillis() - TimeUnit.SECONDS.toMillis(maxSeconds)));
+                if (entities != null && !entities.isEmpty()) {
+                    List<Long> ids = entities.stream().map(InstanceEntity::getId).collect(Collectors.toList());
+                    NotifyCenter.onEvent(ExecuteTooLongTimeEvent.builder().instanceIds(ids).build());
+                }
+            }, 100, TimeUnit.SECONDS.toMillis(maxSeconds), TimeUnit.MILLISECONDS);
+        }
+    }
+
+    /**
+     * register task to release db and disk if necessary
+     * @param serverProperties
+     */
+    private void registerClearTask(ServerProperties serverProperties){
+        int maxInstance = Optional.ofNullable(serverProperties.getMaxTaskInstance()).orElse(0);
+        if (maxInstance > 0){
+            MainThreadUtil.scheduleAtFixedRate(() -> {
+                jobService.clearTask(maxInstance);
+            },100,TimeUnit.SECONDS.toMillis(maxInstance),TimeUnit.MILLISECONDS);
+        }
     }
 
     /**
@@ -163,12 +198,12 @@ public class MainJobService implements DisposableBean {
                             taskRunner.runTask(map.get(instanceEntity.getJobId()),instanceEntity.getId());
                         });
                     }catch (Exception e){
-                        log.error("timer delay the job fail,",e);
+                        log.error("push job to timer-wheel fail,",e);
                         jobService.failInstance(instanceEntity.getId());
                         NotifyCenter.onEvent(SchedulerJobErrorEvent.builder()
                                             .instanceId(instanceEntity.getId())
                                             .jobId(instanceEntity.getJobId())
-                                            .describe(e.getMessage())
+                                            .describe(NestedExceptionUtils.buildMessage(null,e))
                                             .build());
                     }
                 });
