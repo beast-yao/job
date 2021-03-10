@@ -29,7 +29,7 @@ if [ -z "$JAVA_HOME" ]; then
   fi
 fi
 
-export SERVER="job-server"
+export SERVER="bt-job-server"
 export MEMBER_LIST=""
 while getopts ":s:c:" opt
 do

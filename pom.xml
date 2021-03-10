@@ -6,13 +6,13 @@
 
     <groupId>com.github.devil</groupId>
     <artifactId>bt-job</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <modules>
-        <module>job-server</module>
-        <module>job-common</module>
+        <module>bt-job-server</module>
+        <module>bt-job-common</module>
         <module>distribution</module>
-        <module>job-client</module>
-        <module>job-sample</module>
+        <module>bt-job-client</module>
+        <module>bt-job-sample</module>
     </modules>
     <packaging>pom</packaging>
 
@@ -47,7 +47,7 @@
             </dependency>
             <dependency>
                 <groupId>com.github.devil</groupId>
-                <artifactId>job-common</artifactId>
+                <artifactId>bt-job-common</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
