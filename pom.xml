@@ -6,7 +6,7 @@
 
     <groupId>com.github.devil</groupId>
     <artifactId>bt-job</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1-SNAPSHOT</version>
     <modules>
         <module>bt-job-server</module>
         <module>bt-job-common</module>

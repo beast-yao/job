@@ -10,8 +10,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -35,7 +37,14 @@ public class LoggingService {
     }
 
     private void validRequest(LoggingReq request){
-        Validation.buildDefaultValidatorFactory().getValidator().validate(request);
+        Set<ConstraintViolation<LoggingReq>> validateRes = Validation.buildDefaultValidatorFactory().getValidator().validate(request);
+        StringBuilder stringBuilder = new StringBuilder();
+        for (ConstraintViolation<LoggingReq> validateRe : validateRes) {
+            stringBuilder.append("[").append(validateRe.getPropertyPath()).append("]").append(validateRe.getMessage()).append("\t");
+        }
+        if (stringBuilder.length() > 0){
+            throw new IllegalArgumentException(stringBuilder.toString());
+        }
     }
 
     private LoggingEntity convert(LogContent content){
