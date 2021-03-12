@@ -23,11 +23,7 @@
             </template>
             <el-menu-item index="1.1">
               <i class="el-icon-first-aid-kit"/>
-              <span slot="title">新建任务</span>
-            </el-menu-item>
-            <el-menu-item index="1.2">
-              <i class="el-icon-coordinate"/>
-              <span slot="title">任务状态</span>
+              <span slot="title">管理任务</span>
             </el-menu-item>
           </el-submenu>
 
@@ -36,7 +32,7 @@
               <i class="el-icon-connection"></i>
               <span>集群管理</span>
             </template>
-            <el-menu-item index="2.1">
+            <el-menu-item index="/distribute/info">
               <i class="el-icon-link"/>
               <span slot="title">集群信息</span>
             </el-menu-item>
@@ -47,7 +43,7 @@
               <i class="el-icon-s-custom"></i>
               <span>用户管理</span>
             </template>
-            <el-menu-item index="3.1">
+            <el-menu-item index="/user/manager">
               <i class="el-icon-user"/>
               <span slot="title">用户信息管理</span>
             </el-menu-item>
@@ -60,8 +56,8 @@
             <i class="el-icon-s-unfold"/>
           </div>
         </el-header>
-        <el-main style="height: 95vh;">
-          <router-view/>
+        <el-main class="main">
+          <router-view></router-view>
         </el-main>
       </el-container>
     </el-container>
@@ -109,11 +105,11 @@
     /*background-color: #545c64;*/
   }
   .icon-title{
-    height: 5vh;
-    line-height: 5vh;
+    height: 6vh;
+    line-height: 6vh;
     font-family: 'Gabriola',serif;
     text-align: center;
-    font-size: 5vh;
+    font-size: 4vh;
     font-weight: bolder;
     letter-spacing: 4px;
     color: #ffffff !important;
@@ -128,6 +124,11 @@
     font-size: 3vh;
     margin-left: -20px;
     line-height: 5vh;
+  }
+  .main{
+    height: 95vh;
+    padding: 0 !important;
+    margin-top: 10px;
   }
 
 </style>

@@ -7,6 +7,21 @@ const routes = [
   {
     name: 'home',
     path: '/'
+  },
+  {
+    name: 'distribute-info',
+    path: '/distribute/info',
+    component: () => import('../views/distribute/info.vue')
+  },
+  {
+    name: 'user-manager',
+    path: '/user/manager',
+    component: () => import('@/views/user/manager.vue')
+  },
+  {
+    name: 'task-new',
+    path: '/task/new',
+    component: () => import('@/views/task/new-task.vue')
   }
 ]
 
