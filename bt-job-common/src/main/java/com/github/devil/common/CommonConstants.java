@@ -20,5 +20,9 @@ public class CommonConstants {
 
     public final static String AKKA_SRV_PATH = "akka://%s@%s/user/%s";
 
-    public final static String BASE_CONTROLLER_PATH = "/svc/v1/";
+    public final static String BASE_CONTROLLER_PATH = "/svc/v1";
+
+    public final static String BASE_TASK_CONTROLLER_PATH = "/task";
+
+    public final static String BASE_SERVICE_CONTROLLER_PATH = "/distro";
 }

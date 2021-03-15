@@ -7,11 +7,15 @@ import com.github.devil.srv.akka.request.ServerInfo;
 import com.github.devil.srv.akka.server.ServerHolder;
 import com.github.devil.srv.akka.worker.WorkerHolder;
 import com.github.devil.srv.core.SpringContextHolder;
+import com.github.devil.srv.core.scheduler.MainJobScheduler;
 import com.github.devil.srv.core.service.JobService;
 import com.github.devil.srv.core.service.LoggingService;
 import lombok.extern.slf4j.Slf4j;
 import scala.PartialFunction;
 import scala.runtime.BoxedUnit;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author eric.yao
@@ -40,9 +44,15 @@ class MainActor extends AbstractActor {
         ServerHolder.onReceive(echo.getCurrentServer(),echo.getSendTime());
         ServerInfo serverInfo = new ServerInfo();
         serverInfo.setReceiverTime(System.currentTimeMillis());
-        serverInfo.setSurviveCount(MainAkServer.getAllSurvivalServer().size());
         serverInfo.setServerHost(MainAkServer.getCurrentHost());
+        serverInfo.setMetaData(getMetaData());
         getSender().tell(serverInfo,getSelf());
+    }
+
+    private Map<String,Object> getMetaData(){
+        Map<String,Object> map = new HashMap<>(8);
+        map.put("startTime", MainJobScheduler.TIMER.getStartTime());
+        return map;
     }
 
     private void onReceiveHeartBeat(HeartBeat heartBeat){

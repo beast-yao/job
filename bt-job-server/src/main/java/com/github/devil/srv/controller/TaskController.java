@@ -20,7 +20,7 @@ import javax.annotation.Resource;
  **/
 @Api(tags = "Task")
 @RestController
-@RequestMapping(CommonConstants.BASE_CONTROLLER_PATH)
+@RequestMapping(CommonConstants.BASE_CONTROLLER_PATH+CommonConstants.BASE_TASK_CONTROLLER_PATH)
 public class TaskController {
 
     @Resource

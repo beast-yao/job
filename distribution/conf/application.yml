@@ -47,6 +47,8 @@ jpa:
 
 server:
   port: 8999
+  servlet:
+    context-path: /job
 
 main:
   job:

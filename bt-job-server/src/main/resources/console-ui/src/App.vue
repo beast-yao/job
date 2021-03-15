@@ -21,7 +21,7 @@
               <i class="el-icon-cpu"></i>
               <span>任务管理</span>
             </template>
-            <el-menu-item index="1.1">
+            <el-menu-item index="/task/new">
               <i class="el-icon-first-aid-kit"/>
               <span slot="title">管理任务</span>
             </el-menu-item>

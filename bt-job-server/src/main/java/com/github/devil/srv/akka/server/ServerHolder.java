@@ -31,10 +31,10 @@ public class ServerHolder {
     private final static long HEART_INTERVAL = 1000L;
 
     @Getter
-    private final static Map<String,Long> SURVIVAL = Maps.newConcurrentMap();
+    private final static Map<String,ServerInfo> SURVIVAL = Maps.newConcurrentMap();
 
     @Getter
-    private final static Set<String> DOWN_SERVE = Sets.newConcurrentHashSet();
+    private final static  Map<String,ServerInfo> DOWN_SERVE = Maps.newConcurrentMap();
 
     /**
      * all servers
@@ -50,8 +50,7 @@ public class ServerHolder {
                     ServerInfo serverInfo = ask(serveHost);
                     onReceiveServerInfo(serverInfo);
                 } catch (Exception e) {
-                    DOWN_SERVE.add(serveHost);
-                    SURVIVAL.remove(serveHost);
+                    DOWN_SERVE.put(serveHost,SURVIVAL.remove(serveHost));
                     NotifyCenter.onEvent(new ServeUnReceiveEvent(serveHost));
                 }
 
@@ -90,13 +89,14 @@ public class ServerHolder {
             MainAkServer.stateNormal();
         }
 
-        long last = SURVIVAL.getOrDefault(serverInfo.getServerHost(),0L);
-        if (last > serverInfo.getReceiverTime()){
+        ServerInfo last = SURVIVAL.get(serverInfo.getServerHost());
+        long lastTime = last == null? 0L : last.getReceiverTime();
+        if (lastTime > serverInfo.getReceiverTime()){
             log.warn("receive an expire serve heartbeat");
             return;
         }
-        SURVIVAL.put(serverInfo.getServerHost(),serverInfo.getReceiverTime());
-        if (DOWN_SERVE.remove(serverInfo.getServerHost())){
+        SURVIVAL.put(serverInfo.getServerHost(),serverInfo);
+        if (DOWN_SERVE.remove(serverInfo.getServerHost()) != null){
             log.info("re receive echo msg from {}",serverInfo.getServerHost());
         }
     }
