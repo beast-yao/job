@@ -43,6 +43,13 @@ public class TaskCenter {
         if (lifecycle == null ){
             return;
         }
+        if (name == null || name.length() <= 0){
+            throw new IllegalArgumentException(String.format("lifeCycle has no valid name,[%s]",lifecycle.getClass().getName()));
+        }
+
+        if (!Objects.equals(name,TaskLifecycle.DEFAULT_LIFECYCLE_NAME) && !invokers.containsKey(name)){
+            throw new IllegalArgumentException(String.format("lifeCycle has no valid name,has no schedule register,[%s]",lifecycle.getClass().getName()));
+        }
         synchronized (aspects){
             Set<TaskLifecycle> lifecycles =  aspects.get(name);
             if (lifecycles == null){
@@ -94,7 +101,7 @@ public class TaskCenter {
     }
 
     private static Set<TaskLifecycle> getAspect(String taskName){
-        Set<TaskLifecycle> lifecycles = aspects.get("");
+        Set<TaskLifecycle> lifecycles = aspects.get(TaskLifecycle.DEFAULT_LIFECYCLE_NAME);
         if (lifecycles == null){
             lifecycles = new HashSet<>();
         }

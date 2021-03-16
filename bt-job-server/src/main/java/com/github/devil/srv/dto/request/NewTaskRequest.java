@@ -9,6 +9,7 @@ import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  * @author eric.yao
@@ -21,6 +22,11 @@ public class NewTaskRequest {
     @ApiModelProperty(required = true,value = "task name")
     @NotBlank(message = "task name should not be null or blank")
     private String taskName;
+
+    @ApiModelProperty(required = true,value = "des")
+    @Size(max = 120,message = "size of task des should less then 120")
+    @NotBlank(message = "task des should not be null")
+    private String des;
 
     @ApiModelProperty(required = true,value = "time type")
     @NotNull(message = "time type should not be null")

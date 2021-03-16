@@ -3,6 +3,8 @@ spring:
     properties:
       hibernate:
         generate_statistics: false
+    hibernate:
+      ddl-auto: update
   datasource:
     core:
       validation-timeout: 1000

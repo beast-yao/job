@@ -6,6 +6,7 @@ import com.github.devil.srv.akka.request.Echo;
 import com.github.devil.srv.akka.request.ServerInfo;
 import com.github.devil.srv.akka.server.ServerHolder;
 import com.github.devil.srv.akka.worker.WorkerHolder;
+import com.github.devil.srv.core.Constants;
 import com.github.devil.srv.core.SpringContextHolder;
 import com.github.devil.srv.core.scheduler.MainJobScheduler;
 import com.github.devil.srv.core.service.JobService;
@@ -51,7 +52,7 @@ class MainActor extends AbstractActor {
 
     private Map<String,Object> getMetaData(){
         Map<String,Object> map = new HashMap<>(8);
-        map.put("startTime", MainJobScheduler.TIMER.getStartTime());
+        map.put(Constants.META_TIME, MainJobScheduler.TIMER.getStartTime());
         return map;
     }
 

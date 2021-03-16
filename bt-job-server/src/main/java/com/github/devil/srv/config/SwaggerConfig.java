@@ -32,7 +32,7 @@ public class SwaggerConfig {
                 .apiInfo(apiInfo())
                 .select()
                 .apis(Predicates.or(RequestHandlerSelectors.withClassAnnotation(RestController.class), RequestHandlerSelectors.withClassAnnotation(Api.class)))
-                .paths(PathSelectors.ant(CommonConstants.BASE_CONTROLLER_PATH))
+                .paths(PathSelectors.ant(CommonConstants.BASE_CONTROLLER_PATH+"/**"))
                 .build()
                 .useDefaultResponseMessages(false)
                 .enableUrlTemplating(true)

@@ -52,6 +52,7 @@ public class ShellProcess implements InvokeProcess {
             return ResultEnums.S;
         }catch (Exception e){
             logger.error("execute script error,jobId [{}],instanceId:[{}],error:",taskContext.getJobId(),taskContext.getInstanceId(),e);
+            taskContext.getLogger().error("execute script error,jobId [{}],instanceId:[{}],error:",taskContext.getJobId(),taskContext.getInstanceId(),e);
             return ResultEnums.F;
         }
     }

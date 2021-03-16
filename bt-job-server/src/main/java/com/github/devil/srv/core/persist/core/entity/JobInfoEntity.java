@@ -20,9 +20,15 @@ import java.util.List;
 @Data
 @Entity
 @EqualsAndHashCode(callSuper = true)
-@Table(name = "job_info",indexes = {@Index(name = "idx_ji_server",columnList = "serveHost")})
+@Table(name = "job_info",indexes = {
+        @Index(name = "idx_ji_server",columnList = "serveHost"),
+        @Index(name = "idx_ji_app",columnList = "appName")
+})
 @ToString(exclude = "instanceEntities",callSuper = true)
 public class JobInfoEntity extends BaseEntity {
+
+    @Column
+    private String des;
 
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
@@ -39,7 +45,7 @@ public class JobInfoEntity extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     private TaskType taskType;
 
-    @Column(nullable = true,updatable = false)
+    @Column(nullable = false,updatable = false)
     private String uniqueName;
 
     @Column(nullable = false)

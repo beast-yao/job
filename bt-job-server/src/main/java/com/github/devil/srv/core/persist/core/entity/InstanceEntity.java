@@ -21,7 +21,10 @@ import java.util.Date;
 @Data
 @Entity
 @EqualsAndHashCode(callSuper = true)
-@Table(name = "job_instance",indexes = {@Index(name = "idx_ji_job_version",columnList = "jobId,version")})
+@Table(name = "job_instance",indexes = {
+        @Index(name = "idx_ins_job_version",columnList = "jobId,version"),
+        @Index(name = "idx_ins_app",columnList = "appName")
+})
 @ToString(exclude = "jobInfoEntity",callSuper = true)
 public class InstanceEntity extends BaseEntity {
 

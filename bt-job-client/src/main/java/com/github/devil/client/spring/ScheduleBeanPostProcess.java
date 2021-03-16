@@ -28,9 +28,11 @@ public class ScheduleBeanPostProcess implements BeanPostProcessor, SmartInitiali
 
     private final Set<Class<?>> nonAnnotatedClasses = Collections.newSetFromMap(new ConcurrentHashMap<>(64));
 
+    private final List<TaskLifecycle> lifecycles = new ArrayList<>();
+
     @Override
     public void afterSingletonsInstantiated() {
-
+        lifecycles.forEach(this::registerLifecycle);
     }
 
     @Override
@@ -56,7 +58,7 @@ public class ScheduleBeanPostProcess implements BeanPostProcessor, SmartInitiali
         }
 
         if (bean instanceof TaskLifecycle){
-            registerLifecycle((TaskLifecycle)bean);
+            lifecycles.add((TaskLifecycle)bean);
         }
 
         return bean;
@@ -72,8 +74,12 @@ public class ScheduleBeanPostProcess implements BeanPostProcessor, SmartInitiali
     }
 
     private void  registerLifecycle(TaskLifecycle lifecycle){
-        String name = Optional.ofNullable(lifecycle.name()).orElse("");
-        TaskCenter.registerTaskAspect(name,lifecycle);
+        List<String> names = Optional.ofNullable(lifecycle.name()).orElseGet(ArrayList::new);
+        if (names.isEmpty()){
+            TaskCenter.registerTaskAspect(TaskLifecycle.DEFAULT_LIFECYCLE_NAME,lifecycle);
+        }else {
+            names.forEach(name -> TaskCenter.registerTaskAspect(name,lifecycle));
+        }
     }
 
     private String defaultName(Object bean,Method method){

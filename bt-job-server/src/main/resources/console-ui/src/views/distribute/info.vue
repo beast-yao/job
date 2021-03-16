@@ -24,7 +24,7 @@
             </template>
           </el-table-column>
           <el-table-column
-            label="meta">
+            label="metaData">
             <template slot-scope="scope">
               <json-viewer :value="scope.row.metaData" :expand-depth=0 :boxed="true" sort></json-viewer>
             </template>
