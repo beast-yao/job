@@ -6,13 +6,18 @@ import com.github.devil.srv.core.persist.core.entity.JobInfoEntity;
 import com.github.devil.srv.core.persist.core.repository.JobInfoRepository;
 import com.github.devil.srv.core.service.JobService;
 import com.github.devil.srv.dto.request.NewTaskRequest;
+import com.github.devil.srv.dto.response.PageDTO;
+import com.github.devil.srv.dto.response.TaskDTO;
 import com.github.devil.srv.service.TaskService;
+import com.github.devil.srv.util.ConvertUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.Date;
+import java.util.stream.Collectors;
 
 /**
  * @author eric.yao
@@ -61,6 +66,31 @@ public class TaskServiceImpl implements TaskService {
 
             log.info("transfer task from dead server:[{}] to another server:[{}], task count:[{}]",serverHost,healthServer,count);
         }
+    }
+
+    @Override
+    public PageDTO<TaskDTO> getTaskPage(String taskName, String appName, Integer pageSize, Integer current) {
+
+        if (current == null || current < 0){
+            current = 0;
+        }
+        Page<JobInfoEntity> page;
+        if (taskName == null && appName == null){
+            page = jobInfoRepository.findAll(PageRequest.of(current,pageSize, Sort.by(Sort.Direction.DESC,"crt")));
+        }else {
+            JobInfoEntity entity = new JobInfoEntity();
+            entity.setVersion(null);
+            entity.setUniqueName(taskName);
+            entity.setAppName(appName);
+            Example<JobInfoEntity> example = Example.of(entity);
+            page = jobInfoRepository.findAll(example,PageRequest.of(current,pageSize, Sort.by(Sort.Direction.DESC,"crt")));
+        }
+        PageDTO<TaskDTO> pageDTO = new PageDTO<>();
+        pageDTO.setPage(current);
+        pageDTO.setPageSize(pageSize);
+        pageDTO.setTotal(page.getTotalElements());
+        pageDTO.setData(page.getContent().stream().map(ConvertUtils::convert).collect(Collectors.toList()));
+        return pageDTO;
     }
 
 }

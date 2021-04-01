@@ -2,17 +2,17 @@ package com.github.devil.srv.controller;
 
 import com.github.devil.common.CommonConstants;
 import com.github.devil.srv.dto.request.NewTaskRequest;
+import com.github.devil.srv.dto.response.PageDTO;
 import com.github.devil.srv.dto.response.Resp;
+import com.github.devil.srv.dto.response.TaskDTO;
 import com.github.devil.srv.service.TaskService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @author eric.yao
@@ -30,6 +30,15 @@ public class TaskController {
     @ApiOperation(httpMethod = "POST",value = "new task")
     public Resp<Boolean> newTask(@Validated @RequestBody NewTaskRequest newTaskRequest){
         return new Resp<>(0, taskService.newTask(newTaskRequest));
+    }
+
+    @GetMapping("/page")
+    @ApiOperation(httpMethod = "GET",value = "task page")
+    public Resp<PageDTO<TaskDTO>> getTask(@RequestParam(name = "taskName",required = false) String taskName,
+                                          @RequestParam(name = "taskName",required = false) String appName,
+                                          @RequestParam(name = "pageSize",required = false,defaultValue = "10") Integer pageSize,
+                                          @RequestParam(name = "current") Integer current){
+        return new Resp<>(0,taskService.getTaskPage(taskName,appName,pageSize,current));
     }
 
 }

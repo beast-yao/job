@@ -13,7 +13,7 @@ import java.util.Optional;
  **/
 @Getter
 @AllArgsConstructor
-public enum TimeType {
+public enum TimeType implements BaseEnums{
 
     /**
      * 固定频率

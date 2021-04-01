@@ -1,7 +1,7 @@
 <template>
   <div>
    <el-container>
-     <el-header style="text-align: left;padding:0;height:5vh">
+     <el-header class="header">
        <span class="title">集群信息</span>
      </el-header>
      <el-main>
@@ -34,14 +34,6 @@
    </el-container>
   </div>
 </template>
-
-<style>
-  .title{
-    font-size: 3vh;
-    line-height: 5vh;
-    font-family: 'Times New Roman', Times, serif;
-  }
-</style>
 
 <script>
 export default {

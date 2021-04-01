@@ -5,6 +5,7 @@ import com.github.devil.common.enums.ResultEnums;
 import com.github.devil.common.dto.WorkerExecuteRes;
 import com.github.devil.srv.akka.MainAkServer;
 import com.github.devil.srv.akka.ha.ServerManager;
+import com.github.devil.srv.akka.server.ServerHolder;
 import com.github.devil.srv.akka.worker.WorkerHolder;
 import com.github.devil.srv.core.enums.InstanceType;
 import com.github.devil.srv.core.exception.JobException;
@@ -184,8 +185,9 @@ public class JobService {
         List<InstanceEntity> entities = jobInstanceRepository.findByServeHostAndExecuteStatueIn(serverHost, Collections.singletonList(ExecuteStatue.WAIT));
 
         if (!entities.isEmpty()) {
-            jobInstanceRepository.cancelAllWaitTask(serverHost,new Date());
-            workInstanceRepository.cancelAllInstance(serverHost,new Date());
+            List<Long> ids = entities.stream().map(InstanceEntity::getId).collect(Collectors.toList());
+            jobInstanceRepository.cancelAllWaitTask(ids,new Date());
+            workInstanceRepository.cancelAllInstance(ids,new Date());
 
             log.info("cancel task from server:[{}],task count:[{}]",serverHost,entities.size());
         }
@@ -193,7 +195,7 @@ public class JobService {
 
     @Transactional(transactionManager = "transactionManager",rollbackFor = Exception.class)
     public void takeNoServerTask(){
-        int i = jobInfoRepository.updateServerHostWhereNull(MainAkServer.getCurrentHost(),new Date());
+        int i = jobInfoRepository.updateServerHostWhereNull(MainAkServer.getCurrentHost(),new Date(), ServerHolder.getSURVIVAL().keySet());
         if ( i > 0 ) {
             log.warn("process task that has no server hold,task count:[{}],that may impossible",i);
         }

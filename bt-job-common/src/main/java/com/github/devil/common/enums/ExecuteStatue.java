@@ -9,7 +9,7 @@ import lombok.Getter;
  **/
 @Getter
 @AllArgsConstructor
-public enum ExecuteStatue {
+public enum ExecuteStatue implements BaseEnums{
 
     /**
      * 等待触发
@@ -39,4 +39,5 @@ public enum ExecuteStatue {
 
 
     String message;
+
 }

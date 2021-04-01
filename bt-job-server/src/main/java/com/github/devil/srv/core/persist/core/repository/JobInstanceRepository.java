@@ -36,6 +36,7 @@ public interface JobInstanceRepository extends JpaRepository<InstanceEntity,Long
      * @param executeStatue
      * @return
      */
+    @Query("select instance from InstanceEntity instance where instance.executeStatue in (?2) and instance.jobId in (select id from JobInfoEntity where serveHost = ?1)")
     List<InstanceEntity> findByServeHostAndExecuteStatueIn(String serveHost,List<ExecuteStatue> executeStatue);
 
     /**
@@ -54,9 +55,9 @@ public interface JobInstanceRepository extends JpaRepository<InstanceEntity,Long
      * @return
      */
     @Modifying
-    @Query("update InstanceEntity set executeStatue = 'CANCEL',upt=?2 where serveHost=?1 and executeStatue = 'WAIT'")
+    @Query("update InstanceEntity set executeStatue = 'CANCEL',upt=?2 where id in (?1) and executeStatue = 'WAIT'")
     @Transactional(transactionManager = "transactionManager",rollbackFor = Exception.class)
-    int cancelAllWaitTask(String serverHost, Date date);
+    int cancelAllWaitTask(List<Long> ids, Date date);
 
     /**
      * 查询状态持续时间

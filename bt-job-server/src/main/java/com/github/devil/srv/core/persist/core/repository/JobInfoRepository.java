@@ -1,6 +1,10 @@
 package com.github.devil.srv.core.persist.core.repository;
 
 import com.github.devil.srv.core.persist.core.entity.JobInfoEntity;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -9,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -62,6 +67,6 @@ public interface JobInfoRepository extends JpaRepository<JobInfoEntity,Long> {
      */
     @Modifying
     @Transactional(transactionManager = "transactionManager",rollbackFor = Exception.class)
-    @Query("update JobInfoEntity set serveHost=?1 , upt=?2 where serveHost is null ")
-    int updateServerHostWhereNull(String serverHost,Date date);
+    @Query("update JobInfoEntity set serveHost=?1 , upt=?2 where serveHost is null or serveHost not in (?3)")
+    int updateServerHostWhereNull(String serverHost, Date date, Set<String> healthList);
 }

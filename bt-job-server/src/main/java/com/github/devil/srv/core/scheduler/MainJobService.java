@@ -62,9 +62,9 @@ public class MainJobService implements DisposableBean {
     public void init(ServerProperties serverProperties){
 
         /**
-         * take the job that has no server to run
+         * take the job that has no health server to run
          */
-        takeUnServerTask();
+        takeUnServerOrUnHealthServerTask();
 
         /**
          * process wait task that because the un except stop
@@ -166,7 +166,7 @@ public class MainJobService implements DisposableBean {
     /**
      * take job that not have the server to schedule
      */
-    private void takeUnServerTask(){
+    private void takeUnServerOrUnHealthServerTask(){
         jobService.takeNoServerTask();
     }
 

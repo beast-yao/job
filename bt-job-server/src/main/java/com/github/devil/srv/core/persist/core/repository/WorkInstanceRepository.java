@@ -64,8 +64,8 @@ public interface WorkInstanceRepository extends JpaRepository<WorkInstanceEntity
 
     @Modifying
     @Transactional(transactionManager = "transactionManager",rollbackFor = Exception.class)
-    @Query("update WorkInstanceEntity set executeStatue='CANCEL',upt=?2 where executeStatue='WAIT' and serveHost=?1")
-    int cancelAllInstance(String serverHost,Date date);
+    @Query("update WorkInstanceEntity set executeStatue='CANCEL',upt=?2 where executeStatue='WAIT' and instanceId in (?1)")
+    int cancelAllInstance(List<Long> instanceIds,Date date);
 
     /**
      * 删除实例信息

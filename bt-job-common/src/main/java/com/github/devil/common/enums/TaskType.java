@@ -9,7 +9,7 @@ import lombok.Getter;
  **/
 @Getter
 @AllArgsConstructor
-public enum TaskType {
+public enum TaskType implements BaseEnums{
 
     /**
      * 远程客户端

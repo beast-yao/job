@@ -9,17 +9,18 @@ import lombok.Getter;
  **/
 @Getter
 @AllArgsConstructor
-public enum  ExecuteType {
+public enum  ExecuteType implements BaseEnums{
 
     /**
      * 单机
      */
-    SINGLE("单机"),
+    SINGLE("单机执行"),
 
     /**
      * 广播执行
      */
-    BROADCAST("广播");
+    BROADCAST("广播执行");
 
     String message;
+
 }

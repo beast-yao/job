@@ -1,6 +1,7 @@
 package com.github.devil.srv.akka;
 
 import lombok.Data;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.time.Duration;
@@ -12,7 +13,7 @@ import java.util.List;
  **/
 @Data
 @ConfigurationProperties(prefix = ServerProperties.PRE_FIX)
-public class ServerProperties {
+public class ServerProperties implements InitializingBean {
 
     public final static String PRE_FIX = "main.job";
 
@@ -34,4 +35,8 @@ public class ServerProperties {
      */
     private Integer maxTaskInstance = -1;
 
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        MainAkServer.start(this);
+    }
 }

@@ -17,6 +17,9 @@ spring:
       "hibernate.order_updates": "true"
       "hibernate.order_inserts": "true"
     open-in-view: false
+  jackson:
+      date-format: "yyyy-MM-dd HH:mm:ss"
+      time-zone: "GMT+8"
 
 
 server:

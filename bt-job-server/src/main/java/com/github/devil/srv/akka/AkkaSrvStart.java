@@ -25,7 +25,6 @@ public class AkkaSrvStart implements ApplicationListener<ApplicationReadyEvent> 
 
     @Override
     public void onApplicationEvent(ApplicationReadyEvent event) {
-       MainAkServer.start(serverProperties);
        mainJobService.init(serverProperties);
     }
 }
