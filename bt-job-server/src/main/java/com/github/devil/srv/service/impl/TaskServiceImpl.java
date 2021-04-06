@@ -41,6 +41,11 @@ public class TaskServiceImpl implements TaskService {
         entity.setAppName(request.getAppName());
         entity.setExecuteType(request.getExecuteType());
         entity.setJobStatus(JobStatus.NORMAL);
+
+        if (!request.getTimeType().validExpression(request.getTimeExpression())){
+            throw new IllegalArgumentException("请检查时间表达式格式是否错误");
+        }
+
         entity.setNextTriggerTime(request.getTimeType().getNext(new Date(),request.getTimeExpression()));
         entity.setTaskType(request.getTaskType());
         entity.setVersion(0);
@@ -49,6 +54,7 @@ public class TaskServiceImpl implements TaskService {
         entity.setUniqueName(request.getTaskName());
         entity.setTimeType(request.getTimeType());
         entity.setServeHost(MainAkServer.getCurrentHost());
+        entity.setJobMeta(request.getJobMeta());
         jobInfoRepository.saveAndFlush(entity);
         return true;
     }
@@ -92,5 +98,4 @@ public class TaskServiceImpl implements TaskService {
         pageDTO.setData(page.getContent().stream().map(ConvertUtils::convert).collect(Collectors.toList()));
         return pageDTO;
     }
-
 }

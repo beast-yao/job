@@ -35,7 +35,7 @@ public class TaskController {
     @GetMapping("/page")
     @ApiOperation(httpMethod = "GET",value = "task page")
     public Resp<PageDTO<TaskDTO>> getTask(@RequestParam(name = "taskName",required = false) String taskName,
-                                          @RequestParam(name = "taskName",required = false) String appName,
+                                          @RequestParam(name = "appName",required = false) String appName,
                                           @RequestParam(name = "pageSize",required = false,defaultValue = "10") Integer pageSize,
                                           @RequestParam(name = "current") Integer current){
         return new Resp<>(0,taskService.getTaskPage(taskName,appName,pageSize,current));

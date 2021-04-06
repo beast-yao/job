@@ -4,6 +4,9 @@ import com.github.devil.common.corn.CronSequenceGenerator;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Optional;
 
@@ -33,6 +36,19 @@ public enum TimeType implements BaseEnums{
                 }
             }
         }
+
+        @Override
+        public boolean validExpression(String timeValue) {
+            boolean valid = super.validExpression(timeValue);
+            if (valid){
+                try {
+                    return Long.parseLong(timeValue.trim()) >= 1000;
+                }catch (Exception e){
+                    return false;
+                }
+            }
+            return false;
+        }
     },
 
     /**
@@ -53,6 +69,11 @@ public enum TimeType implements BaseEnums{
                 }
             }
         }
+
+        @Override
+        public boolean validExpression(String timeValue) {
+            return FIX_RATE.validExpression(timeValue);
+        }
     },
 
     /**
@@ -71,6 +92,23 @@ public enum TimeType implements BaseEnums{
                 }
             });
         }
+
+        @Override
+        public boolean validExpression(String timeValue) {
+            boolean valid = super.validExpression(timeValue);
+            if (!valid){
+                return false;
+            }
+            try {
+               return new Date(Long.parseLong(timeValue)).after(new Date());
+            }catch (Exception e){
+                try {
+                   return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS").parse(timeValue).after(new Date());
+                } catch (Exception parseException) {
+                    return false;
+                }
+            }
+        }
     },
 
     /**
@@ -81,6 +119,20 @@ public enum TimeType implements BaseEnums{
         public Date getNext(Date preTriggerTime, String timeValue){
             return new CronSequenceGenerator(timeValue).next(Optional.ofNullable(preTriggerTime).orElseGet(Date::new));
         }
+
+        @Override
+        public boolean validExpression(String timeValue) {
+            boolean valid = super.validExpression(timeValue);
+            if (!valid){
+                return false;
+            }
+            try {
+                new CronSequenceGenerator(timeValue);
+                return true;
+            }catch (Exception e){
+                return false;
+            }
+        }
     }
 
     ;
@@ -90,5 +142,12 @@ public enum TimeType implements BaseEnums{
 
     public Date getNext(Date preTriggerTime,String timeValue){
         return new Date();
+    }
+
+    public boolean validExpression(String timeValue){
+        if (timeValue == null || timeValue.isEmpty()){
+            return false;
+        }
+        return true;
     }
 }

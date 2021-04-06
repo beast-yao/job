@@ -21,7 +21,7 @@
             </el-col>
             <el-col :span="8">
               <el-button type="primary" @click="search" :loading="loading" icon="el-icon-search">查询</el-button>
-              <el-button type="info" icon="el-icon-circle-plus-outline">增加任务</el-button>
+              <el-button type="info" @click="newTask" icon="el-icon-circle-plus-outline">增加任务</el-button>
             </el-col>
           </el-row>
         </el-header>
@@ -55,6 +55,7 @@
         </el-main>
        </el-container>
     </el-container>
+    <new-task ref="newTask"/>
   </div>
 </template>
 
@@ -76,7 +77,9 @@
 </style>
 
 <script>
+import newTask from './new-task.vue';
 export default {
+  components: { newTask },
   data() {
     return {
       params: {},
@@ -111,6 +114,9 @@ export default {
     },
     taskInstance (task) {
       console.log(task)
+    },
+    newTask(){
+      this.$refs.newTask.visible = true
     }
   }
 }
