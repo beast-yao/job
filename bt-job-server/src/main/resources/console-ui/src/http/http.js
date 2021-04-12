@@ -30,10 +30,10 @@ export const DELETE = async (url, param) => {
   return await instance.delete(`${url}`, { params: param });
 }
 
-export const POST = async (url, param, data) => {
-  return await instance.post(`${url}`, { params: param, data: data });
+export const POST = async (url, data, param) => {
+  return await instance.post(`${url}`, data, { params: param });
 }
 
-export const PUT = async (url, param, data) => {
-  return await instance.put(`${url}`, { params: param, data: data });
+export const PUT = async (url, data, param) => {
+  return await instance.put(`${url}`, data, { params: param });
 }

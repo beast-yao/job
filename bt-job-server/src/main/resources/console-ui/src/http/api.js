@@ -7,3 +7,7 @@ export const getServices = () => {
 export const getTask = (params) => {
   return http.GET('/task/page', params);
 }
+
+export const addTask = (data) => {
+  return http.POST('/task', data)
+}

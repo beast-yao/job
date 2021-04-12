@@ -1,5 +1,6 @@
 package com.github.devil.srv.service.impl;
 
+import com.github.devil.common.enums.TaskType;
 import com.github.devil.srv.akka.MainAkServer;
 import com.github.devil.srv.core.enums.JobStatus;
 import com.github.devil.srv.core.persist.core.entity.JobInfoEntity;
@@ -14,9 +15,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.util.Date;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -44,6 +47,10 @@ public class TaskServiceImpl implements TaskService {
 
         if (!request.getTimeType().validExpression(request.getTimeExpression())){
             throw new IllegalArgumentException("请检查时间表达式格式是否错误");
+        }
+
+        if (Objects.equals(request.getTaskType(), TaskType.SHELL) && StringUtils.isEmpty(request.getJobMeta())){
+            throw new IllegalArgumentException("Shell 脚本需要输入脚本内容");
         }
 
         entity.setNextTriggerTime(request.getTimeType().getNext(new Date(),request.getTimeExpression()));
