@@ -115,7 +115,7 @@ export default {
     taskInstance (task) {
       console.log(task)
     },
-    newTask(){
+    newTask() {
       this.$refs.newTask.visible = true
     }
   }

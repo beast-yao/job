@@ -51,12 +51,15 @@
         </el-menu>
       </el-aside>
       <el-container>
-        <el-header class="border">
-          <div class="collapse-icon" @click="collapsed">
-            <i class="el-icon-s-unfold"/>
-          </div>
-        </el-header>
         <el-main class="main">
+          <div class="border">
+            <div class="collapse-icon" @click="collapsed">
+              <i class="el-icon-s-unfold"/>
+            </div>
+           <el-tabs closable v-model="currentName">
+            <el-tab-pane v-for="(item,index) in tabs" :label="item.label" :name="item.name" :key="index"></el-tab-pane>
+          </el-tabs>
+          </div>
           <keep-alive>
             <router-view/>
           </keep-alive>
@@ -70,18 +73,32 @@
   export default {
     data() {
       return {
-        collapse: false
+        collapse: false,
+        tabs: [],
+        currentName: ''
       }
     },
     methods: {
       collapsed() {
         this.collapse = !this.collapse;
+      },
+      addTab (route) {
+        var t = this.tabs.find(e => e.name === route.meta.title);
+        if (!t) {
+          this.tabs.push({ label: route.meta.title, name: route.meta.title, path: route.path });
+        }
+        this.currentName = route.meta.title;
+      }
+    },
+    watch: {
+      $route(to, from) {
+        this.addTab(to)
       }
     }
   }
 </script>
 
-<style>
+<style scope>
   #app {
     font-family: Avenir, Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
@@ -98,7 +115,8 @@
     width: 14rem;
   }
   .border{
-    height: 5vh !important;
+    height: 5vh;
+    display: flex;
     box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1)
   }
   .aside{
@@ -124,7 +142,6 @@
     width: 5vh;
     text-align: center;
     font-size: 3vh;
-    margin-left: -20px;
     line-height: 5vh;
   }
   .main{
@@ -132,5 +149,16 @@
     padding: 0 !important;
     margin-top: 10px;
   }
-
+.el-tabs__nav-wrap::after {
+    content: none !important;
+}
+.el-tabs__active-bar{
+  display: none;
+}
+.el-tabs{
+  margin-left: 20px;
+}
+.el-tabs__item{
+  font-size: 16px !important;
+}
 </style>

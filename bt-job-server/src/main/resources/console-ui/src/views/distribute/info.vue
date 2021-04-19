@@ -50,8 +50,7 @@ export default {
     getServices: function() {
       this.loading = true;
       this.$api.getServices().then(({ data: res }) => {
-        console.log(res)
-        this.data = res.data;
+        this.data = res;
         // this.data = res.data.map(item => {
         //   if (item.metaData) {
         //     item.metaData = JSON.stringify(item.metaData)
