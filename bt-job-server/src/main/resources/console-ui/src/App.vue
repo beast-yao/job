@@ -51,15 +51,15 @@
         </el-menu>
       </el-aside>
       <el-container>
-        <el-main class="main">
-          <div class="border">
-            <div class="collapse-icon" @click="collapsed">
-              <i class="el-icon-s-unfold"/>
-            </div>
-           <el-tabs closable v-model="currentName">
+        <el-header class="border">
+          <div class="collapse-icon" @click="collapsed">
+            <i class="el-icon-s-unfold"/>
+          </div>
+          <el-tabs style="width:100%;" closable v-model="currentName" @tab-click='clickTab' @tab-remove="tabRemove">
             <el-tab-pane v-for="(item,index) in tabs" :label="item.label" :name="item.name" :key="index"></el-tab-pane>
           </el-tabs>
-          </div>
+        </el-header>
+        <el-main class="main">
           <keep-alive>
             <router-view/>
           </keep-alive>
@@ -83,11 +83,43 @@
         this.collapse = !this.collapse;
       },
       addTab (route) {
+        if (route.path === '/') {
+           this.currentName = '';
+          return;
+        }
+        this.tabs.forEach(item => {
+          if (item.name === route.meta.title) {
+            item.routeName = route.name;
+            item.path = route.path;
+          }
+        })
         var t = this.tabs.find(e => e.name === route.meta.title);
         if (!t) {
-          this.tabs.push({ label: route.meta.title, name: route.meta.title, path: route.path });
+          this.tabs.push({ label: route.meta.title, name: route.meta.title, path: route.path, routeName: route.name });
         }
         this.currentName = route.meta.title;
+      },
+      clickTab (tab, event) {
+        var t = this.tabs.find(e => e.name === tab.name);
+        if (t) {
+          this.currentName = t.name;
+          this.$router.push(t.path)
+        }
+      },
+      tabRemove (name) {
+        this.tabs = this.tabs.filter((item, index, arr) => {
+          if (item.name === name) {
+            var t = arr[index - 1] || arr[index + 1];
+            if (t) {
+              this.currentName = t.name;
+              this.$router.push(t.path)
+            } else {
+              this.currentName = '';
+              this.$router.push('/')
+            }
+          }
+          return item.name !== name;
+        })
       }
     },
     watch: {
@@ -111,12 +143,13 @@
     padding: 0;
   }
   .el-menu{
-    height: calc(100% - 5vh);
+    height: calc(100% - 40px);
     width: 14rem;
   }
   .border{
-    height: 5vh;
+    height: 40px !important;
     display: flex;
+    padding-left: 0 !important;
     box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1)
   }
   .aside{
@@ -125,11 +158,11 @@
     /*background-color: #545c64;*/
   }
   .icon-title{
-    height: 6vh;
-    line-height: 6vh;
+    height: 40px;
+    line-height: 40px;
     font-family: 'Gabriola',serif;
     text-align: center;
-    font-size: 4vh;
+    font-size: 28px;
     font-weight: bolder;
     letter-spacing: 4px;
     color: #ffffff !important;
@@ -137,28 +170,27 @@
   }
   .collapse-icon{
     cursor: pointer;
-    height: 100%;
+    height: 40px;
     padding: 0;
-    width: 5vh;
+    width: 40px;
     text-align: center;
-    font-size: 3vh;
-    line-height: 5vh;
+    font-size: 20px;
+    line-height: 40px;
   }
   .main{
-    height: 95vh;
+    height: calc(100% - 40px);
     padding: 0 !important;
     margin-top: 10px;
   }
-.el-tabs__nav-wrap::after {
-    content: none !important;
-}
-.el-tabs__active-bar{
-  display: none;
-}
 .el-tabs{
   margin-left: 20px;
 }
 .el-tabs__item{
-  font-size: 16px !important;
+  font-size: 15px !important;
+  height: 40px !important;
+  line-height: 40px !important;
+}
+.el-tabs__nav-wrap::after{
+  content: none !important;
 }
 </style>
