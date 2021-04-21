@@ -1,4 +1,3 @@
-#!/bin/bash
 error_exit ()
 {
     echo "ERROR: $1 !!"
@@ -71,6 +70,7 @@ else
 fi
 
 JAVA_OPT="${JAVA_OPT} -Djob.home=${BASE_DIR}"
+JAVA_OPT="${JAVA_OPT} -Djob.logs.path=${BASE_DIR}/logs"
 JAVA_OPT="${JAVA_OPT} -jar ${BASE_DIR}/target/${SERVER}.jar"
 JAVA_OPT="${JAVA_OPT} ${JAVA_OPT_EXT}"
 JAVA_OPT="${JAVA_OPT} --spring.config.location=${CUSTOM_SEARCH_LOCATIONS}"
@@ -88,6 +88,4 @@ if [ ! -f "${BASE_DIR}/logs/start.out" ]; then
   touch "${BASE_DIR}/logs/start.out"
 fi
 # start
-echo "$JAVA ${JAVA_OPT}" > ${BASE_DIR}/logs/start.out 2>&1 &
-nohup $JAVA ${JAVA_OPT} job.srv >> ${BASE_DIR}/logs/start.out 2>&1 &
-echo "job is starting，you can check the ${BASE_DIR}/logs/start.out"
+$JAVA ${JAVA_OPT} job.srv
