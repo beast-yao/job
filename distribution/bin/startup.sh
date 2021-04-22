@@ -88,4 +88,7 @@ if [ ! -f "${BASE_DIR}/logs/start.out" ]; then
   touch "${BASE_DIR}/logs/start.out"
 fi
 # start
+echo "$JAVA ${JAVA_OPT}" > ${BASE_DIR}/logs/start.out 2>&1 &
+#nohup $JAVA ${JAVA_OPT} job.srv >> ${BASE_DIR}/logs/start.out 2>&1 &
 $JAVA ${JAVA_OPT} job.srv
+echo "job is starting，you can check the ${BASE_DIR}/logs/start.out"
