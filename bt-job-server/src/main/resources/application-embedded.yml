@@ -5,6 +5,7 @@ spring:
         generate_statistics: false
     hibernate:
       ddl-auto: update
+    show-sql: false
   datasource:
     core:
       validation-timeout: 1000

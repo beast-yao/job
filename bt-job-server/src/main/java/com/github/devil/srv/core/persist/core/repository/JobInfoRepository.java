@@ -69,4 +69,12 @@ public interface JobInfoRepository extends JpaRepository<JobInfoEntity,Long> {
     @Transactional(transactionManager = "transactionManager",rollbackFor = Exception.class)
     @Query("update JobInfoEntity set serveHost=?1 , upt=?2 where serveHost is null or serveHost not in (?3)")
     int updateServerHostWhereNull(String serverHost, Date date, Set<String> healthList);
+
+    /**
+     * 查询超过最大执行次数的job
+     * @param maxInstance
+     * @return
+     */
+    @Query(value = "select JOB_ID from JOB_INSTANCE group by JOB_ID having count(1) > ?1",nativeQuery = true)
+    List<Long> findIdWhereHasMaxInstance(int maxInstance);
 }

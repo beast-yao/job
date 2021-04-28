@@ -70,6 +70,7 @@ else
 fi
 
 JAVA_OPT="${JAVA_OPT} -Djob.home=${BASE_DIR}"
+JAVA_OPT="${JAVA_OPT} -Dhome=${SERVER}"
 JAVA_OPT="${JAVA_OPT} -Djob.logs.path=${BASE_DIR}/logs"
 JAVA_OPT="${JAVA_OPT} -jar ${BASE_DIR}/target/${SERVER}.jar"
 JAVA_OPT="${JAVA_OPT} ${JAVA_OPT_EXT}"

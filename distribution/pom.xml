@@ -61,7 +61,7 @@
                 </executions>
             </plugin>
         </plugins>
-        <finalName>bt-job</finalName>
+        <finalName>bt-job-server</finalName>
     </build>
 
 </project>

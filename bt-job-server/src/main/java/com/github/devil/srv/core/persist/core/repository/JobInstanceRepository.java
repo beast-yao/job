@@ -3,6 +3,7 @@ package com.github.devil.srv.core.persist.core.repository;
 import com.github.devil.common.enums.ExecuteStatue;
 import com.github.devil.srv.core.persist.core.entity.InstanceEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -16,7 +17,7 @@ import java.util.List;
  * @date 2021/1/18
  **/
 @Repository
-public interface JobInstanceRepository extends JpaRepository<InstanceEntity,Long> {
+public interface JobInstanceRepository extends JpaRepository<InstanceEntity,Long>, JpaSpecificationExecutor<InstanceEntity> {
 
     /**
      * 修改触发时间和任务状态

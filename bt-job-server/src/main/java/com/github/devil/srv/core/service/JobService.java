@@ -21,10 +21,8 @@ import com.github.devil.srv.core.persist.logging.repository.LoggingRepository;
 import com.google.common.collect.Sets;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -201,16 +199,32 @@ public class JobService {
         }
     }
 
+    @Transactional(transactionManager = "transactionManager",rollbackFor = Exception.class)
     public void clearTask(int maxInstances){
 
-        Pageable pageable = PageRequest.of(0,maxInstances, Sort.by(Sort.Direction.DESC,"id"));
-        Page<InstanceEntity> instances = jobInstanceRepository.findAll(pageable);
+        if (maxInstances <= 0){
+            return;
+        }
 
-        if (instances.getTotalElements() > maxInstances){
-            long minInstanceId = instances.get().mapToLong(InstanceEntity::getId).min().orElse(0);
-            jobInstanceRepository.deleteByIdLessThan(minInstanceId);
-            workInstanceRepository.deleteByInstanceIdLessThan(minInstanceId);
-            loggingRepository.deleteByInstanceIdLessThan(minInstanceId);
+        /**
+         * 查询需要清理的job
+         */
+        List<Long> jobIds = jobInfoRepository.findIdWhereHasMaxInstance(maxInstances);
+
+        for (Long jobId : jobIds) {
+            Pageable pageable = PageRequest.of(0,maxInstances, Sort.by(Sort.Direction.DESC,"id"));
+            Page<InstanceEntity> instances = jobInstanceRepository.findAll((Specification<InstanceEntity>) (root, query, criteriaBuilder) ->
+                 // jobId = jobId and executeStatue neq EXECUTING
+                criteriaBuilder.and(criteriaBuilder.equal(root.get("jobId"),jobId),
+                    criteriaBuilder.notEqual(root.get("executeStatue"),ExecuteStatue.EXECUTING))
+            ,pageable);
+
+            if (instances.getTotalElements() > maxInstances){
+                long minInstanceId = instances.get().mapToLong(InstanceEntity::getId).min().orElse(0);
+                jobInstanceRepository.deleteByIdLessThan(minInstanceId);
+                workInstanceRepository.deleteByInstanceIdLessThan(minInstanceId);
+                loggingRepository.deleteByInstanceIdLessThan(minInstanceId);
+            }
         }
     }
 }

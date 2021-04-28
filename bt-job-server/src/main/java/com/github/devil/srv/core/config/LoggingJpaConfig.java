@@ -69,6 +69,6 @@ public class LoggingJpaConfig {
     @Bean("loggingTransactionManager")
     public PlatformTransactionManager transactionManager(@Qualifier("loggingEntityManagerFactoryBean") LocalContainerEntityManagerFactoryBean loggingEntityManagerFactoryBean){
         return new JpaTransactionManager(Objects.requireNonNull(loggingEntityManagerFactoryBean.getObject()));
-}
+    }
 
 }
