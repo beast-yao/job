@@ -4,6 +4,7 @@ import com.github.devil.client.ThreadUtil;
 import com.github.devil.client.akka.ClientAkkaServer;
 import com.github.devil.common.dto.LogContent;
 import com.github.devil.common.dto.LoggingReq;
+import com.github.devil.common.util.StringUtils;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -29,6 +30,9 @@ public class LogPushCenter {
     private final static int MAX_SIZE = 50;
 
     public static void log(LogContent logContent){
+        if (StringUtils.isEmpty(logContent.getLoggingContent())){
+            return;
+        }
         loggers.add(new DelayLog(logContent));
         if (starting.compareAndSet(false,true)){
             ThreadUtil.GLOBAL.execute(new LogPushRunner());

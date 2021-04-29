@@ -5,6 +5,7 @@ import com.github.devil.client.process.InvokeProcess;
 import com.github.devil.client.process.TaskContext;
 import com.github.devil.common.enums.LogLevel;
 import com.github.devil.common.enums.ResultEnums;
+import com.sun.javafx.PlatformUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.apache.commons.lang3.SystemUtils;
@@ -41,13 +42,22 @@ public class ShellProcess implements InvokeProcess {
 
             Runtime runtime = Runtime.getRuntime();
             // 修改权限
-            runtime.exec(new String[]{"/bin/chmod ","777",fileName}).waitFor();
-            Process process = runtime.exec(new String[]{"/bin/sh",fileName});
+            if (isWindows()){
+                Process process = runtime.exec(new String[]{"cmd","/Q","/c",fileName});
 
-            new Thread(() -> logFromIo(process.getInputStream(),logger,LogLevel.INFO));
-            new Thread(() -> logFromIo(process.getErrorStream(),logger,LogLevel.ERROR));
+                new Thread(() -> logFromIo(process.getInputStream(),logger,LogLevel.INFO)).start();
+                new Thread(() -> logFromIo(process.getErrorStream(),logger,LogLevel.ERROR)).start();
 
-            process.waitFor(30, TimeUnit.SECONDS);
+                process.waitFor(30, TimeUnit.SECONDS);
+            } else {
+                runtime.exec(new String[]{"/bin/chmod ","777",fileName}).waitFor();
+                Process process = runtime.exec(new String[]{"/bin/sh",fileName});
+
+                new Thread(() -> logFromIo(process.getInputStream(),logger,LogLevel.INFO)).start();
+                new Thread(() -> logFromIo(process.getErrorStream(),logger,LogLevel.ERROR)).start();
+
+                process.waitFor(30, TimeUnit.SECONDS);
+            }
 
             return ResultEnums.S;
         }catch (Exception e){
@@ -62,7 +72,7 @@ public class ShellProcess implements InvokeProcess {
     }
 
     private String getFileName(TaskContext taskContext){
-       return "_"+taskContext.getInstanceId()+"_"+taskContext.getClass();
+       return "_"+taskContext.getInstanceId()+"_"+taskContext.getClass().getName()+(isWindows()?".bat":".sh");
     }
 
     private String writeShell(TaskContext taskContext,String rootPath) throws IOException {
@@ -88,5 +98,9 @@ public class ShellProcess implements InvokeProcess {
         }catch (Exception e){
             logger.error("read script execute res error,",e);
         }
+    }
+
+    private boolean isWindows(){
+        return PlatformUtil.isWindows();
     }
 }

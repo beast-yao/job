@@ -45,9 +45,15 @@ public class JobInfoEntity extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     private TaskType taskType;
 
-    @Column(nullable = false,updatable = false)
+    /**
+     * 脚本执行时，可以为空
+     */
+    @Column(updatable = false)
     private String uniqueName;
 
+    /**
+     * 服务名
+     */
     @Column(nullable = false)
     private String appName;
 

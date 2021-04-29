@@ -46,7 +46,7 @@ public class InstanceEntity extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     private TaskType taskType;
 
-    @Column(nullable = false,updatable = false)
+    @Column(updatable = false)
     private String uniqueName;
 
     @Column(updatable = false)

@@ -20,7 +20,6 @@ import javax.validation.constraints.Size;
 public class NewTaskRequest {
 
     @ApiModelProperty(required = true,value = "task name")
-    @NotBlank(message = "task name should not be null or blank")
     private String taskName;
 
     @ApiModelProperty(required = true,value = "des")

@@ -73,7 +73,6 @@ export default {
             },
             rules: {
                 taskName: [
-                    { required: true, message: '请输入任务名', trigger: 'blur' },
                     { max: 25, message: '任务名长度最大25个字符', trigger: 'blur' }
                 ],
                 des: [

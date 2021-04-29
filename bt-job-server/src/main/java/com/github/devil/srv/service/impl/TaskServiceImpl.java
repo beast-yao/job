@@ -53,6 +53,10 @@ public class TaskServiceImpl implements TaskService {
             throw new IllegalArgumentException("Shell 脚本需要输入脚本内容");
         }
 
+        if (StringUtils.isEmpty(request.getTaskName()) && Objects.equals(request.getTaskType(), TaskType.REMOTE_CLIENT)){
+            throw new IllegalArgumentException("Task Name 不能为空");
+        }
+
         entity.setNextTriggerTime(request.getTimeType().getNext(new Date(),request.getTimeExpression()));
         entity.setTaskType(request.getTaskType());
         entity.setVersion(0);
