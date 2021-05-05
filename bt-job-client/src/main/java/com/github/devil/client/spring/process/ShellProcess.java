@@ -5,7 +5,6 @@ import com.github.devil.client.process.InvokeProcess;
 import com.github.devil.client.process.TaskContext;
 import com.github.devil.common.enums.LogLevel;
 import com.github.devil.common.enums.ResultEnums;
-import com.sun.javafx.PlatformUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.apache.commons.lang3.SystemUtils;
@@ -101,6 +100,6 @@ public class ShellProcess implements InvokeProcess {
     }
 
     private boolean isWindows(){
-        return PlatformUtil.isWindows();
+        return SystemUtils.IS_OS_WINDOWS;
     }
 }

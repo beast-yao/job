@@ -75,6 +75,6 @@ public interface JobInfoRepository extends JpaRepository<JobInfoEntity,Long> {
      * @param maxInstance
      * @return
      */
-    @Query(value = "select JOB_ID from JOB_INSTANCE group by JOB_ID having count(1) > ?1",nativeQuery = true)
+    @Query(value = "select job_id from job_instance group by job_id having count(1) > ?1",nativeQuery = true)
     List<Long> findIdWhereHasMaxInstance(int maxInstance);
 }
