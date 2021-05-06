@@ -103,7 +103,7 @@ public enum TimeType implements BaseEnums{
                return new Date(Long.parseLong(timeValue)).after(new Date());
             }catch (Exception e){
                 try {
-                   return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS").parse(timeValue).after(new Date());
+                   return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(timeValue).after(new Date());
                 } catch (Exception parseException) {
                     return false;
                 }

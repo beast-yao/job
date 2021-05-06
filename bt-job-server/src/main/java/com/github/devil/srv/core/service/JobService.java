@@ -8,6 +8,7 @@ import com.github.devil.srv.akka.ha.ServerManager;
 import com.github.devil.srv.akka.server.ServerHolder;
 import com.github.devil.srv.akka.worker.WorkerHolder;
 import com.github.devil.srv.core.enums.InstanceType;
+import com.github.devil.srv.core.enums.JobStatus;
 import com.github.devil.srv.core.exception.JobException;
 import com.github.devil.srv.core.persist.core.entity.InstanceEntity;
 import com.github.devil.srv.core.persist.core.entity.JobInfoEntity;
@@ -158,6 +159,8 @@ public class JobService {
             optional.ifPresent(entity -> {
                 if (Objects.equals(entity.getTimeType(),TimeType.DELAY)){
                     refreshNextTriggerTime(entity);
+                }else if (Objects.equals(entity.getTimeType(),TimeType.FIX_DATE)){
+                    jobInfoRepository.updateJobStatus(entity.getJobId(),JobStatus.COMPLETE,new Date());
                 }
             });
         }

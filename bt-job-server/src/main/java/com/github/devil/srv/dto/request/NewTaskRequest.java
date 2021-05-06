@@ -47,7 +47,7 @@ public class NewTaskRequest {
     @NotBlank(message = "app name should not be null or blank")
     private String appName;
 
-    @Size(max = 4000,message = "size of job meta should less then 4000")
+    @Size(max = 2000,message = "size of job meta should less then 2000")
     private String jobMeta;
 
     private String workHost;

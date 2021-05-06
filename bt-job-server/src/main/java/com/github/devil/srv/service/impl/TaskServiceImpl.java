@@ -40,7 +40,6 @@ public class TaskServiceImpl implements TaskService {
 
         JobInfoEntity entity = new JobInfoEntity();
         entity.setLastTriggerTime(null);
-        entity.setJobMeta(null);
         entity.setAppName(request.getAppName());
         entity.setExecuteType(request.getExecuteType());
         entity.setJobStatus(JobStatus.NORMAL);
@@ -51,6 +50,8 @@ public class TaskServiceImpl implements TaskService {
 
         if (Objects.equals(request.getTaskType(), TaskType.SHELL) && StringUtils.isEmpty(request.getJobMeta())){
             throw new IllegalArgumentException("Shell 脚本需要输入脚本内容");
+        }else {
+            entity.setParams(request.getJobMeta());
         }
 
         if (StringUtils.isEmpty(request.getTaskName()) && Objects.equals(request.getTaskType(), TaskType.REMOTE_CLIENT)){
@@ -66,6 +67,7 @@ public class TaskServiceImpl implements TaskService {
         entity.setTimeType(request.getTimeType());
         entity.setServeHost(MainAkServer.getCurrentHost());
         entity.setJobMeta(request.getJobMeta());
+        entity.setDes(request.getDes());
         jobInfoRepository.saveAndFlush(entity);
         return true;
     }

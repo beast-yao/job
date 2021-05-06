@@ -1,5 +1,6 @@
 package com.github.devil.srv.core.persist.core.repository;
 
+import com.github.devil.srv.core.enums.JobStatus;
 import com.github.devil.srv.core.persist.core.entity.JobInfoEntity;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
@@ -42,9 +43,9 @@ public interface JobInfoRepository extends JpaRepository<JobInfoEntity,Long> {
      * @param time
      * @return
      */
-    @Query(value = "select * from job_info where serve_host=?1 and next_trigger_time < ?2 and time_type != 'DELAY' and job_status = 'NORMAL' and id not in (select job_id from job_instance where job_instance.version=job_info.version and job_instance.execute_statue != 'CANCEL')" +
+    @Query(value = "select * from job_info where serve_host=?1 and next_trigger_time < ?2 and time_type not in ('DELAY','FIX_DATE') and job_status = 'NORMAL' and id not in (select job_id from job_instance where job_instance.version=job_info.version and job_instance.execute_statue != 'CANCEL')" +
             " union " +
-            "select * from job_info where serve_host=?1 and next_trigger_time < ?2 and time_type = 'DELAY' and job_status = 'NORMAL' and id not in (select job_id from job_instance where job_instance.execute_statue in (?3))",nativeQuery = true)
+            "select * from job_info where serve_host=?1 and next_trigger_time < ?2 and time_type in ('DELAY','FIX_DATE') and job_status = 'NORMAL' and id not in (select job_id from job_instance where job_instance.execute_statue in (?3))",nativeQuery = true)
     List<JobInfoEntity> findUnExecuteJob(String serveHost, Date time,List<String> unCompleteStatus);
 
 
@@ -77,4 +78,9 @@ public interface JobInfoRepository extends JpaRepository<JobInfoEntity,Long> {
      */
     @Query(value = "select job_id from job_instance group by job_id having count(1) > ?1",nativeQuery = true)
     List<Long> findIdWhereHasMaxInstance(int maxInstance);
+
+    @Modifying
+    @Transactional(transactionManager = "transactionManager",rollbackFor = Exception.class)
+    @Query("update JobInfoEntity set jobStatus=?2, upt=?3 where id=?1")
+    int updateJobStatus(Long id, JobStatus status, Date date);
 }

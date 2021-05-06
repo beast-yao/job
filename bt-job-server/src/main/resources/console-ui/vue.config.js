@@ -7,7 +7,7 @@ module.exports = {
   devServer: {
     proxy: {
       '/job': {
-          target: 'http://127.0.0.1:8778',
+          target: 'http://127.0.0.1:18778',
           changeOrigin: true
       }
     }

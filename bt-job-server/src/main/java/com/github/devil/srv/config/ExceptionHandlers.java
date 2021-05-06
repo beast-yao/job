@@ -47,6 +47,13 @@ public class ExceptionHandlers {
         return new Resp(HttpStatus.BAD_REQUEST.value(),null,exception.getMessage());
     }
 
+    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(value = IllegalArgumentException.class)
+    public Resp handleValid(IllegalArgumentException exception){
+        log.error("params error,",exception);
+        return new Resp(HttpStatus.BAD_REQUEST.value(),null,exception.getMessage());
+    }
+
 
     @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(value = Exception.class)

@@ -21,6 +21,12 @@ public enum JobStatus {
      */
     STOP("停止"),
 
+
+    /**
+     * 完成
+     */
+    COMPLETE("完成"),
+
     ;
 
     String message;

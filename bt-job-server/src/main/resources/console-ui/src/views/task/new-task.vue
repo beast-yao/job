@@ -25,7 +25,7 @@
                         <div slot="content">
                             1. 执行类型为corn，请输入corn表达式<br/>
                             2. 执行类型为固定频率和延时执行，请输入毫秒数，最小1000ms<br/>
-                            3. 执行类型为固定时间，请输入时间类型，格式 yyyy-MM-dd HH:mm:ss:SSS
+                            3. 执行类型为固定时间，请输入时间类型，格式 yyyy-MM-dd HH:mm:ss
                         </div>
                         <i class="el-icon-info"/>
                     </el-tooltip>
@@ -43,7 +43,14 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="任务元信息" prop="jobMeta">
-                    <el-input v-model="form.jobMeta" maxlength="4000" show-word-limit type="textarea" :rows="5" placeholder="任务类型为脚本类型时，请填入脚本"/>
+                    <el-input v-model="form.jobMeta" maxlength="2000" show-word-limit type="textarea" :rows="5" placeholder="请填写任务信息"/>
+                    <el-tooltip style="margin-left:20px" placement="top">
+                        <div slot="content">
+                            1. shell脚本执行时，请填写shell脚本信息<br/>
+                            2. 普通任务执行时，该项可作为任务参数<br/>
+                        </div>
+                        <i class="el-icon-info"/>
+                    </el-tooltip>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="info" :loading="load" @click="cancel">取消</el-button>
@@ -76,6 +83,7 @@ export default {
                     { max: 25, message: '任务名长度最大25个字符', trigger: 'blur' }
                 ],
                 des: [
+                    { required: true, message: '请输入任务描述信息', trigger: 'blur' },
                     { max: 120, message: '任务描述长度最大120个字符', trigger: 'blur' }
                 ],
                 appName: [
@@ -96,7 +104,7 @@ export default {
                     { required: true, message: '请选择任务类型', trigger: 'blur' }
                 ],
                 jobMeta: [
-                    { max: 4000, message: '任务元信息长度最大25个字符', trigger: 'blur' }
+                    { max: 2000, message: '任务元信息长度最大2000个字符', trigger: 'blur' }
                 ]
             }
         }
