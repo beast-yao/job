@@ -17,8 +17,6 @@ public class JobServerApplication {
     public static void main(String[] args) {
         new SpringApplicationBuilder()
                 .sources(JobServerApplication.class)
-//                .banner()
-                .properties("spring.banner.location=classpath:META-INF/banner.txt")
                 .run(args);
     }
 

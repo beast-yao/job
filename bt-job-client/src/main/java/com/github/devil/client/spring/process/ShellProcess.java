@@ -7,6 +7,7 @@ import com.github.devil.common.enums.LogLevel;
 import com.github.devil.common.enums.ResultEnums;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.SystemUtils;
 
 import java.io.File;
@@ -21,6 +22,7 @@ import java.util.concurrent.TimeUnit;
  * @date 2021/3/5
  **/
 @Data
+@Slf4j
 @AllArgsConstructor
 public class ShellProcess implements InvokeProcess {
 
@@ -38,7 +40,6 @@ public class ShellProcess implements InvokeProcess {
             String shellRootPath = getScriptDir();
             String fileName = writeShell(taskContext,shellRootPath);
 
-
             Runtime runtime = Runtime.getRuntime();
             // 修改权限
             if (isWindows()){
@@ -49,7 +50,7 @@ public class ShellProcess implements InvokeProcess {
 
                 process.waitFor(30, TimeUnit.SECONDS);
             } else {
-                runtime.exec(new String[]{"/bin/chmod ","777",fileName}).waitFor();
+                runtime.exec(new String[]{"/bin/chmod","777",fileName}).waitFor();
                 Process process = runtime.exec(new String[]{"/bin/sh",fileName});
 
                 new Thread(() -> logFromIo(process.getInputStream(),logger,LogLevel.INFO)).start();
@@ -60,6 +61,7 @@ public class ShellProcess implements InvokeProcess {
 
             return ResultEnums.S;
         }catch (Exception e){
+            log.error("execute script error,jobId [{}],instanceId:[{}],error:",taskContext.getJobId(),taskContext.getInstanceId(),e);
             logger.error("execute script error,jobId [{}],instanceId:[{}],error:",taskContext.getJobId(),taskContext.getInstanceId(),e);
             taskContext.getLogger().error("execute script error,jobId [{}],instanceId:[{}],error:",taskContext.getJobId(),taskContext.getInstanceId(),e);
             return ResultEnums.F;

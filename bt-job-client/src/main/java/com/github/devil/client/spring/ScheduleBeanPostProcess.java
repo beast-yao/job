@@ -10,6 +10,8 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.SmartInitializingSingleton;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.core.MethodIntrospector;
+import org.springframework.core.OrderComparator;
+import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.scheduling.TaskScheduler;
 
@@ -25,13 +27,13 @@ import java.util.stream.Collectors;
  **/
 public class ScheduleBeanPostProcess implements BeanPostProcessor, SmartInitializingSingleton {
 
-
     private final Set<Class<?>> nonAnnotatedClasses = Collections.newSetFromMap(new ConcurrentHashMap<>(64));
 
     private final List<TaskLifecycle> lifecycles = new ArrayList<>();
 
     @Override
     public void afterSingletonsInstantiated() {
+        lifecycles.sort(AnnotationAwareOrderComparator.INSTANCE);
         lifecycles.forEach(this::registerLifecycle);
     }
 

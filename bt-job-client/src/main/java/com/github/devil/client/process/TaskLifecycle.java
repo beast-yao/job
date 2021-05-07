@@ -10,7 +10,7 @@ import java.util.List;
  **/
 public interface TaskLifecycle {
 
-    public final static String DEFAULT_LIFECYCLE_NAME = "#default_lifecycle_for_all_task";
+    String DEFAULT_LIFECYCLE_NAME = "#default_lifecycle_for_all_task";
 
     /**
      * return the taskName that should use this lifecycle
@@ -25,7 +25,7 @@ public interface TaskLifecycle {
      * beforeTask
      * @param taskContext
      */
-    public void beforeTask(TaskContext taskContext);
+    void beforeTask(TaskContext taskContext);
 
     /**
      * afterTask
@@ -33,5 +33,5 @@ public interface TaskLifecycle {
      * @param enums
      * @param throwable
      */
-    public void afterTask(TaskContext taskContext, ResultEnums enums,Throwable throwable);
+    void afterTask(TaskContext taskContext, ResultEnums enums,Throwable throwable);
 }

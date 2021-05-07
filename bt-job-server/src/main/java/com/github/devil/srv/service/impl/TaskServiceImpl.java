@@ -50,6 +50,11 @@ public class TaskServiceImpl implements TaskService {
 
         if (Objects.equals(request.getTaskType(), TaskType.SHELL) && StringUtils.isEmpty(request.getJobMeta())){
             throw new IllegalArgumentException("Shell 脚本需要输入脚本内容");
+        }
+
+        // shell 脚本不支持设置参数
+        if (Objects.equals(request.getTaskType(), TaskType.SHELL)){
+            entity.setJobMeta(request.getJobMeta());
         }else {
             entity.setParams(request.getJobMeta());
         }
@@ -66,7 +71,6 @@ public class TaskServiceImpl implements TaskService {
         entity.setUniqueName(request.getTaskName());
         entity.setTimeType(request.getTimeType());
         entity.setServeHost(MainAkServer.getCurrentHost());
-        entity.setJobMeta(request.getJobMeta());
         entity.setDes(request.getDes());
         jobInfoRepository.saveAndFlush(entity);
         return true;

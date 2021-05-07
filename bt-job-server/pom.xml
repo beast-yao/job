@@ -128,6 +128,7 @@
                 <directory>src/main/resources</directory>
                 <includes>
                     <include>*.yml</include>
+                    <include>*.txt</include>
                     <include>*.xml</include>
                     <include>META-INF/*</include>
                 </includes>
@@ -163,6 +164,7 @@
                         </manifest>
                         <manifestEntries>
                             <Build-Jdk>${java.version}</Build-Jdk>
+                            <Build-By>Devil</Build-By>
                             <Build-Time>${maven.build.timestamp}</Build-Time>
                         </manifestEntries>
                     </archive>

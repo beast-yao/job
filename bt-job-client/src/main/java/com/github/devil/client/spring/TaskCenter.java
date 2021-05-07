@@ -6,10 +6,8 @@ import com.github.devil.client.process.TaskContextHolder;
 import com.github.devil.client.process.TaskLifecycle;
 import com.github.devil.client.spring.process.ShellProcess;
 import com.github.devil.common.enums.ResultEnums;
-import com.github.devil.common.dto.WorkerExecuteReq;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
@@ -28,7 +26,7 @@ public class TaskCenter {
 
     private static InvokeProcess DEFAULT_SHELL = new ShellProcess();
 
-    private static final Map<String, Set<TaskLifecycle>> aspects = new ConcurrentHashMap<>();
+    private static final Map<String, LinkedHashSet<TaskLifecycle>> lifecycles = new ConcurrentHashMap<>();
 
     public static void registerProcess(String name,InvokeProcess process){
         synchronized (invokers) {
@@ -50,13 +48,13 @@ public class TaskCenter {
         if (!Objects.equals(name,TaskLifecycle.DEFAULT_LIFECYCLE_NAME) && !invokers.containsKey(name)){
             throw new IllegalArgumentException(String.format("lifeCycle has no valid name,has no schedule register,[%s]",lifecycle.getClass().getName()));
         }
-        synchronized (aspects){
-            Set<TaskLifecycle> lifecycles =  aspects.get(name);
+        synchronized (lifecycles){
+            LinkedHashSet<TaskLifecycle> lifecycles =  TaskCenter.lifecycles.get(name);
             if (lifecycles == null){
-                lifecycles = new HashSet<>();
+                lifecycles = new LinkedHashSet<>();
             }
             lifecycles.add(lifecycle);
-            aspects.put(name,lifecycles);
+            TaskCenter.lifecycles.put(name,lifecycles);
         }
     }
 
@@ -75,12 +73,19 @@ public class TaskCenter {
                 log.debug("receive an req to execute job,name:{}",taskContext.getName());
             }
             InvokeProcess process = getProcess(taskContext);
+
+            log.info("find invoke process to run task,taskName[{}],instanceId[{}]",taskContext.getName(),taskContext.getInstanceId());
+
             Objects.requireNonNull(process,String.format("unique name %s is error cannot find process",taskContext.getName()));
             TaskContextHolder.register(taskContext);
+            if (log.isDebugEnabled()) {
+                log.debug("prepare to run task,taskName:[{}],instanceId:[{}]", taskContext.getName(), taskContext.getInstanceId());
+            }
             ResultEnums res =  process.run(taskContext);
             afterProcess(taskContext,res,null);
             return res;
         }catch (Exception e){
+            log.error("execute invoke error,uniqueName:{}",taskContext.getName(),e);
             taskContext.getLogger().error("execute invoke error,uniqueName:{}",taskContext.getName(),e);
             afterProcess(taskContext,ResultEnums.F,e);
             return ResultEnums.F;
@@ -101,13 +106,14 @@ public class TaskCenter {
     }
 
     private static Set<TaskLifecycle> getAspect(String taskName){
-        Set<TaskLifecycle> lifecycles = aspects.get(TaskLifecycle.DEFAULT_LIFECYCLE_NAME);
-        if (lifecycles == null){
-            lifecycles = new HashSet<>();
+        Set<TaskLifecycle> lifecycles = new LinkedHashSet<>();
+        Set<TaskLifecycle> defaults = TaskCenter.lifecycles.get(TaskLifecycle.DEFAULT_LIFECYCLE_NAME);
+        if (defaults != null){
+            lifecycles.addAll(defaults);
         }
 
         if (taskName != null && !Objects.equals(taskName,"")){
-            Set<TaskLifecycle> aspect = aspects.get(taskName);
+            Set<TaskLifecycle> aspect = TaskCenter.lifecycles.get(taskName);
             if (aspect != null){
                 lifecycles.addAll(aspect);
             }

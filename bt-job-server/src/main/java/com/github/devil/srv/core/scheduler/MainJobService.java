@@ -39,7 +39,7 @@ import java.util.stream.Collectors;
 @Component
 public class MainJobService implements DisposableBean {
 
-    private final static Integer MAX_BATCH = 200;
+    private final static Integer MAX_BATCH = 500;
 
     public static final long SCHEDULER_FIX = 800;
 
