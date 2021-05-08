@@ -14,6 +14,9 @@ spring:
 #      "hibernate.jdbc.batch_versioned_data": "true"
 #      "hibernate.order_updates": "true"
 #      "hibernate.order_inserts": "true"
+  jackson:
+      date-format: "yyyy-MM-dd HH:mm:ss"
+      time-zone: "GMT+8"
   datasource:
     core:
       validation-timeout: 1000
@@ -44,7 +47,7 @@ jpa:
 
 
 server:
-  port: 8999
+  port: 18778
   servlet:
     context-path: /job
 
