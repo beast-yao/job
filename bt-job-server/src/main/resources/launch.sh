@@ -34,6 +34,7 @@ do
     esac
 done
 
+work_dir=`cd $(dirname $0); pwd`
 pid_file="$(pwd $(dirname $0))/pid"
 export BASE_DIR=`cd $(dirname $0)/..; pwd`
 export CUSTOM_SEARCH_LOCATIONS=file:${BASE_DIR}/conf/
@@ -51,21 +52,21 @@ if [ -n "$MEMBER_LIST" ]; then
 fi
 
 
-#JAVA_MAJOR_VERSION=$($JAVA -version 2>&1 | sed -E -n 's/.* version "([0-9]*).*$/\1/p')
-#if [[ "$JAVA_MAJOR_VERSION" -ge "9" ]] ; then
-#  JAVA_OPT="${JAVA_OPT} -Xlog:gc*:file=${BASE_DIR}/logs/job_gc.log:time,tags:filecount=10,filesize=102400"
-#else
-#  JAVA_OPT="${JAVA_OPT} -Djava.ext.dirs=${JAVA_HOME}/jre/lib/ext:${JAVA_HOME}/lib/ext"
-#  JAVA_OPT="${JAVA_OPT} -Xloggc:${BASE_DIR}/logs/job_gc.log -verbose:gc -XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:+PrintGCTimeStamps -XX:+UseGCLogFileRotation -XX:NumberOfGCLogFiles=10 -XX:GCLogFileSize=100M"
-#fi
+JAVA_MAJOR_VERSION=$($JAVA -version 2>&1 | sed -E -n 's/.* version "([0-9]*).*$/\1/p')
+if [[ "$JAVA_MAJOR_VERSION" -ge "9" ]] ; then
+  JAVA_OPT="${JAVA_OPT} -Xlog:gc*:file=${BASE_DIR}/logs/job_gc.log:time,tags:filecount=10,filesize=102400"
+else
+  JAVA_OPT="${JAVA_OPT} -Djava.ext.dirs=${JAVA_HOME}/jre/lib/ext:${JAVA_HOME}/lib/ext"
+  JAVA_OPT="${JAVA_OPT} -Xloggc:${BASE_DIR}/logs/job_gc.log -verbose:gc -XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:+PrintGCTimeStamps -XX:+UseGCLogFileRotation -XX:NumberOfGCLogFiles=10 -XX:GCLogFileSize=100M"
+fi
 
 JAVA_OPT="${JAVA_OPT} -Djob.home=${BASE_DIR}"
 JAVA_OPT="${JAVA_OPT} -Dname=${SERVER}"
 JAVA_OPT="${JAVA_OPT} -Djob.logs.path=${BASE_DIR}/logs"
-JAVA_OPT="${JAVA_OPT} -jar $(pwd $(dirname $0))/${SERVER}.jar"
+JAVA_OPT="${JAVA_OPT} -jar ${work_dir}/${SERVER}.jar"
 JAVA_OPT="${JAVA_OPT} ${JAVA_OPT_EXT}"
-if [ -d  "$(pwd $(dirname $0))/../conf" ]; then
-    JAVA_OPT="${JAVA_OPT} --spring.config.location=../conf/"
+if [ -d  "${BASE_DIR}/conf" ]; then
+    JAVA_OPT="${JAVA_OPT} --spring.config.location=${BASE_DIR}/conf/"
 fi
 
 if [ -r  "${BASE_DIR}/conf/job-logback.xml" ] ; then
