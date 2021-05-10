@@ -21,16 +21,19 @@ fi
 
 export SERVER="bt-job-server"
 export MEMBER_LIST=""
-while getopts ":s:c:" opt
+action="$1"
+shift "1"
+while getopts ":s::c::p:" opt "$@";
 do
     case $opt in
         s)
             SERVER=$OPTARG;;
         c)
             MEMBER_LIST=$OPTARG;;
+        p)
+            PROFILE=$OPTARG;;
         ?)
-        echo "Unknown parameter"
-        exit 1;;
+            echo "Unknown parameter"
     esac
 done
 
@@ -72,6 +75,10 @@ fi
 if [ -r  "${BASE_DIR}/conf/job-logback.xml" ] ; then
     JAVA_OPT="${JAVA_OPT} --logging.config=${BASE_DIR}/conf/job-logback.xml"
 fi
+
+if [ -n "$PROFILE" ]; then
+    JAVA_OPT="${JAVA_OPT} --spring.profiles.active=${PROFILE}"
+fi
 JAVA_OPT="${JAVA_OPT} --server.max-http-header-size=524288"
 
 if [ ! -d "${BASE_DIR}/logs" ]; then
@@ -110,6 +117,7 @@ run()
         pid = $(cat "$pid_file")
         isRunning $pid || { echoYellow "already starting [$pid]"; return 1; }
     fi
+    echo "$JAVA ${JAVA_OPT} job.srv"
     $JAVA ${JAVA_OPT} job.srv
 }
 
@@ -126,7 +134,7 @@ status() {
   return 0
 }
 # Call the appropriate action function
-case "$1" in
+case "$action" in
 start)
   start "$@"; exit $?;;
 stop)
