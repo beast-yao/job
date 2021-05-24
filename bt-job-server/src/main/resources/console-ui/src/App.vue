@@ -25,6 +25,10 @@
               <i class="el-icon-first-aid-kit"/>
               <span slot="title">管理任务</span>
             </el-menu-item>
+            <el-menu-item index="/task/instance">
+              <i class="el-icon-first-aid-kit"/>
+              <span slot="title">任务执行记录</span>
+            </el-menu-item>
           </el-submenu>
 
           <el-submenu index="2">
@@ -87,15 +91,16 @@
            this.currentName = '';
           return;
         }
+        var match = false
         this.tabs.forEach(item => {
           if (item.name === route.meta.title) {
             item.routeName = route.name;
-            item.path = route.path;
+            item.path = route.fullPath;
+            match = true
           }
         })
-        var t = this.tabs.find(e => e.name === route.meta.title);
-        if (!t) {
-          this.tabs.push({ label: route.meta.title, name: route.meta.title, path: route.path, routeName: route.name });
+        if (!match) {
+          this.tabs.push({ label: route.meta.title, name: route.meta.title, path: route.fullPath, routeName: route.name });
         }
         this.currentName = route.meta.title;
       },

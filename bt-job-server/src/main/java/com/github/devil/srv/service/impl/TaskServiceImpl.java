@@ -3,12 +3,15 @@ package com.github.devil.srv.service.impl;
 import com.github.devil.common.enums.TaskType;
 import com.github.devil.srv.akka.MainAkServer;
 import com.github.devil.srv.core.enums.JobStatus;
+import com.github.devil.srv.core.persist.core.entity.InstanceEntity;
 import com.github.devil.srv.core.persist.core.entity.JobInfoEntity;
 import com.github.devil.srv.core.persist.core.repository.JobInfoRepository;
+import com.github.devil.srv.core.persist.core.repository.JobInstanceRepository;
 import com.github.devil.srv.core.service.JobService;
 import com.github.devil.srv.dto.request.NewTaskRequest;
 import com.github.devil.srv.dto.response.PageDTO;
 import com.github.devil.srv.dto.response.TaskDTO;
+import com.github.devil.srv.dto.response.TaskInstanceDTO;
 import com.github.devil.srv.service.TaskService;
 import com.github.devil.srv.util.ConvertUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +37,8 @@ public class TaskServiceImpl implements TaskService {
     private JobInfoRepository jobInfoRepository;
     @Resource
     private JobService jobService;
+    @Resource
+    private JobInstanceRepository instanceRepository;
 
     @Override
     public Boolean newTask(NewTaskRequest request) {
@@ -109,6 +114,30 @@ public class TaskServiceImpl implements TaskService {
             page = jobInfoRepository.findAll(example,PageRequest.of(current,pageSize, Sort.by(Sort.Direction.DESC,"crt")));
         }
         PageDTO<TaskDTO> pageDTO = new PageDTO<>();
+        pageDTO.setPage(current);
+        pageDTO.setPageSize(pageSize);
+        pageDTO.setTotal(page.getTotalElements());
+        pageDTO.setData(page.getContent().stream().map(ConvertUtils::convert).collect(Collectors.toList()));
+        return pageDTO;
+    }
+
+    @Override
+    public PageDTO<TaskInstanceDTO> getInstancePage(String taskName, String appName, Long taskId, Integer pageSize, Integer current) {
+        if (current == null || current < 0){
+            current = 0;
+        }
+        Page<InstanceEntity> page;
+        if (taskName == null && appName == null && taskId == null){
+            page = instanceRepository.findAll(PageRequest.of(current,pageSize,Sort.by(Sort.Direction.DESC,"crt")));
+        } else {
+            InstanceEntity example = new InstanceEntity();
+            example.setVersion(null);
+            example.setAppName(appName);
+            example.setUniqueName(taskName);
+            example.setJobId(taskId);
+            page = instanceRepository.findAll(Example.of(example),PageRequest.of(current,pageSize, Sort.by(Sort.Direction.DESC,"crt")));
+        }
+        PageDTO<TaskInstanceDTO> pageDTO = new PageDTO<>();
         pageDTO.setPage(current);
         pageDTO.setPageSize(pageSize);
         pageDTO.setTotal(page.getTotalElements());

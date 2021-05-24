@@ -28,6 +28,9 @@ import java.util.Date;
 @ToString(exclude = "jobInfoEntity",callSuper = true)
 public class InstanceEntity extends BaseEntity {
 
+    @Column
+    private String des;
+
     @Column(nullable = false,updatable = false)
     private Long jobId;
 

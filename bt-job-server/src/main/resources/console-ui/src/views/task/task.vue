@@ -26,21 +26,21 @@
           </el-row>
         </el-header>
         <el-main>
-          <el-table :data="data" v-loading="loading" :cell-style="{'text-align':'center'}" :header-cell-style="{'text-align':'center','background-color':'#f5f7fa'}" >
+          <el-table :data="data" v-loading="loading" max-height="580px" :cell-style="{'text-align':'center'}" :header-cell-style="{'text-align':'center','background-color':'#f5f7fa'}" >
             <template slot="empty">
               <span>暂无任务信息</span>
             </template>
-            <el-table-column prop="taskName" label="任务名" min-width="150" />
-            <el-table-column prop="desc" label="任务描述" min-width="150" />
-            <el-table-column prop="appName" label="服务名" min-width="150" />
-            <el-table-column prop="serveHost" label="当前触发server" min-width="150" />
-            <el-table-column prop="executeType" label="执行类型" min-width="120" />
-            <el-table-column prop="timeType" label="触发方式" min-width="150" />
-            <el-table-column prop="timeVal" label="时间表达式" min-width="120" />
+            <el-table-column prop="taskName" label="任务名" min-width="120" />
+            <el-table-column prop="desc" label="任务描述" min-width="120" />
+            <el-table-column prop="appName" label="服务名" min-width="100" />
+            <el-table-column prop="serveHost" label="当前触发server" min-width="100" />
+            <el-table-column prop="executeType" label="执行类型" min-width="100" />
+            <el-table-column prop="timeType" label="触发方式" min-width="100" />
+            <el-table-column prop="timeVal" label="时间表达式" min-width="100" />
             <el-table-column prop="lastTriggerTime" label="最后触发时间" min-width="150" />
             <el-table-column prop="nextTriggerTime" label="下次触发时间" min-width="150" />
             <el-table-column prop="crt" label="创建时间" min-width="150" />
-            <el-table-column>
+            <el-table-column fixed="right" label="操作">
               <template slot-scope="scope">
                 <el-button type="text" size="mini" @click="taskInstance(scope.row)">查看</el-button>
               </template>
@@ -55,7 +55,7 @@
         </el-main>
        </el-container>
     </el-container>
-    <new-task ref="newTask"/>
+    <new-task ref="newTask" @reload="reload"/>
   </div>
 </template>
 
@@ -105,6 +105,10 @@ export default {
         this.loading = false;
       });
     },
+    reload () {
+      this.page = 1;
+      this.search();
+    },
     handleCurrentChange(val) {
       this.search();
     },
@@ -113,7 +117,7 @@ export default {
       this.search();
     },
     taskInstance (task) {
-      console.log(task)
+      this.$router.push({ name: 'task-instance', query: { taskId: task.id } })
     },
     newTask() {
       this.$refs.newTask.visible = true

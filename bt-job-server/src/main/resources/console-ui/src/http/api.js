@@ -11,3 +11,7 @@ export const getTask = (params) => {
 export const addTask = (data) => {
   return http.POST('/task', data)
 }
+
+export const getTaskInstance = (params) => {
+  return http.GET('/task/instance/page', params);
+}

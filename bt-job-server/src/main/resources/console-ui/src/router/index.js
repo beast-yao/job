@@ -34,6 +34,14 @@ const routes = [
     meta: {
       title: '管理任务'
     }
+  },
+  {
+    name: 'task-instance',
+    path: '/task/instance',
+    component: () => import('@/views/task/instance.vue'),
+    meta: {
+      title: '任务执行记录'
+    }
   }
 ]
 

@@ -3,6 +3,7 @@ package com.github.devil.srv.service;
 import com.github.devil.srv.dto.request.NewTaskRequest;
 import com.github.devil.srv.dto.response.PageDTO;
 import com.github.devil.srv.dto.response.TaskDTO;
+import com.github.devil.srv.dto.response.TaskInstanceDTO;
 
 /**
  * @author eric.yao
@@ -32,4 +33,14 @@ public interface TaskService {
      * @return
      */
     PageDTO<TaskDTO> getTaskPage(String taskName,String appName,Integer pageSize,Integer current);
+
+    /**
+     * 分页查询
+     * @param taskName
+     * @param appName
+     * @param pageSize
+     * @param current
+     * @return
+     */
+    PageDTO<TaskInstanceDTO> getInstancePage(String taskName, String appName, Long taskId,Integer pageSize, Integer current);
 }

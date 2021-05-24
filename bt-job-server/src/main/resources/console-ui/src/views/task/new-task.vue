@@ -104,7 +104,7 @@ export default {
                     { required: true, message: '请选择任务类型', trigger: 'blur' }
                 ],
                 jobMeta: [
-                    { max: 2000, message: '任务元信息长度最大2000个字符', trigger: 'blur' }
+                    { max: 2000, message: '任务元信息长度最大2000=个字符', trigger: 'blur' }
                 ]
             }
         }
@@ -123,6 +123,7 @@ export default {
                         this.$nextTick(() => {
                             this.load = false
                             this.$refs.form.resetFields();
+                            this.$emit('reload');
                         });
                     }).catch((err) => {
                         var msg = err.response.data;

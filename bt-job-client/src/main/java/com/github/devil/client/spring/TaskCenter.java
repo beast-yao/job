@@ -70,17 +70,12 @@ public class TaskCenter {
     public static ResultEnums runProcess(TaskContext taskContext){
         try {
             if (log.isDebugEnabled()){
-                log.debug("receive an req to execute job,name:{}",taskContext.getName());
+                log.debug("find invoke process to run task,taskName[{}],instanceId[{}]",taskContext.getName(),taskContext.getInstanceId());
             }
             InvokeProcess process = getProcess(taskContext);
 
-            log.info("find invoke process to run task,taskName[{}],instanceId[{}]",taskContext.getName(),taskContext.getInstanceId());
-
             Objects.requireNonNull(process,String.format("unique name %s is error cannot find process",taskContext.getName()));
             TaskContextHolder.register(taskContext);
-            if (log.isDebugEnabled()) {
-                log.debug("prepare to run task,taskName:[{}],instanceId:[{}]", taskContext.getName(), taskContext.getInstanceId());
-            }
             ResultEnums res =  process.run(taskContext);
             afterProcess(taskContext,res,null);
             return res;
