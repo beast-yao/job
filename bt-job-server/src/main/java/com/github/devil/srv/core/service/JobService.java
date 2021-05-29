@@ -175,6 +175,14 @@ public class JobService {
         jobInstanceRepository.updateStatusById(instanceId,new Date(),ExecuteStatue.FAILURE);
 
         workInstanceRepository.endWorkByInstanceId(ExecuteStatue.FAILURE,new Date(),new Date(),instanceId,ExecuteStatue.WAIT);
+
+        InstanceEntity entity = jobInstanceRepository.getOne(instanceId);
+        if (Objects.equals(entity.getTimeType(),TimeType.DELAY)){
+            refreshNextTriggerTime(entity);
+        }else if (Objects.equals(entity.getTimeType(),TimeType.FIX_DATE)){
+            jobInfoRepository.updateJobStatus(entity.getJobId(),JobStatus.COMPLETE,new Date());
+        }
+
     }
 
     /**

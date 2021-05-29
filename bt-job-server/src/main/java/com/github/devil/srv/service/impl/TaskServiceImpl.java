@@ -104,14 +104,14 @@ public class TaskServiceImpl implements TaskService {
         }
         Page<JobInfoEntity> page;
         if (taskName == null && appName == null){
-            page = jobInfoRepository.findAll(PageRequest.of(current,pageSize, Sort.by(Sort.Direction.DESC,"crt")));
+            page = jobInfoRepository.findAll(PageRequest.of(current,pageSize, Sort.by(Sort.Direction.DESC,"upt")));
         }else {
             JobInfoEntity entity = new JobInfoEntity();
             entity.setVersion(null);
             entity.setUniqueName(taskName);
             entity.setAppName(appName);
             Example<JobInfoEntity> example = Example.of(entity);
-            page = jobInfoRepository.findAll(example,PageRequest.of(current,pageSize, Sort.by(Sort.Direction.DESC,"crt")));
+            page = jobInfoRepository.findAll(example,PageRequest.of(current,pageSize, Sort.by(Sort.Direction.DESC,"upt")));
         }
         PageDTO<TaskDTO> pageDTO = new PageDTO<>();
         pageDTO.setPage(current);
@@ -128,14 +128,14 @@ public class TaskServiceImpl implements TaskService {
         }
         Page<InstanceEntity> page;
         if (taskName == null && appName == null && taskId == null){
-            page = instanceRepository.findAll(PageRequest.of(current,pageSize,Sort.by(Sort.Direction.DESC,"crt")));
+            page = instanceRepository.findAll(PageRequest.of(current,pageSize,Sort.by(Sort.Direction.DESC,"upt")));
         } else {
             InstanceEntity example = new InstanceEntity();
             example.setVersion(null);
             example.setAppName(appName);
             example.setUniqueName(taskName);
             example.setJobId(taskId);
-            page = instanceRepository.findAll(Example.of(example),PageRequest.of(current,pageSize, Sort.by(Sort.Direction.DESC,"crt")));
+            page = instanceRepository.findAll(Example.of(example),PageRequest.of(current,pageSize, Sort.by(Sort.Direction.DESC,"upt")));
         }
         PageDTO<TaskInstanceDTO> pageDTO = new PageDTO<>();
         pageDTO.setPage(current);
