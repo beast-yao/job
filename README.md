@@ -3,7 +3,7 @@
 
 ### 服务架构
 
-![ alt ""](frame.png)
+![ alt ""](./frame.png)
 
 ### TODOS
  - [ ] web-console

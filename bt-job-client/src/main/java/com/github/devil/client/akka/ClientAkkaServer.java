@@ -69,7 +69,7 @@ public class ClientAkkaServer {
             initSrv(akkaProperties);
 
             //初始化服务心跳
-            initHeartBeat(akkaProperties.getServers(), akkaProperties.getAppName());
+            ServiceHolder.initHeartBeat(akkaProperties.getServers());
 
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                 isStart.set(false);
@@ -111,32 +111,6 @@ public class ClientAkkaServer {
         system.actorOf(Props.create(MessageDeadActor.class));
 
         log.info("===============Job Client Started==============");
-    }
-
-    /**
-     * 初始化服务信息
-     * @Param servers
-     */
-    private void initHeartBeat(List<String> servers,String appName){
-        Assert.notEmpty(servers,"servers list is required");
-
-        servers.forEach(sever -> {
-            ThreadUtil.SCHEDULE.scheduleAtFixedRate(() -> sendHeartBeat(sever,appName),10,WORK_HEART_BEAT, TimeUnit.MILLISECONDS);
-        });
-    }
-
-    private void sendHeartBeat(String server,String appName){
-        try {
-            HeartBeat heartBeat = new HeartBeat();
-            heartBeat.setAppName(appName);
-            heartBeat.setTimeStamp(System.currentTimeMillis());
-            heartBeat.setWorkerAddress(currentHost);
-            CompletableFuture<Object> completableFuture = Patterns.ask(getSrv(server),heartBeat, Duration.ofMillis(1000)).toCompletableFuture();
-            ServicesRes servicesRes = (ServicesRes)completableFuture.get(1000,TimeUnit.MILLISECONDS);
-            ServiceHolder.receiveSrv(servicesRes);
-        }catch (Exception e){
-            log.error("cannot send heartbeat message to server:[{}],maybe this server has down",server);
-        }
     }
 
     private static String getAddress(AkkaProperties akkaProperties){

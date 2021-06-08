@@ -43,8 +43,7 @@ public class ServerHolder {
 
     public static void echo(String serveHost){
 
-        if (!ALL_SERVE.contains(serveHost)) {
-            ALL_SERVE.add(serveHost);
+        if (ALL_SERVE.add(serveHost)) {
             MainThreadUtil.scheduleAtFixedRate(() -> {
                 try {
                     ServerInfo serverInfo = ask(serveHost);
