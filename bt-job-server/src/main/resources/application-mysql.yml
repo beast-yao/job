@@ -7,8 +7,8 @@ spring:
   datasource:
     core:
       validation-timeout: 1000
-      maximum-pool-size: 100
-      minimum-idle: 5
+      maximum-pool-size: 50
+      minimum-idle: 10
       idle-timeout: 10000
       driver-class-name: com.mysql.cj.jdbc.Driver
       jdbc-url: 'jdbc:mysql://127.0.0.1:3306/job?useUnicode=true&characterEncoding=utf8&allowMultiQueries=true&useSSL=false&serverTimezone=Asia/Shanghai'
@@ -19,8 +19,8 @@ spring:
       transaction-isolation: 'TRANSACTION_REPEATABLE_READ'
     logging:
       validation-timeout: 1000
-      maximum-pool-size: 100
-      minimum-idle: 5
+      maximum-pool-size: 50
+      minimum-idle: 10
       idle-timeout: 10000
       driver-class-name: org.apache.derby.jdbc.AutoloadedDriver
       jdbc-url: 'jdbc:derby:./db/derby/logging;create=true'

@@ -15,7 +15,9 @@ public class ThreadUtil {
      */
     public final static ScheduledExecutorService SCHEDULE = new ScheduledThreadPoolExecutor(10,  newThreadFactory("SCHEDULE"));
 
-    public final static ThreadPoolExecutor GLOBAL = new ThreadPoolExecutor(Runtime.getRuntime().availableProcessors(),Runtime.getRuntime().availableProcessors()*4,60, TimeUnit.SECONDS,new SynchronousQueue<>(),newThreadFactory("GLOBAL"));
+    public final static ThreadPoolExecutor GLOBAL = new ThreadPoolExecutor(Runtime.getRuntime().availableProcessors(),
+        Runtime.getRuntime().availableProcessors()*4,30,
+        TimeUnit.SECONDS,new LinkedBlockingDeque<>(),newThreadFactory("GLOBAL"));
 
     private static ThreadFactory newThreadFactory(String name){
         return r -> {

@@ -146,7 +146,7 @@ public class MainJobService implements DisposableBean {
                     List<Long> ids = entities.stream().map(InstanceEntity::getId).collect(Collectors.toList());
                     NotifyCenter.onEvent(ExecuteTooLongTimeEvent.builder().instanceIds(ids).build());
                 }
-            }, 1, Math.max(maxSeconds,60), TimeUnit.SECONDS);
+            }, 10, Math.max(maxSeconds,60), TimeUnit.SECONDS);
         }
     }
 
@@ -159,7 +159,7 @@ public class MainJobService implements DisposableBean {
         if (maxInstance > 0){
             MainThreadUtil.scheduleAtFixedRate(() -> {
                 jobService.clearTask(maxInstance);
-            },1,Math.max(maxInstance,60),TimeUnit.SECONDS);
+            },10,Math.max(maxInstance,60),TimeUnit.SECONDS);
         }
     }
 

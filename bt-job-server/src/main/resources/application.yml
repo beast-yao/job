@@ -32,7 +32,7 @@ main:
     port: 10010
     host:
     member-list:
-    max-execute-wait-seconds: 10
+    max-execute-wait-seconds: 100
     max-task-instance: 30
 management:
   endpoint:

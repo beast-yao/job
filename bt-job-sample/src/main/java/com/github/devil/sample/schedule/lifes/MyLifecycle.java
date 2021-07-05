@@ -1,5 +1,6 @@
 package com.github.devil.sample.schedule.lifes;
 
+import com.github.devil.client.exception.RejectException;
 import com.github.devil.client.process.TaskContext;
 import com.github.devil.client.process.TaskLifecycle;
 import com.github.devil.common.enums.ResultEnums;
@@ -21,7 +22,7 @@ public class MyLifecycle implements TaskLifecycle {
     }
 
     @Override
-    public void beforeTask(TaskContext taskContext) {
+    public void beforeTask(TaskContext taskContext) throws RejectException {
         System.out.println(1);
     }
 

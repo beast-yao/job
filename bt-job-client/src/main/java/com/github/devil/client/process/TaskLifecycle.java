@@ -1,5 +1,6 @@
 package com.github.devil.client.process;
 
+import com.github.devil.client.exception.RejectException;
 import com.github.devil.common.enums.ResultEnums;
 
 import java.util.List;
@@ -14,7 +15,7 @@ public interface TaskLifecycle {
 
     /**
      * return the taskName that should use this lifecycle
-     * if null or empty that all task will be use
+     * if null or empty that all task will be used
      * @return name
      */
     default List<String> name(){
@@ -25,7 +26,7 @@ public interface TaskLifecycle {
      * beforeTask
      * @param taskContext
      */
-    void beforeTask(TaskContext taskContext);
+    void beforeTask(TaskContext taskContext) throws RejectException;
 
     /**
      * afterTask

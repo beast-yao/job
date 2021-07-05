@@ -1,5 +1,6 @@
 package com.github.devil.client.spring;
 
+import com.github.devil.client.exception.RejectException;
 import com.github.devil.client.process.InvokeProcess;
 import com.github.devil.client.process.TaskContext;
 import com.github.devil.client.process.TaskContextHolder;
@@ -59,8 +60,10 @@ public class TaskCenter {
     }
 
 
-    public static void beforeProcess(TaskContext taskContext){
-        getAspect(taskContext.getName()).forEach(aspect -> aspect.beforeTask(taskContext));
+    public static void beforeProcess(TaskContext taskContext) throws RejectException {
+        for (TaskLifecycle taskLifecycle : getAspect(taskContext.getName())) {
+            taskLifecycle.beforeTask(taskContext);
+        }
     }
 
     private static void afterProcess(TaskContext taskContext,ResultEnums resultEnums,Throwable throwable){
