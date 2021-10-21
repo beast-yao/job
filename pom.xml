@@ -13,6 +13,7 @@
         <module>distribution</module>
         <module>bt-job-client</module>
         <module>bt-job-sample</module>
+        <module>bt-job-worker</module>
     </modules>
     <packaging>pom</packaging>
 
@@ -48,6 +49,11 @@
             <dependency>
                 <groupId>com.github.devil</groupId>
                 <artifactId>bt-job-common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.devil</groupId>
+                <artifactId>bt-job-client</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

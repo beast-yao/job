@@ -16,6 +16,7 @@ import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.scheduling.TaskScheduler;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledExecutorService;
@@ -68,6 +69,10 @@ public class ScheduleBeanPostProcess implements BeanPostProcessor, SmartInitiali
 
 
     private void registerTask(Object bean,Method method,Scheduled scheduled){
+        if (!Modifier.isPublic(method.getModifiers())){
+            throw new RuntimeException("schedule method is not public,"+bean.getClass()+"#"+method.getName());
+        }
+
         String uniqueName = scheduled.taskName();
         if (uniqueName.isEmpty()){
             uniqueName = defaultName(bean,method);

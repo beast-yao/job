@@ -1,5 +1,5 @@
 # JOB SERVICE
-借鉴power-job和xxl-job完成的学习性定时任务调度
+借鉴power-job完成的学习性定时任务调度
 
 ### 服务架构
 

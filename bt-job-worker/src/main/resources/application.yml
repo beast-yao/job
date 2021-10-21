@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: JOB-WORK
+
+server:
+  port: 28778
+job:
+    client:
+        app-name:
+        host:
+        servers:
