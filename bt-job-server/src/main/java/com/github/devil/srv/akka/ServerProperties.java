@@ -1,11 +1,11 @@
 package com.github.devil.srv.akka;
 
-import lombok.Data;
+import java.util.List;
+
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-import java.time.Duration;
-import java.util.List;
+import lombok.Data;
 
 /**
  * @author eric.yao

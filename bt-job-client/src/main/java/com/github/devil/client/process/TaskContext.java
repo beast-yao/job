@@ -1,13 +1,13 @@
 package com.github.devil.client.process;
 
-import com.github.devil.client.logger.Logger;
-import com.github.devil.client.logger.impl.LoggerImpl;
-import com.github.devil.common.enums.ExecuteType;
-import com.github.devil.common.enums.TaskType;
-import lombok.Data;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import com.github.devil.client.logger.Logger;
+import com.github.devil.client.logger.impl.LoggerImpl;
+import com.github.devil.common.enums.TaskType;
+
+import lombok.Data;
 
 /**
  * @author eric.yao

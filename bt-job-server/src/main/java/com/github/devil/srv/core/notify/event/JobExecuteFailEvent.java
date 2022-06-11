@@ -1,7 +1,7 @@
 package com.github.devil.srv.core.notify.event;
 
 import com.github.devil.srv.core.exception.JobException;
-import lombok.Builder;
+
 import lombok.Data;
 import lombok.experimental.Accessors;
 

@@ -1,26 +1,26 @@
 package com.github.devil.srv.core.service;
 
-import com.github.devil.common.dto.LogContent;
-import com.github.devil.common.dto.LoggingReq;
-import com.github.devil.srv.core.persist.logging.entity.LoggingEntity;
-import com.github.devil.srv.core.persist.logging.repository.LoggingRepository;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
+
+import org.springframework.beans.BeanUtils;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.github.devil.common.dto.LogContent;
+import com.github.devil.common.dto.LoggingReq;
+import com.github.devil.srv.core.persist.logging.entity.LoggingEntity;
+import com.github.devil.srv.core.persist.logging.repository.LoggingRepository;
 
 /**
  * @author eric.yao
  * @date 2021/2/2
  **/
-@Slf4j
 @Service
 public class LoggingService {
 
