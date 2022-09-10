@@ -25,32 +25,32 @@ public class ExceptionHandlers {
 
     @ResponseStatus(code = HttpStatus.BAD_REQUEST)
     @ExceptionHandler(value = TypeMismatchException.class)
-    public Resp handleMethodError(TypeMismatchException exception){
+    public Resp<String> handleMethodError(TypeMismatchException exception){
         log.error("params error,",exception);
-        return new Resp(HttpStatus.BAD_REQUEST.value(),null,exception.getMessage());
+        return new Resp<>(HttpStatus.BAD_REQUEST.value(),null,exception.getMessage());
     }
 
     @ResponseStatus(code = HttpStatus.BAD_REQUEST)
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
-    public Resp handleValid(MethodArgumentNotValidException exception){
+    public Resp<String> handleValid(MethodArgumentNotValidException exception){
         log.error("params error,",exception);
         List<ObjectError> errors = exception.getBindingResult().getAllErrors();
-        return new Resp(HttpStatus.BAD_REQUEST.value(),null,errors.stream().findFirst().map(ObjectError::getDefaultMessage).orElse(""));
+        return new Resp<>(HttpStatus.BAD_REQUEST.value(),null,errors.stream().findFirst().map(ObjectError::getDefaultMessage).orElse(""));
     }
 
 
     @ResponseStatus(code = HttpStatus.BAD_REQUEST)
     @ExceptionHandler(value = ServletRequestBindingException.class)
-    public Resp handleValid(ServletRequestBindingException exception){
+    public Resp<String> handleValid(ServletRequestBindingException exception){
         log.error("params error,",exception);
-        return new Resp(HttpStatus.BAD_REQUEST.value(),null,exception.getMessage());
+        return new Resp<>(HttpStatus.BAD_REQUEST.value(),null,exception.getMessage());
     }
 
     @ResponseStatus(code = HttpStatus.BAD_REQUEST)
     @ExceptionHandler(value = IllegalArgumentException.class)
-    public Resp handleValid(IllegalArgumentException exception){
+    public Resp<String> handleValid(IllegalArgumentException exception){
         log.error("params error,",exception);
-        return new Resp(HttpStatus.BAD_REQUEST.value(),null,exception.getMessage());
+        return new Resp<>(HttpStatus.BAD_REQUEST.value(),null,exception.getMessage());
     }
 
 

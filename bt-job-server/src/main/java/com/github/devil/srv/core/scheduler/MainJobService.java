@@ -61,32 +61,32 @@ public class MainJobService implements DisposableBean {
      */
     public void init(ServerProperties serverProperties){
 
-        /**
+        /*
          * take the job that has no health server to run
          */
         takeUnServerOrUnHealthServerTask();
 
-        /**
+        /*
          * process wait task that because the un except stop
          */
         processWaitTask();
 
-        /**
+        /*
          * register listener to handle the event
          */
         registerListener();
 
-        /**
+        /*
          * process task from db to timer
          */
         processTaskToTimer();
 
-        /**
+        /*
          * process task that holder long time to receive the result
          */
         processLongTimeExecutingTask(serverProperties);
 
-        /**
+        /*
          * register task to release diskspace
          */
         registerClearTask(serverProperties);
@@ -104,7 +104,7 @@ public class MainJobService implements DisposableBean {
      * register listeners
      */
     private void registerListener(){
-        /**
+        /*
          * register the listener
          */
         NotifyCenter.addListener(new JobExecuteFailListener());
@@ -117,7 +117,7 @@ public class MainJobService implements DisposableBean {
      * @see #pushJobToTimer
      */
     private void processTaskToTimer(){
-        /**
+        /*
          * register job push task
          */
         MainThreadUtil.JOB_PUSH.scheduleAtFixedRate(() -> {

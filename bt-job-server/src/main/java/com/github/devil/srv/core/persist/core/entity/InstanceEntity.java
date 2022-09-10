@@ -7,11 +7,12 @@ import com.github.devil.common.enums.TimeType;
 import com.github.devil.srv.core.enums.InstanceType;
 import com.github.devil.srv.core.persist.BaseEntity;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * @author eric.yao
@@ -20,7 +21,6 @@ import java.util.Date;
 
 @Data
 @Entity
-@EqualsAndHashCode(callSuper = true)
 @Table(name = "job_instance",indexes = {
         @Index(name = "idx_ins_job_version",columnList = "jobId,version"),
         @Index(name = "idx_ins_app",columnList = "appName")
@@ -85,5 +85,6 @@ public class InstanceEntity extends BaseEntity {
 
     @JoinColumn(name = "jobId",referencedColumnName = "id",updatable = false,insertable = false)
     @ManyToOne(targetEntity = JobInfoEntity.class,fetch = FetchType.LAZY)
+    @ToString.Exclude
     private JobInfoEntity jobInfoEntity;
 }

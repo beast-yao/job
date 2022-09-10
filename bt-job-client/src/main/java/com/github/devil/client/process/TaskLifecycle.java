@@ -24,15 +24,15 @@ public interface TaskLifecycle {
 
     /**
      * beforeTask
-     * @param taskContext
+     * @param taskContext 任务执行上下文
      */
     void beforeTask(TaskContext taskContext) throws RejectException;
 
     /**
      * afterTask
-     * @param taskContext
-     * @param enums
-     * @param throwable
+     * @param taskContext 任务执行上下文
+     * @param enums 执行状态
+     * @param throwable 执行异常信息
      */
     void afterTask(TaskContext taskContext, ResultEnums enums,Throwable throwable);
 }

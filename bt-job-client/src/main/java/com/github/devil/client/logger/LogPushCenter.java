@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class LogPushCenter {
 
-    private static AtomicBoolean starting = new AtomicBoolean(false);
+    private static final AtomicBoolean starting = new AtomicBoolean(false);
 
     private final static DelayQueue<DelayLog> loggers = new DelayQueue<>();
 
@@ -46,7 +46,7 @@ public class LogPushCenter {
 
         @Override
         public void run() {
-            /**
+            /*
              * akka server is still running
              */
             while (ClientAkkaServer.hasStart()){

@@ -37,11 +37,11 @@ public class MethodInvokeProcess implements InvokeProcess {
     }
 
     private Object[] getParams(TaskContext taskContext,Method method){
-        Class[] clazs = method.getParameterTypes();
+        Class<?>[] clazs = method.getParameterTypes();
         Object[] params = new Object[clazs.length];
         for (int i = 0; i < clazs.length; i++) {
             params[i] = null;
-            Class type = clazs[i];
+            Class<?> type = clazs[i];
             if (type.isAssignableFrom(String.class)){
                 params[i] = taskContext.getParam();
             }else if (type.isAssignableFrom(TaskContext.class)){
