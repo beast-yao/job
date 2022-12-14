@@ -4,8 +4,8 @@ import com.github.devil.srv.core.Constants;
 import com.github.devil.srv.core.SpringContextHolder;
 import com.github.devil.srv.core.alarm.AlarmService;
 import com.github.devil.srv.core.alarm.Message;
-import com.github.devil.srv.core.notify.event.JobExecuteFailEvent;
 import com.github.devil.srv.core.notify.event.WorkerDownEvent;
+
 import lombok.extern.slf4j.Slf4j;
 
 /**

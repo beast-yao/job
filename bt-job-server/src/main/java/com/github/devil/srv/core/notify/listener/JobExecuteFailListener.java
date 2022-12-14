@@ -1,17 +1,15 @@
 package com.github.devil.srv.core.notify.listener;
 
 import com.github.devil.srv.core.Constants;
-import com.github.devil.srv.core.alarm.Message;
 import com.github.devil.srv.core.SpringContextHolder;
 import com.github.devil.srv.core.alarm.AlarmService;
+import com.github.devil.srv.core.alarm.Message;
 import com.github.devil.srv.core.notify.event.JobExecuteFailEvent;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author eric.yao
  * @date 2021/1/29
  **/
-@Slf4j
 public class JobExecuteFailListener implements Listener<JobExecuteFailEvent> {
 
     @Override

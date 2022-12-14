@@ -1,18 +1,27 @@
 package com.github.devil.srv.core.persist.core.entity;
 
+import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
 import com.github.devil.common.enums.ExecuteStatue;
 import com.github.devil.common.enums.ExecuteType;
 import com.github.devil.common.enums.TaskType;
 import com.github.devil.common.enums.TimeType;
 import com.github.devil.srv.core.enums.InstanceType;
 import com.github.devil.srv.core.persist.BaseEntity;
-import lombok.Data;
-import lombok.ToString;
-import org.hibernate.Hibernate;
 
-import javax.persistence.*;
-import java.util.Date;
-import java.util.Objects;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /**
  * @author eric.yao
@@ -25,7 +34,8 @@ import java.util.Objects;
         @Index(name = "idx_ins_job_version",columnList = "jobId,version"),
         @Index(name = "idx_ins_app",columnList = "appName")
 })
-@ToString(exclude = "jobInfoEntity",callSuper = true)
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 public class InstanceEntity extends BaseEntity {
 
     @Column

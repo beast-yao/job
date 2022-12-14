@@ -4,6 +4,8 @@ import java.util.List;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /**
  * @author Yao
@@ -11,6 +13,8 @@ import lombok.Data;
  **/
 @Data
 @Builder
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
 public class ExecuteTooLongTimeEvent extends Event {
 
     private List<Long> instanceIds;

@@ -1,19 +1,17 @@
 package com.github.devil.srv.core.notify.listener;
 
+import java.util.stream.Collectors;
+
 import com.github.devil.srv.core.Constants;
 import com.github.devil.srv.core.SpringContextHolder;
 import com.github.devil.srv.core.alarm.AlarmService;
 import com.github.devil.srv.core.alarm.Message;
 import com.github.devil.srv.core.notify.event.ExecuteTooLongTimeEvent;
-import lombok.extern.slf4j.Slf4j;
-
-import java.util.stream.Collectors;
 
 /**
  * @author Yao
  * @date 2021/3/10
  **/
-@Slf4j
 public class ExecuteTooLongTimeListener implements Listener<ExecuteTooLongTimeEvent> {
 
     @Override

@@ -2,6 +2,8 @@ package com.github.devil.srv.core.notify.event;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /**
  * @author eric.yao
@@ -9,6 +11,8 @@ import lombok.Data;
  **/
 @Data
 @Builder
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
 public class SchedulerJobErrorEvent extends Event {
 
     private Long jobId;

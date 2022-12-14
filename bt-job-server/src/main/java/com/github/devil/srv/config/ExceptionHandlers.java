@@ -56,9 +56,9 @@ public class ExceptionHandlers {
 
     @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(value = Exception.class)
-    public Resp handleValid(Exception exception){
+    public Resp<String> handleValid(Exception exception){
         log.error("server error,",exception);
-        return new Resp(HttpStatus.INTERNAL_SERVER_ERROR.value(),null,"服务异常");
+        return new Resp<>(HttpStatus.INTERNAL_SERVER_ERROR.value(),null,"服务异常");
     }
 
 }

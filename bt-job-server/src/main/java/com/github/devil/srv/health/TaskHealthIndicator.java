@@ -1,11 +1,11 @@
 package com.github.devil.srv.health;
 
-import com.github.devil.srv.core.scheduler.MainJobScheduler;
-import com.github.devil.srv.timer.TimerWheel;
 import org.springframework.boot.actuate.health.AbstractHealthIndicator;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.Status;
 import org.springframework.stereotype.Component;
+
+import com.github.devil.srv.core.scheduler.MainJobScheduler;
 
 /**
  * @author eric.yao

@@ -1,12 +1,13 @@
 package com.github.devil.srv.core.notify;
 
+import java.util.List;
+
 import com.github.devil.srv.core.MainThreadUtil;
 import com.github.devil.srv.core.notify.event.Event;
 import com.github.devil.srv.core.notify.listener.Listener;
 import com.google.common.collect.Lists;
-import lombok.extern.slf4j.Slf4j;
 
-import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author eric.yao

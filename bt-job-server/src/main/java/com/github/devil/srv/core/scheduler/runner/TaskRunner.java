@@ -1,9 +1,20 @@
 package com.github.devil.srv.core.scheduler.runner;
 
-import akka.actor.ActorSelection;
-import akka.pattern.Patterns;
-import com.github.devil.common.enums.ExecuteStatue;
+import java.time.Duration;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.concurrent.CompletionStage;
+import java.util.concurrent.TimeUnit;
+
+import javax.annotation.Resource;
+
+import org.springframework.data.domain.Example;
+import org.springframework.stereotype.Component;
+
 import com.github.devil.common.dto.WorkerExecuteReq;
+import com.github.devil.common.enums.ExecuteStatue;
 import com.github.devil.common.enums.TimeType;
 import com.github.devil.srv.akka.MainAkServer;
 import com.github.devil.srv.core.enums.InstanceType;
@@ -16,20 +27,10 @@ import com.github.devil.srv.core.persist.core.entity.WorkInstanceEntity;
 import com.github.devil.srv.core.persist.core.repository.JobInstanceRepository;
 import com.github.devil.srv.core.persist.core.repository.WorkInstanceRepository;
 import com.github.devil.srv.core.service.JobService;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Example;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
-import scala.concurrent.Future;
 
-import javax.annotation.Resource;
-import java.time.Duration;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.concurrent.CompletionStage;
-import java.util.concurrent.TimeUnit;
+import akka.actor.ActorSelection;
+import akka.pattern.Patterns;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author eric.yao

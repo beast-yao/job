@@ -1,6 +1,6 @@
 
 FROM openjdk:8u201-jdk-alpine3.9
-MAINTAINER devil.yao
+LABEL MAINTAINER="devil.yao"
 
 ARG VERSION
 ENV VERSION $VERSION
