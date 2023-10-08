@@ -48,7 +48,7 @@
             <el-table-column prop="executeEndTime" label="执行结束时间" min-width="150" />
             <el-table-column fixed="right" label="操作">
               <template slot-scope="scope">
-                <el-button type="text" size="mini" @click="showLog(scope.row)">查看日志</el-button>
+                <el-button type="text" size="mini" @click="showLogView(scope.row)">查看日志</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -74,10 +74,11 @@ export default {
           page: 1,
           pageSize: 10,
           total: 0,
-          instanceId: ''
+          instanceId: '',
+          showLog: false
       }
   },
-  components: [Log],
+  components: { Log },
   mounted () {
     this.search();
   },
@@ -111,7 +112,8 @@ export default {
       this.page = 0;
       this.search();
     },
-    showLog (row) {
+    showLogView (row) {
+      console.table(row)
       this.instanceId = row.instanceId;
       this.showLog = true;
     }

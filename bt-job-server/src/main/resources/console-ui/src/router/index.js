@@ -24,7 +24,7 @@ const routes = [
     path: '/user/manager',
     component: () => import('@/views/user/manager.vue'),
     meta: {
-      title: '管理任务'
+      title: '用户管理'
     }
   },
   {
